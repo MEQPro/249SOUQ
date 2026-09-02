@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>من نحن — 249Souq</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html" class="logo-text">249Souq</a><span class="logo-sub">طعم البيت، وين ما مشيت</span></div>
+  <ul class="nav-links">
+    <li><a href="products.html">المنتجات</a></li>
+    <li><a href="about.html" class="active">من نحن</a></li>
+    <li><a href="sellers.html">انضم كبائع</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='products.html'">اطلب الآن</button>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="products.html">المنتجات</a><a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
+</div>
+<div class="divider"></div>
+
+<section style="background:var(--brown-deep);padding:5rem 2rem">
+  <div style="max-width:720px;margin:0 auto;text-align:center">
+    <div class="section-tag">قصتنا</div>
+    <h1 class="section-title section-title-light" style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.25rem">من نحن</h1>
+    <p style="font-size:1.1rem;color:#bbb;line-height:2.2;max-width:600px;margin:0 auto">
+      249Souq وُلدت من الإحساس بي ارتباطنا بموروثنا وثقافتنا السودانية،
+      وحبنا للبلد والشوق لي ريحة البيت السوداني المميزة،
+      وطعم الأكل السوداني الأصيل، لي ريحة حبوبة، ولمة الحوش.
+      <br/><br/>
+      عشان كدة احنا دارين نوصل ليك حاجتك اللي بتحبها لغاية عندك.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section style="background:var(--cream-dark);padding:4rem 2rem;text-align:center">
+  <div style="max-width:620px;margin:0 auto">
+    <div class="section-tag">رسالتنا</div>
+    <h2 class="section-title">نصنع الجسر، أنتم تعبرونه</h2>
+    <p style="font-size:1rem;color:var(--brown-mid);line-height:2;margin-bottom:2rem">
+      249 هو الكود الدولي للسودان — هويتنا وفخرنا ومجتمعنا.
+      Souq هي السوق — الدفء والألفة والثقة.
+      معاً: سوق يحمل روح السودان لكل مكان.
+    </p>
+    <button class="btn-primary" onclick="window.location.href='products.html'">تصفح المنتجات</button>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand"><div class="footer-logo">249Souq</div><div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div><div class="footer-social"><a class="social-btn" href="#" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a><a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a><a class="social-btn" href="#" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a><a class="social-btn" href="#" aria-label="فيسبوك"><i class="ti ti-brand-facebook"></i></a></div></div>
+      <div class="footer-col"><div class="footer-col-title">المنصة</div><ul class="footer-links"><li><a href="products.html">المنتجات</a></li><li><a href="sellers.html">انضم كبائع</a></li><li><a href="about.html">من نحن</a></li><li><a href="contact.html">تواصل معنا</a></li></ul></div>
+      <div class="footer-col"><div class="footer-col-title">المساعدة</div><ul class="footer-links"><li><a href="shipping-policy.html">سياسة الشحن</a></li><li><a href="returns-policy.html">سياسة الاسترجاع</a></li><li><a href="privacy-policy.html">سياسة الخصوصية</a></li><li><a href="terms.html">شروط الاستخدام</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2026 249Souq.com — جميع الحقوق محفوظة</div><div class="footer-payment"><span class="pay-label">طرق الدفع:</span><span class="pay-badge">Tabby</span><span class="pay-badge">Stripe</span><span class="pay-badge">تحويل بنكي</span></div></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/971XXXXXXXXX" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+<script>function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}</script>
+</body>
+</html>

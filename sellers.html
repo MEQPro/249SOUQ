@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="انضم كبائع على 249Souq — وسّع مبيعاتك وصل لآلاف المشترين السودانيين حول العالم."/>
+<title>انضم كبائع — 249Souq</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.sellers-hero{background:var(--brown-deep);padding:4.5rem 2rem}
+.sellers-hero-inner{max-width:860px;margin:0 auto}
+.perks{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:2rem;margin-bottom:2.5rem}
+.perk{background:rgba(255,255,255,0.04);border:1px solid rgba(184,150,80,0.2);border-radius:12px;padding:1.25rem 1rem;text-align:center;transition:border-color .2s}
+.perk:hover{border-color:var(--gold)}
+.perk-icon{font-size:26px;margin-bottom:.6rem}
+.perk-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.perk-text{font-size:12px;color:#888;line-height:1.6}
+.cta-box{background:var(--gold);border-radius:14px;padding:2.25rem 2rem;text-align:center;margin-bottom:2.5rem}
+.register-section{background:var(--cream);padding:4rem 2rem}
+.register-inner{max-width:580px;margin:0 auto}
+.form-card{background:#fff;border:1px solid var(--cream-dark);border-radius:16px;padding:2rem 1.75rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:13px;color:var(--brown-mid);margin-bottom:6px;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--cream);border:1px solid var(--cream-dark);border-radius:8px;padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--brown-deep);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group select option{background:#fff}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.btn-submit{background:var(--gold);color:var(--brown-deep);border:none;padding:16px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:900;cursor:pointer;width:100%;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+.btn-submit:hover{background:var(--gold-light)}
+.err-msg{display:none;font-size:13px;color:#a32d2d;margin-bottom:.75rem}
+.success-box{display:none;background:rgba(184,150,80,0.08);border:1px solid var(--gold);border-radius:12px;padding:2rem;text-align:center}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <a href="index.html" class="logo-text">249Souq</a>
+    <span class="logo-sub">طعم البيت، وين ما مشيت</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="products.html">المنتجات</a></li>
+    <li><a href="about.html">من نحن</a></li>
+    <li><a href="sellers.html" class="active">انضم كبائع</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='products.html'">اطلب الآن</button>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="products.html">المنتجات</a>
+  <a href="sellers.html">انضم كبائع</a>
+  <a href="about.html">من نحن</a>
+  <a href="contact.html">تواصل معنا</a>
+</div>
+
+<div class="divider"></div>
+
+<section class="sellers-hero">
+  <div class="sellers-hero-inner">
+    <div class="section-tag">للبائعين السودانيين</div>
+    <h1 class="section-title section-title-light">وسّع مبيعاتك مع 249Souq</h1>
+    <p class="section-desc section-desc-light" style="margin-bottom:0">
+      هل عندك منتج سوداني وعندك مبيعات حالياً، ولكن تريد التوسع لأسواق أخرى؟<br>
+      وسّع وصولك لآلاف المشترين حول العالم، ونحن نتكفل بالشحن والدفع.
+    </p>
+    <div class="perks">
+      <div class="perk"><div class="perk-icon">🌍</div><div class="perk-title">وصول عالمي</div><div class="perk-text">الإمارات، الخليج، أوروبا وأكثر</div></div>
+      <div class="perk"><div class="perk-icon">🚚</div><div class="perk-title">شحن مُدار بالكامل</div><div class="perk-text">نتكفل بالشحن بأسعار منافسة</div></div>
+      <div class="perk"><div class="perk-icon">💳</div><div class="perk-title">مدفوعات آمنة</div><div class="perk-text">نستلم ونحوّل لك بدون تعقيد</div></div>
+      <div class="perk"><div class="perk-icon">🤝</div><div class="perk-title">دعم مستمر</div><div class="perk-text">معك من أول طلب لآخر توصيل</div></div>
+    </div>
+    <div class="cta-box">
+      <div style="font-size:1.3rem;font-weight:900;color:var(--brown-deep);margin-bottom:.5rem">هل منتجك جاهز؟</div>
+      <p style="font-size:14px;color:var(--brown);line-height:1.8;margin-bottom:1.25rem;max-width:460px;margin-left:auto;margin-right:auto">
+        سجّل معنا الآن وكن من أوائل البائعين على 249Souq.<br>
+        نوفر لك الإدارة الكاملة: مدفوعات، شحن، ودعم مستمر.
+      </p>
+      <button class="btn-primary" onclick="document.getElementById('register-form').scrollIntoView({behavior:'smooth'})">سجّل الآن ↓</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="register-section">
+  <div class="register-inner" id="register-form">
+    <div class="section-tag" style="text-align:center">ابدأ الآن</div>
+    <h2 class="section-title" style="text-align:center;font-size:clamp(2rem,5vw,3.2rem)">انضم<br><span style="color:var(--gold)">كبائع</span></h2>
+    <p style="text-align:center;color:var(--brown-mid);font-size:1rem;margin-bottom:2rem;line-height:1.8">
+      أرسل لنا طلبك وسنتواصل معك خلال 24 ساعة<br>للتحقق من استيفائك لشروط القبول
+    </p>
+
+    <div class="form-card" id="the-form">
+      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول المطلوبة</div>
+      <div class="form-row">
+        <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="f-name" placeholder="اسمك الكامل"/></div>
+        <div class="form-group"><label>رقم الواتساب *</label><input type="tel" id="f-phone" placeholder="+971 5X XXX XXXX"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>المدينة / الدولة *</label><input type="text" id="f-city" placeholder="مثال: دبي، الإمارات"/></div>
+        <div class="form-group">
+          <label>نوع المنتج *</label>
+          <select id="f-cat">
+            <option value="">اختر...</option>
+            <option>بخور وعطور</option>
+            <option>ملابس تقليدية</option>
+            <option>أكل سوداني</option>
+            <option>مشغولات يدوية</option>
+            <option>أخرى</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>اوصف منتجك باختصار *</label><textarea id="f-desc" placeholder="مثال: أبيع بخور صندل يدوي بتغليف فاخر، عندي مبيعات حالية عبر واتساب..."></textarea></div>
+      <button class="btn-submit" onclick="submitForm()">أرسل طلب الانضمام ✦</button>
+      <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث</p>
+    </div>
+
+    <div class="success-box" id="success-box">
+      <div style="font-size:2.5rem;margin-bottom:.5rem">🎉</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:.4rem">وصل طلبك!</div>
+      <div style="font-size:14px;color:var(--brown-mid);line-height:1.8">شكراً على اهتمامك بالانضمام لـ 249Souq.<br>سنتواصل معك على واتساب خلال 24 ساعة.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">249Souq</div>
+        <div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div>
+        <div class="footer-social">
+          <a class="social-btn" href="#" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a>
+          <a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a>
+          <a class="social-btn" href="#" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+          <a class="social-btn" href="#" aria-label="فيسبوك"><i class="ti ti-brand-facebook"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المنصة</div>
+        <ul class="footer-links">
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="sellers.html">انضم كبائع</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المساعدة</div>
+        <ul class="footer-links">
+          <li><a href="shipping-policy.html">سياسة الشحن</a></li>
+          <li><a href="returns-policy.html">سياسة الاسترجاع</a></li>
+          <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الاستخدام</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 249Souq.com — جميع الحقوق محفوظة</div>
+      <div class="footer-payment">
+        <span class="pay-label">طرق الدفع:</span>
+        <span class="pay-badge">Tabby</span>
+        <span class="pay-badge">Stripe</span>
+        <span class="pay-badge">تحويل بنكي</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/971XXXXXXXXX" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+<script>
+function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
+function submitForm(){
+  var n=document.getElementById('f-name').value.trim();
+  var p=document.getElementById('f-phone').value.trim();
+  var c=document.getElementById('f-city').value.trim();
+  var cat=document.getElementById('f-cat').value;
+  var d=document.getElementById('f-desc').value.trim();
+  var err=document.getElementById('err-msg');
+  if(!n||!p||!c||!cat||!d){err.style.display='block';return}
+  err.style.display='none';
+  document.getElementById('the-form').style.display='none';
+  document.getElementById('success-box').style.display='block';
+  var msg="طلب انضمام كبائع - 249Souq%0A"
+    +"الاسم: "+n+"%0A"
+    +"واتساب: "+p+"%0A"
+    +"المدينة: "+c+"%0A"
+    +"نوع المنتج: "+cat+"%0A"
+    +"الوصف: "+d;
+  window.open('https://wa.me/971XXXXXXXXX?text='+msg,'_blank');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>تواصل معنا — 249Souq</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.contact-wrap{max-width:800px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.contact-method{background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.5rem;display:flex;align-items:center;gap:1rem;margin-bottom:1rem;transition:border-color .2s;text-decoration:none}
+.contact-method:hover{border-color:var(--gold)}
+.contact-icon{width:48px;height:48px;border-radius:50%;background:rgba(184,150,80,0.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.contact-label{font-size:12px;color:var(--brown-mid);margin-bottom:.2rem}
+.contact-value{font-size:15px;font-weight:700;color:var(--brown-deep)}
+.form-card{background:#fff;border:1px solid var(--cream-dark);border-radius:16px;padding:2rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:13px;color:var(--brown-mid);margin-bottom:6px;font-weight:600}
+.form-group input,.form-group textarea{width:100%;background:var(--cream);border:1px solid var(--cream-dark);border-radius:8px;padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--brown-deep);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group textarea{resize:vertical;min-height:100px}
+.btn-send{background:var(--gold);color:var(--brown-deep);border:none;padding:14px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:800;cursor:pointer;width:100%;transition:background .2s}
+.btn-send:hover{background:var(--gold-light)}
+.err-msg{display:none;font-size:13px;color:#a32d2d;margin-bottom:.75rem}
+.success-msg{display:none;background:rgba(184,150,80,0.1);border:1px solid var(--gold);border-radius:8px;padding:1rem;text-align:center;color:var(--gold);font-weight:700;margin-top:.75rem}
+@media(max-width:600px){.contact-wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html" class="logo-text">249Souq</a><span class="logo-sub">طعم البيت، وين ما مشيت</span></div>
+  <ul class="nav-links">
+    <li><a href="products.html">المنتجات</a></li>
+    <li><a href="about.html">من نحن</a></li>
+    <li><a href="sellers.html">انضم كبائع</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='products.html'">اطلب الآن</button>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="products.html">المنتجات</a><a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
+</div>
+<div class="divider"></div>
+
+<section style="background:var(--brown-deep);padding:3.5rem 2rem;text-align:center">
+  <div class="section-tag">نحن هنا</div>
+  <h1 class="section-title section-title-light">تواصل معنا</h1>
+  <p style="color:#aaa;font-size:1rem;margin-top:.5rem">سنردّ عليك خلال 24 ساعة</p>
+</section>
+
+<div class="divider"></div>
+
+<div class="contact-wrap">
+  <div>
+    <h2 class="section-title" style="font-size:1.3rem;margin-bottom:1.25rem">طرق التواصل</h2>
+    <a class="contact-method" href="https://wa.me/971XXXXXXXXX" target="_blank">
+      <div class="contact-icon"><i class="ti ti-brand-whatsapp" style="color:var(--gold)"></i></div>
+      <div><div class="contact-label">واتساب — الأسرع</div><div class="contact-value">+971 XX XXX XXXX</div></div>
+    </a>
+    <a class="contact-method" href="mailto:hello@249souq.com">
+      <div class="contact-icon"><i class="ti ti-mail" style="color:var(--gold)"></i></div>
+      <div><div class="contact-label">البريد الإلكتروني</div><div class="contact-value">hello@249souq.com</div></div>
+    </a>
+    <a class="contact-method" href="https://instagram.com/249souq" target="_blank">
+      <div class="contact-icon"><i class="ti ti-brand-instagram" style="color:var(--gold)"></i></div>
+      <div><div class="contact-label">انستغرام</div><div class="contact-value">@249souq</div></div>
+    </a>
+    <div style="margin-top:1.5rem;padding:1rem;background:rgba(184,150,80,0.08);border-radius:10px;border:1px solid rgba(184,150,80,0.2)">
+      <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:.4rem">ساعات العمل</div>
+      <div style="font-size:13px;color:var(--brown-mid);line-height:1.8">الإثنين – الجمعة: 9 ص – 6 م<br>السبت: 10 ص – 3 م<br>بتوقيت الإمارات (GST+4)</div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="section-title" style="font-size:1.3rem;margin-bottom:1.25rem">أرسل رسالة</h2>
+    <div class="form-card">
+      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول</div>
+      <div class="form-group"><label>الاسم *</label><input type="text" id="f-name" placeholder="اسمك الكامل"/></div>
+      <div class="form-group"><label>واتساب أو إيميل *</label><input type="text" id="f-contact" placeholder="+971 أو email@..."/></div>
+      <div class="form-group"><label>رسالتك *</label><textarea id="f-msg" placeholder="كيف نقدر نساعدك؟"></textarea></div>
+      <button class="btn-send" onclick="sendMsg()">أرسل الرسالة</button>
+      <div class="success-msg" id="success-msg">✓ وصلت رسالتك — سنردّ عليك قريباً!</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand"><div class="footer-logo">249Souq</div><div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div><div class="footer-social"><a class="social-btn" href="#" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a><a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a><a class="social-btn" href="#" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a><a class="social-btn" href="#" aria-label="فيسبوك"><i class="ti ti-brand-facebook"></i></a></div></div>
+      <div class="footer-col"><div class="footer-col-title">المنصة</div><ul class="footer-links"><li><a href="products.html">المنتجات</a></li><li><a href="sellers.html">انضم كبائع</a></li><li><a href="about.html">من نحن</a></li><li><a href="contact.html">تواصل معنا</a></li></ul></div>
+      <div class="footer-col"><div class="footer-col-title">المساعدة</div><ul class="footer-links"><li><a href="shipping-policy.html">سياسة الشحن</a></li><li><a href="returns-policy.html">سياسة الاسترجاع</a></li><li><a href="privacy-policy.html">سياسة الخصوصية</a></li><li><a href="terms.html">شروط الاستخدام</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2026 249Souq.com — جميع الحقوق محفوظة</div><div class="footer-payment"><span class="pay-label">طرق الدفع:</span><span class="pay-badge">Tabby</span><span class="pay-badge">Stripe</span><span class="pay-badge">تحويل بنكي</span></div></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/971XXXXXXXXX" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+<script>
+function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
+function sendMsg(){
+  var n=document.getElementById('f-name').value.trim();
+  var c=document.getElementById('f-contact').value.trim();
+  var msg=document.getElementById('f-msg').value.trim();
+  if(!n||!c||!msg){document.getElementById('err-msg').style.display='block';return}
+  document.getElementById('err-msg').style.display='none';
+  document.getElementById('success-msg').style.display='block';
+  document.querySelector('.btn-send').disabled=true;
+  document.querySelector('.btn-send').style.opacity='.5';
+  var waMsg="رسالة من نموذج التواصل - 249Souq%0A"
+    +"الاسم: "+n+"%0A"
+    +"للتواصل: "+c+"%0A"
+    +"الرسالة: "+msg;
+  window.open('https://wa.me/971XXXXXXXXX?text='+waMsg,'_blank');
+}
+</script>
+</body>
+</html>

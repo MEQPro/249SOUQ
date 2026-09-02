@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="بخور عبق الصندل — منتج سوداني أصيل. ريحة فخمة تدوم وتملأ المكان. اطلب الآن من 249Souq."/>
+<title>المنتجات — 249Souq</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.product-wrap{max-width:900px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.gallery{display:flex;flex-direction:column;gap:.75rem}
+.main-img{border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,80,0.3);aspect-ratio:4/5;cursor:zoom-in}
+.main-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.main-img:hover img{transform:scale(1.04)}
+.thumb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.thumb{border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;aspect-ratio:1;transition:border-color .2s}
+.thumb.active{border-color:var(--gold)}
+.thumb:hover{border-color:rgba(184,150,80,0.5)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.maker-row{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding:.75rem 1rem;background:rgba(184,150,80,0.08);border-radius:10px;border:1px solid rgba(184,150,80,0.2)}
+.maker-avatar{width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.maker-badge{margin-right:auto;background:rgba(184,150,80,0.15);color:var(--gold);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(184,150,80,0.3)}
+.price-row{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap}
+.price-main{font-size:2.2rem;font-weight:900;color:var(--gold)}
+.tabby-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 12px;font-size:12px;color:#ccc}
+.features{list-style:none;margin-bottom:1.75rem;display:flex;flex-direction:column;gap:.4rem}
+.features li{display:flex;align-items:center;gap:10px;font-size:14px;color:#ccc;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.features li:last-child{border:none}
+.feat-icon{color:var(--gold);font-size:16px;flex-shrink:0}
+.btn-order{background:var(--gold);color:var(--brown-deep);border:none;padding:15px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:17px;font-weight:800;cursor:pointer;width:100%;margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+.btn-order:hover{background:var(--gold-light)}
+.btn-wa{background:transparent;color:var(--gold);border:1.5px solid var(--gold);padding:13px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn-wa:hover{background:rgba(184,150,80,0.1)}
+.maker-section{background:var(--cream-dark);padding:3.5rem 2rem}
+.maker-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center}
+.maker-big-avatar{width:90px;height:90px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid rgba(184,150,80,0.4);flex-shrink:0}
+.maker-stats{display:flex;gap:1.25rem;margin-top:1.25rem;flex-wrap:wrap}
+.maker-stat{text-align:center;padding:.7rem 1.1rem;background:#fff;border-radius:10px;border:1px solid rgba(184,150,80,0.2)}
+.maker-stat-num{font-size:1.2rem;font-weight:900;color:var(--gold)}
+.maker-stat-label{font-size:11px;color:var(--brown-mid);margin-top:2px}
+@media(max-width:640px){
+  .product-wrap{grid-template-columns:1fr}
+  .maker-inner{grid-template-columns:1fr;text-align:center}
+  .maker-big-avatar{margin:0 auto}
+  .maker-stats{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <a href="index.html" class="logo-text">249Souq</a>
+    <span class="logo-sub">طعم البيت، وين ما مشيت</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="products.html" class="active">المنتجات</a></li>
+    <li><a href="about.html">من نحن</a></li>
+    <li><a href="sellers.html">انضم كبائع</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='products.html'">اطلب الآن</button>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="products.html">المنتجات</a>
+  <a href="sellers.html">انضم كبائع</a>
+  <a href="about.html">من نحن</a>
+  <a href="contact.html">تواصل معنا</a>
+</div>
+
+<div class="divider"></div>
+
+<section style="background:var(--brown-deep);padding:3rem 0">
+  <div class="product-wrap">
+    <!-- GALLERY -->
+    <div class="gallery">
+      <div class="main-img"><img id="mainImg" src="img/bakhoor-2.jpg" alt="بخور عبق الصندل"/></div>
+    </div>
+
+    <!-- INFO -->
+    <div>
+      <div class="maker-row">
+        <div class="maker-avatar">🧕</div>
+        <div>
+          <div style="font-size:11px;color:#888">الصانعة</div>
+          <div style="font-size:13px;font-weight:700;color:var(--gold-light)">صانعة سودانية معتمدة</div>
+        </div>
+        <div class="maker-badge">✦ موثّقة</div>
+      </div>
+
+      <h1 style="font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:900;color:#fff;margin-bottom:.4rem;line-height:1.3">بخور عبق الصندل</h1>
+      <p style="font-size:14px;color:#999;margin-bottom:1.5rem">ريحة فخمة... تدوم وتملأ المكان</p>
+
+      <div class="price-row">
+        <div style="font-size:1rem;color:#aaa;font-weight:500">AED <span class="price-main">60</span></div>
+        <div class="tabby-pill">أو <strong style="color:#fff;margin:0 4px">4 × 15 AED</strong> بدون فوائد مع Tabby</div>
+      </div>
+
+      <ul class="features">
+        <li><i class="ti ti-flame feat-icon"></i>ريحة ثابتة تدوم لساعات طويلة</li>
+        <li><i class="ti ti-leaf feat-icon"></i>مكونات طبيعية 100%</li>
+        <li><i class="ti ti-home feat-icon"></i>يعطي جو هدوء وفخامة</li>
+        <li><i class="ti ti-heart feat-icon"></i>مصنوع بحب بأيادي سودانية</li>
+        <li><i class="ti ti-truck-delivery feat-icon"></i>توصيل للإمارات والخليج</li>
+      </ul>
+
+      <button class="btn-order" onclick="window.open('https://wa.me/971XXXXXXXXX?text=أريد طلب بخور عبق الصندل — 249Souq','_blank')">🛍 اطلب الآن</button>
+      <button class="btn-wa" onclick="window.open('https://wa.me/971XXXXXXXXX','_blank')">
+        <i class="ti ti-brand-whatsapp"></i> تواصل معنا على واتساب
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MAKER -->
+<section class="maker-section">
+  <div class="maker-inner">
+    <div class="maker-big-avatar">🧕</div>
+    <div>
+      <div class="section-tag">الصانعة السودانية</div>
+      <div style="font-size:1.4rem;font-weight:900;color:var(--brown-deep);margin-bottom:.4rem">صانعة سودانية معتمدة</div>
+      <p style="font-size:14px;color:var(--brown-mid);line-height:1.9;max-width:480px">
+        صانعة سودانية متخصصة في البخور والعطور التقليدية.
+        تصنع كل حبة بيديها باستخدام مكونات طبيعية أصيلة،
+        محافظةً على وصفات توارثتها جيلاً بعد جيل.
+        الآن وصلت منتجاتها إلى بيتك أينما كنت.
+      </p>
+      <div class="maker-stats">
+        <div class="maker-stat"><div class="maker-stat-num">100%</div><div class="maker-stat-label">طبيعي</div></div>
+        <div class="maker-stat"><div class="maker-stat-num">يدوي</div><div class="maker-stat-label">صنع يدوي</div></div>
+        <div class="maker-stat"><div class="maker-stat-num">سوداني</div><div class="maker-stat-label">أصل المنتج</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">249Souq</div>
+        <div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div>
+        <div class="footer-social">
+          <a class="social-btn" href="#" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a>
+          <a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a>
+          <a class="social-btn" href="#" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+          <a class="social-btn" href="#" aria-label="فيسبوك"><i class="ti ti-brand-facebook"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المنصة</div>
+        <ul class="footer-links">
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="sellers.html">انضم كبائع</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المساعدة</div>
+        <ul class="footer-links">
+          <li><a href="shipping-policy.html">سياسة الشحن</a></li>
+          <li><a href="returns-policy.html">سياسة الاسترجاع</a></li>
+          <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الاستخدام</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 249Souq.com — جميع الحقوق محفوظة</div>
+      <div class="footer-payment">
+        <span class="pay-label">طرق الدفع:</span>
+        <span class="pay-badge">Tabby</span>
+        <span class="pay-badge">Stripe</span>
+        <span class="pay-badge">تحويل بنكي</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/971XXXXXXXXX?text=أريد طلب بخور عبق الصندل" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+<script>
+function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
+function setImg(src,el){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
+</script>
+</body>
+</html>

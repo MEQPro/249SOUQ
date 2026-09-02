@@ -1,369 +1,184 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>249Souq — السوق الإلكتروني للجالية السودانية</title>
-<meta name="description" content="249Souq.com يربط أصحاب المشاريع السودانية الصغيرة بالأسواق والمستهلكين حول العالم. منتجات أصيلة، صناعة سودانية حقيقية.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --gold:#B08A45;
-    --gold-deep:#8C6C31;
-    --cream:#FAF7F1;
-    --paper:#FFFFFF;
-    --ink:#211C17;
-    --ink-soft:#5A5148;
-    --line:rgba(33,28,23,0.10);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:'Tajawal','Segoe UI',Tahoma,Arial,sans-serif;
-    background:var(--cream);
-    color:var(--ink);
-    line-height:1.75;
-    -webkit-font-smoothing:antialiased;
-  }
-  body.en{font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
-  a{color:inherit;text-decoration:none;}
-  img{max-width:100%;display:block;}
-  .container{max-width:1080px;margin:0 auto;padding:0 28px;}
-
-  [data-lang="en"]{display:none;}
-  body.en [data-lang="ar"]{display:none;}
-  body.en [data-lang="en"]{display:block;}
-  body.en .cta-row [data-lang="en"], body.en .badge[data-lang="en"]{display:inline-block;}
-
-  /* Header */
-  header{
-    position:sticky;top:0;z-index:60;
-    background:rgba(250,247,241,0.92);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
-  .logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;letter-spacing:0.5px;color:var(--ink);}
-  .logo em{font-style:normal;color:var(--gold-deep);}
-  .nav-right{display:flex;align-items:center;gap:20px;}
-  .nav-link{font-size:0.92rem;color:var(--ink-soft);font-weight:500;display:none;}
-  @media(min-width:720px){ .nav-link{display:inline-block;} }
-  .lang-toggle{
-    border:1px solid var(--ink);
-    background:transparent;
-    color:var(--ink);
-    padding:7px 18px;
-    border-radius:2px;
-    font-weight:600;
-    cursor:pointer;
-    font-size:0.85rem;
-    letter-spacing:0.3px;
-    font-family:inherit;
-  }
-  .lang-toggle:hover{background:var(--ink);color:var(--cream);}
-
-  /* Hero */
-  .hero{padding:88px 0 72px;text-align:center;}
-  .hero .kicker{
-    font-size:0.85rem;
-    letter-spacing:1.5px;
-    color:var(--gold-deep);
-    font-weight:700;
-    margin-bottom:22px;
-    text-transform:uppercase;
-  }
-  body.en .hero .kicker{text-transform:uppercase;}
-  .hero h1{
-    font-family:'Cormorant Garamond',serif;
-    font-size:2.6rem;
-    line-height:1.35;
-    font-weight:700;
-    color:var(--ink);
-    max-width:760px;
-    margin:0 auto 24px;
-  }
-  body.en .hero h1{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:2.3rem;font-weight:800;}
-  .hero p.lead{
-    font-size:1.08rem;
-    color:var(--ink-soft);
-    max-width:580px;
-    margin:0 auto 40px;
-  }
-  .cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-  .btn{
-    display:inline-block;
-    padding:15px 34px;
-    font-weight:700;
-    font-size:0.95rem;
-    cursor:pointer;
-    border:1px solid transparent;
-    letter-spacing:0.2px;
-  }
-  .btn-primary{background:var(--ink);color:var(--cream);}
-  .btn-primary:hover{background:var(--gold-deep);}
-  .btn-secondary{background:transparent;border-color:var(--ink);color:var(--ink);}
-  .btn-secondary:hover{background:var(--ink);color:var(--cream);}
-
-  /* Divider */
-  .divider{width:64px;height:2px;background:var(--gold);margin:0 auto;}
-
-  section{padding:72px 0;}
-  .section-eyebrow{
-    text-align:center;
-    font-size:0.8rem;
-    letter-spacing:1.5px;
-    color:var(--gold-deep);
-    font-weight:700;
-    margin-bottom:14px;
-    text-transform:uppercase;
-  }
-  .section-title{
-    font-family:'Cormorant Garamond',serif;
-    font-size:2rem;
-    font-weight:700;
-    text-align:center;
-    margin-bottom:16px;
-    color:var(--ink);
-  }
-  body.en .section-title{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.7rem;}
-  .section-sub{
-    text-align:center;
-    color:var(--ink-soft);
-    max-width:560px;
-    margin:0 auto 48px;
-  }
-
-  /* Product */
-  .product{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-  .product-card{
-    display:grid;
-    grid-template-columns:0.9fr 1.1fr;
-    gap:56px;
-    align-items:center;
-  }
-  .product-visual{
-    aspect-ratio:4/5;
-    border:1px solid var(--line);
-    overflow:hidden;
-    position:relative;
-  }
-  .product-visual img{width:100%;height:100%;object-fit:cover;display:block;}
-  .product-info .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
-  .badge{
-    border:1px solid var(--line);
-    color:var(--ink-soft);
-    padding:6px 14px;
-    font-size:0.78rem;
-    font-weight:600;
-    letter-spacing:0.2px;
-  }
-  .product-info h3{
-    font-family:'Cormorant Garamond',serif;
-    font-size:1.9rem;
-    margin-bottom:16px;
-    color:var(--ink);
-    font-weight:700;
-  }
-  body.en .product-info h3{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.6rem;}
-  .product-info p{color:var(--ink-soft);margin-bottom:28px;font-size:1.02rem;}
-  .price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:28px;}
-  .price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--ink);}
-  body.en .price{font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
-  .price-note{font-size:0.85rem;color:var(--ink-soft);}
-
-  /* How it works */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
-  .step{background:var(--cream);padding:36px 28px;text-align:center;}
-  .step .num{
-    font-family:'Cormorant Garamond',serif;
-    font-size:2.2rem;
-    font-weight:700;
-    color:var(--gold);
-    margin-bottom:14px;
-  }
-  .step h4{margin-bottom:10px;color:var(--ink);font-size:1.05rem;font-weight:700;}
-  .step p{color:var(--ink-soft);font-size:0.92rem;}
-  @media(max-width:720px){ .steps{grid-template-columns:1fr;} }
-
-  /* Seller CTA */
-  .seller-cta{
-    background:var(--ink);
-    color:var(--cream);
-    padding:64px 40px;
-    text-align:center;
-  }
-  .seller-cta h2{
-    font-family:'Cormorant Garamond',serif;
-    font-size:1.9rem;
-    margin-bottom:16px;
-    font-weight:700;
-  }
-  body.en .seller-cta h2{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.6rem;}
-  .seller-cta p{color:rgba(250,247,241,0.75);max-width:540px;margin:0 auto 32px;}
-  .seller-cta .btn-primary{background:var(--gold);color:var(--ink);}
-  .seller-cta .btn-primary:hover{background:var(--cream);}
-
-  footer{
-    padding:36px 0;
-    text-align:center;
-    font-size:0.85rem;
-    color:var(--ink-soft);
-    border-top:1px solid var(--line);
-  }
-  footer .foot-logo{font-family:'Cormorant Garamond',serif;color:var(--ink);font-weight:700;margin-bottom:14px;font-size:1.15rem;}
-  body.en footer .foot-logo{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;}
-  footer .social{margin:16px 0;display:flex;gap:24px;justify-content:center;}
-  footer .social a{color:var(--ink-soft);font-weight:500;}
-  footer .social a:hover{color:var(--ink);}
-
-  @media (max-width:720px){
-    .product-card{grid-template-columns:1fr;}
-    .hero h1{font-size:1.9rem;}
-    .hero{padding:64px 0 48px;}
-    section{padding:56px 0;}
-  }
-</style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="249Souq — أول سوق للمنتجات السودانية الأصيلة. نربط الجالية السودانية بمنتجات من بخور، عطور، ملابس تقليدية وأكل سوداني."/>
+<title>249Souq — أول سوق للمنتجات السودانية</title>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<header>
-  <div class="container nav">
-    <div class="logo">249<em>Souq</em></div>
-    <div class="nav-right">
-      <a class="nav-link" href="#product" data-lang="ar">المنتج</a>
-      <a class="nav-link" href="#product" data-lang="en">Product</a>
-      <a class="nav-link" href="#sell" data-lang="ar">للتجار</a>
-      <a class="nav-link" href="#sell" data-lang="en">Sellers</a>
-      <button class="lang-toggle" id="langToggle" onclick="toggleLang()">English</button>
-    </div>
+<nav>
+  <div class="nav-brand">
+    <a href="index.html" class="logo-text">249Souq</a>
+    <span class="logo-sub">طعم البيت، وين ما مشيت</span>
   </div>
-</header>
+  <ul class="nav-links">
+    <li><a href="products.html">المنتجات</a></li>
+    <li><a href="about.html">من نحن</a></li>
+    <li><a href="sellers.html">انضم كبائع</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='products.html'">اطلب الآن</button>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="products.html">المنتجات</a>
+  <a href="sellers.html">انضم كبائع</a>
+  <a href="about.html">من نحن</a>
+  <a href="contact.html">تواصل معنا</a>
+</div>
 
-<section class="hero">
-  <div class="container">
-    <div class="kicker" data-lang="ar">التسجيل مفتوح الآن للتجار السودانيين</div>
-    <div class="kicker" data-lang="en">Now Onboarding Sudanese Sellers</div>
-
-    <h1 data-lang="ar">أول سوق إلكتروني سوداني يوصل للسودانيين حول العالم</h1>
-    <h1 data-lang="en">The first Sudanese marketplace that reaches Sudanese people worldwide</h1>
-
-    <p class="lead" data-lang="ar">249Souq يربط أصحاب المشاريع الصغيرة بالأسواق والمستهلكين حول العالم، منتجات أصيلة، صناعة سودانية حقيقية، توصل إلى باب بيتك.</p>
-    <p class="lead" data-lang="en">249Souq connects small Sudanese businesses with markets and consumers around the world — authentic products, real Sudanese craftsmanship, delivered to your door.</p>
-
-    <div class="cta-row">
-      <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="ar">أطلب الآن: بخور سوداني أصيل</a>
-      <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="en">Order Now: Authentic Sudanese Bukhoor</a>
-
-      <a class="btn btn-secondary" href="#sell" data-lang="ar">سجّل كتاجر</a>
-      <a class="btn btn-secondary" href="#sell" data-lang="en">Sell on 249Souq</a>
+<!-- HERO -->
+<section style="background:var(--brown-deep);min-height:90vh;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;opacity:.035;background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
+  <div style="max-width:780px;text-align:center;position:relative;z-index:1">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(184,150,80,0.12);border:1px solid rgba(184,150,80,0.35);color:var(--gold-light);font-size:14px;padding:7px 20px;border-radius:24px;margin-bottom:2rem;font-weight:700">
+      <span style="width:8px;height:8px;background:var(--gold);border-radius:50%;display:inline-block"></span>
+      منتجات أصيلة 100%
+    </div>
+    <h1 style="font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:#fff;line-height:1.25;margin-bottom:1.25rem">
+      أول سوق للمنتجات<br><span style="color:var(--gold)">السودانية</span>
+    </h1>
+    <p style="font-size:clamp(1rem,2.2vw,1.15rem);color:#bbb;line-height:2;margin-bottom:2.5rem;max-width:560px;margin-left:auto;margin-right:auto">
+      نربط أبناء الجالية السودانية في الخارج بمنتجات أصيلة —<br>
+      من بخور، عطور، ملابس تقليدية، وأكل سوداني.<br>
+      كل شيء مصنوع بحب بأيادي سودانية.
+    </p>
+    <p style="font-size:1rem;color:var(--gold-light);font-style:italic;font-weight:600;margin-bottom:2.5rem;opacity:.85">طعم البيت، وين ما مشيت</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem">
+      <button class="btn-primary" onclick="window.location.href='products.html'">تسوق الآن 🛍</button>
+      <button class="btn-outline" onclick="window.location.href='sellers.html'">انضم كبائع</button>
+    </div>
+    <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.07)">
+      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-shield-check" style="color:var(--gold);font-size:18px"></i>دفع آمن وموثوق</div>
+      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-truck-delivery" style="color:var(--gold);font-size:18px"></i>توصيل للإمارات والخليج</div>
+      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-heart" style="color:var(--gold);font-size:18px"></i>صنع بحب بأيادي سودانية</div>
     </div>
   </div>
 </section>
 
-<section class="product" id="product">
-  <div class="container">
-    <div class="product-card">
-      <div class="product-visual">
-        <img src="images/bukhoor.jpg" alt="Sudanese bukhoor in gold-lidded jars" loading="lazy">
+<div class="divider"></div>
+
+<!-- WHY -->
+<section style="background:var(--cream);padding:4rem 2rem">
+  <div style="max-width:860px;margin:0 auto">
+    <div class="section-tag" style="text-align:center">لماذا 249Souq</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem;margin-top:1.5rem">
+      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
+        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🔐</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">منصة موثوقة</div>
       </div>
-      <div class="product-info">
-        <div class="badge-row">
-          <span class="badge" data-lang="ar">صناعة يدوية</span>
-          <span class="badge" data-lang="en">Handmade</span>
-          <span class="badge" data-lang="ar">ملكية سودانية</span>
-          <span class="badge" data-lang="en">Sudanese-Owned</span>
-          <span class="badge" data-lang="ar">توصيل داخل الإمارات</span>
-          <span class="badge" data-lang="en">UAE Delivery</span>
+      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
+        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🚚</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">شحن بأسعار منافسة</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
+        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🤝</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">مبنية من المجتمع</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
+        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🌐</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">وصول عالمي</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW TO ORDER -->
+<section style="background:var(--cream-dark);padding:4.5rem 2rem">
+  <div style="max-width:860px;margin:0 auto">
+    <div class="section-tag" style="text-align:center">خطوات بسيطة</div>
+    <h2 class="section-title" style="text-align:center">كيف تطلب على 249Souq</h2>
+    <p style="text-align:center;color:var(--brown-mid);font-size:1rem;margin-bottom:3rem">نحنا بسّطنا ليك طريقة الطلب من البداية للنهاية</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0">
+      <div style="text-align:center;padding:0 1rem 1.5rem;position:relative">
+        <div style="width:76px;height:76px;margin:0 auto 1.25rem;position:relative">
+          <div style="width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px">🛍</div>
+          <div style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--gold);border-radius:50%;color:var(--brown-deep);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center">١</div>
         </div>
-        <h3 data-lang="ar">بخور سوداني أصيل</h3>
-        <h3 data-lang="en">Authentic Sudanese Bukhoor</h3>
-        <p data-lang="ar">بخور مصنوع يدوياً بريحة مميزة، معبأ في برطمانات بغطاء ذهبي.</p>
-        <p data-lang="en">Handmade incense with a distinctive scent, packed in gold-lidded jars.</p>
-        <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="ar">اطلب الآن عبر واتساب</a>
-        <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="en">Order via WhatsApp</a>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep);margin-bottom:.4rem">تصفح منتجاتنا الأصيلة</div>
       </div>
+      <div style="text-align:center;padding:0 1rem 1.5rem;position:relative">
+        <div style="width:76px;height:76px;margin:0 auto 1.25rem;position:relative">
+          <div style="width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px">💬</div>
+          <div style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--gold);border-radius:50%;color:var(--brown-deep);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center">٢</div>
+        </div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep);margin-bottom:.4rem">اطلب عبر واتساب</div>
+        <div style="font-size:13px;color:var(--brown-mid)">تواصل معنا مباشرة وأكد طلبك، بدون تعقيد</div>
+      </div>
+      <div style="text-align:center;padding:0 1rem 1.5rem;position:relative">
+        <div style="width:76px;height:76px;margin:0 auto 1.25rem;position:relative">
+          <div style="width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px">🔒</div>
+          <div style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--gold);border-radius:50%;color:var(--brown-deep);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center">٣</div>
+        </div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep);margin-bottom:.4rem">ادفع بأمان</div>
+      </div>
+      <div style="text-align:center;padding:0 1rem 1.5rem;position:relative">
+        <div style="width:76px;height:76px;margin:0 auto 1.25rem;position:relative">
+          <div style="width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px">🚚</div>
+          <div style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--gold);border-radius:50%;color:var(--brown-deep);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center">٤</div>
+        </div>
+        <div style="font-size:1rem;font-weight:800;color:var(--brown-deep);margin-bottom:.4rem">يصلك في بيتك</div>
+        <div style="font-size:13px;color:var(--brown-mid)">توصيل سريع للإمارات والخليج وأوروبا</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <button class="btn-primary" onclick="window.location.href='products.html'">تصفح المنتجات الآن 🛍</button>
     </div>
   </div>
 </section>
 
-<section id="how">
-  <div class="container">
-    <div class="section-eyebrow" data-lang="ar">طريقة العمل</div>
-    <div class="section-eyebrow" data-lang="en">The Process</div>
-    <h2 class="section-title" data-lang="ar">كيف يعمل السوق</h2>
-    <h2 class="section-title" data-lang="en">How 249Souq Works</h2>
-    <div class="divider" style="margin-bottom:48px;"></div>
+<div class="divider"></div>
 
-    <div class="steps">
-      <div class="step">
-        <div class="num">01</div>
-        <h4 data-lang="ar">تصفح واطلب</h4>
-        <h4 data-lang="en">Browse & Order</h4>
-        <p data-lang="ar">راسلنا على واتساب — منتجات حقيقية من تجار سودانيين حقيقيين.</p>
-        <p data-lang="en">Message us on WhatsApp — real products from real Sudanese sellers.</p>
-      </div>
-      <div class="step">
-        <div class="num">02</div>
-        <h4 data-lang="ar">نحن نتولى التوصيل</h4>
-        <h4 data-lang="en">We Handle Logistics</h4>
-        <p data-lang="ar">249Souq تدير التوصيل عبر شركاء موثوقين ليتفرغ التجار لحرفتهم.</p>
-        <p data-lang="en">249Souq manages delivery through trusted partners so sellers can focus on their craft.</p>
-      </div>
-      <div class="step">
-        <div class="num">03</div>
-        <h4 data-lang="ar">يصلك إلى باب بيتك</h4>
-        <h4 data-lang="en">Delivered to Your Door</h4>
-        <p data-lang="ar">توصيل سريع وموثوق داخل الإمارات ودول الخليج.</p>
-        <p data-lang="en">Fast, reliable delivery across the UAE and GCC.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="sell">
-  <div class="container">
-    <div class="seller-cta">
-      <h2 data-lang="ar">هل أنت صاحب مشروع سوداني صغير؟</h2>
-      <h2 data-lang="en">Are You a Sudanese Small Business Owner?</h2>
-      <p data-lang="ar">انضم إلى 249Souq وصل إلى آلاف العملاء السودانيين حول العالم — بدون الحاجة لتخزين المنتجات أو إدارة التوصيل بنفسك.</p>
-      <p data-lang="en">Join 249Souq and reach thousands of Sudanese customers worldwide — without holding inventory or managing your own delivery.</p>
-      <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="ar">سجّل كتاجر الآن</a>
-      <a class="btn btn-primary" href="https://wa.me/971525134456" target="_blank" data-lang="en">Apply to Sell</a>
-    </div>
-  </div>
-</section>
-
+<!-- FOOTER -->
 <footer>
-  <div class="container">
-    <div class="foot-logo">249Souq</div>
-    <div class="social">
-      <a href="#" target="_blank">Instagram</a>
-      <a href="#" target="_blank">TikTok</a>
-      <a href="https://wa.me/971525134456" target="_blank">WhatsApp</a>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">249Souq</div>
+        <div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div>
+        <div class="footer-social">
+          <a class="social-btn" href="#" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a>
+          <a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a>
+          <a class="social-btn" href="#" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+          <a class="social-btn" href="#" aria-label="فيسبوك"><i class="ti ti-brand-facebook"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المنصة</div>
+        <ul class="footer-links">
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="sellers.html">انضم كبائع</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">المساعدة</div>
+        <ul class="footer-links">
+          <li><a href="shipping-policy.html">سياسة الشحن</a></li>
+          <li><a href="returns-policy.html">سياسة الاسترجاع</a></li>
+          <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الاستخدام</a></li>
+        </ul>
+      </div>
     </div>
-    <p data-lang="ar">&copy; 2026 249Souq.com</p>
-    <p data-lang="en">&copy; 2026 249Souq.com</p>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 249Souq.com — جميع الحقوق محفوظة</div>
+      <div class="footer-payment">
+        <span class="pay-label">طرق الدفع:</span>
+        <span class="pay-badge">Tabby</span>
+        <span class="pay-badge">Stripe</span>
+        <span class="pay-badge">تحويل بنكي</span>
+      </div>
+    </div>
   </div>
 </footer>
 
-<script>
-  function toggleLang(){
-    const body = document.body;
-    const btn = document.getElementById('langToggle');
-    const isEn = body.classList.toggle('en');
-    if(isEn){
-      btn.textContent = 'العربية';
-      document.documentElement.lang = 'en';
-      document.documentElement.dir = 'ltr';
-    } else {
-      btn.textContent = 'English';
-      document.documentElement.lang = 'ar';
-      document.documentElement.dir = 'rtl';
-    }
-  }
-</script>
-
+<a class="wa-float" href="https://wa.me/971XXXXXXXXX" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+<script>function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}</script>
 </body>
 </html>
