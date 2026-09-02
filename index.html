@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>249Souq — السوق الإلكتروني للجالية السودانية</title>
+<meta name="description" content="249Souq.com يربط أصحاب المشاريع السودانية الصغيرة بالأسواق والمستهلكين حول العالم. منتجات أصيلة، صناعة سودانية حقيقية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#B08A45;
+    --gold-deep:#8C6C31;
+    --cream:#FAF7F1;
+    --paper:#FFFFFF;
+    --ink:#211C17;
+    --ink-soft:#5A5148;
+    --line:rgba(33,28,23,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Tajawal','Segoe UI',Tahoma,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  body.en{font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  [data-lang="en"]{display:none;}
+  body.en [data-lang="ar"]{display:none;}
+  body.en [data-lang="en"]{display:block;}
+  body.en .cta-row [data-lang="en"], body.en .badge[data-lang="en"]{display:inline-block;}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:60;
+    background:rgba(250,247,241,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;letter-spacing:0.5px;color:var(--ink);}
+  .logo em{font-style:normal;color:var(--gold-deep);}
+  .nav-right{display:flex;align-items:center;gap:20px;}
+  .nav-link{font-size:0.92rem;color:var(--ink-soft);font-weight:500;display:none;}
+  @media(min-width:720px){ .nav-link{display:inline-block;} }
+  .lang-toggle{
+    border:1px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    padding:7px 18px;
+    border-radius:2px;
+    font-weight:600;
+    cursor:pointer;
+    font-size:0.85rem;
+    letter-spacing:0.3px;
+    font-family:inherit;
+  }
+  .lang-toggle:hover{background:var(--ink);color:var(--cream);}
+
+  /* Hero */
+  .hero{padding:88px 0 72px;text-align:center;}
+  .hero .kicker{
+    font-size:0.85rem;
+    letter-spacing:1.5px;
+    color:var(--gold-deep);
+    font-weight:700;
+    margin-bottom:22px;
+    text-transform:uppercase;
+  }
+  body.en .hero .kicker{text-transform:uppercase;}
+  .hero h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2.6rem;
+    line-height:1.35;
+    font-weight:700;
+    color:var(--ink);
+    max-width:760px;
+    margin:0 auto 24px;
+  }
+  body.en .hero h1{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:2.3rem;font-weight:800;}
+  .hero p.lead{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:580px;
+    margin:0 auto 40px;
+  }
+  .cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;
+    padding:15px 34px;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+    border:1px solid transparent;
+    letter-spacing:0.2px;
+  }
+  .btn-primary{background:var(--ink);color:var(--cream);}
+  .btn-primary:hover{background:var(--gold-deep);}
+  .btn-secondary{background:transparent;border-color:var(--ink);color:var(--ink);}
+  .btn-secondary:hover{background:var(--ink);color:var(--cream);}
+
+  /* Divider */
+  .divider{width:64px;height:2px;background:var(--gold);margin:0 auto;}
+
+  section{padding:72px 0;}
+  .section-eyebrow{
+    text-align:center;
+    font-size:0.8rem;
+    letter-spacing:1.5px;
+    color:var(--gold-deep);
+    font-weight:700;
+    margin-bottom:14px;
+    text-transform:uppercase;
+  }
+  .section-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2rem;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:16px;
+    color:var(--ink);
+  }
+  body.en .section-title{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.7rem;}
+  .section-sub{
+    text-align:center;
+    color:var(--ink-soft);
+    max-width:560px;
+    margin:0 auto 48px;
+  }
+
+  /* Product */
+  .product{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .product-card{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .product-visual{
+    aspect-ratio:4/5;
+    background:
+      radial-gradient(circle at 50% 38%, rgba(176,138,69,0.16), transparent 60%),
+      linear-gradient(160deg,#F3ECDD 0%, #EADFC5 100%);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .product-visual svg{width:38%;opacity:0.85;}
+  .product-info .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+  .badge{
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    padding:6px 14px;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.2px;
+  }
+  .product-info h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.9rem;
+    margin-bottom:16px;
+    color:var(--ink);
+    font-weight:700;
+  }
+  body.en .product-info h3{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.6rem;}
+  .product-info p{color:var(--ink-soft);margin-bottom:28px;font-size:1.02rem;}
+  .price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:28px;}
+  .price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--ink);}
+  body.en .price{font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
+  .price-note{font-size:0.85rem;color:var(--ink-soft);}
+
+  /* How it works */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .step{background:var(--cream);padding:36px 28px;text-align:center;}
+  .step .num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2.2rem;
+    font-weight:700;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  .step h4{margin-bottom:10px;color:var(--ink);font-size:1.05rem;font-weight:700;}
+  .step p{color:var(--ink-soft);font-size:0.92rem;}
+  @media(max-width:720px){ .steps{grid-template-columns:1fr;} }
+
+  /* Seller CTA */
+  .seller-cta{
+    background:var(--ink);
+    color:var(--cream);
+    padding:64px 40px;
+    text-align:center;
+  }
+  .seller-cta h2{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.9rem;
+    margin-bottom:16px;
+    font-weight:700;
+  }
+  body.en .seller-cta h2{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;font-size:1.6rem;}
+  .seller-cta p{color:rgba(250,247,241,0.75);max-width:540px;margin:0 auto 32px;}
+  .seller-cta .btn-primary{background:var(--gold);color:var(--ink);}
+  .seller-cta .btn-primary:hover{background:var(--cream);}
+
+  footer{
+    padding:36px 0;
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    border-top:1px solid var(--line);
+  }
+  footer .foot-logo{font-family:'Cormorant Garamond',serif;color:var(--ink);font-weight:700;margin-bottom:14px;font-size:1.15rem;}
+  body.en footer .foot-logo{font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-weight:800;}
+  footer .social{margin:16px 0;display:flex;gap:24px;justify-content:center;}
+  footer .social a{color:var(--ink-soft);font-weight:500;}
+  footer .social a:hover{color:var(--ink);}
+
+  @media (max-width:720px){
+    .product-card{grid-template-columns:1fr;}
+    .hero h1{font-size:1.9rem;}
+    .hero{padding:64px 0 48px;}
+    section{padding:56px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="logo">249<em>Souq</em></div>
+    <div class="nav-right">
+      <a class="nav-link" href="#product" data-lang="ar">المنتج</a>
+      <a class="nav-link" href="#product" data-lang="en">Product</a>
+      <a class="nav-link" href="#sell" data-lang="ar">للتجار</a>
+      <a class="nav-link" href="#sell" data-lang="en">Sellers</a>
+      <button class="lang-toggle" id="langToggle" onclick="toggleLang()">English</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="kicker" data-lang="ar">التسجيل مفتوح الآن للتجار السودانيين</div>
+    <div class="kicker" data-lang="en">Now Onboarding Sudanese Sellers</div>
+
+    <h1 data-lang="ar">أول سوق إلكتروني سوداني يوصل للسودانيين حول العالم</h1>
+    <h1 data-lang="en">The first Sudanese marketplace that reaches Sudanese people worldwide</h1>
+
+    <p class="lead" data-lang="ar">249Souq يربط أصحاب المشاريع الصغيرة بالأسواق والمستهلكين حول العالم، منتجات أصيلة، صناعة سودانية حقيقية، توصل إلى باب بيتك.</p>
+    <p class="lead" data-lang="en">249Souq connects small Sudanese businesses with markets and consumers around the world — authentic products, real Sudanese craftsmanship, delivered to your door.</p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="ar">أطلب الآن: بخور سوداني أصيل</a>
+      <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="en">Order Now: Authentic Sudanese Bukhoor</a>
+
+      <a class="btn btn-secondary" href="#sell" data-lang="ar">سجّل كتاجر</a>
+      <a class="btn btn-secondary" href="#sell" data-lang="en">Sell on 249Souq</a>
+    </div>
+  </div>
+</section>
+
+<section class="product" id="product">
+  <div class="container">
+    <div class="product-card">
+      <div class="product-visual">
+        <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="112" rx="26" ry="5" fill="#B08A45" opacity="0.15"/>
+          <path d="M28 40 C28 34 34 30 50 30 C66 30 72 34 72 40 L68 100 C68 106 60 110 50 110 C40 110 32 106 32 100 Z" fill="#EFE4CB" stroke="#B08A45" stroke-width="1.2"/>
+          <rect x="26" y="24" width="48" height="14" rx="3" fill="#B08A45"/>
+          <rect x="30" y="18" width="40" height="10" rx="4" fill="#8C6C31"/>
+          <circle cx="50" cy="14" r="3" fill="#8C6C31"/>
+        </svg>
+      </div>
+      <div class="product-info">
+        <div class="badge-row">
+          <span class="badge" data-lang="ar">صناعة يدوية</span>
+          <span class="badge" data-lang="en">Handmade</span>
+          <span class="badge" data-lang="ar">ملكية سودانية</span>
+          <span class="badge" data-lang="en">Sudanese-Owned</span>
+          <span class="badge" data-lang="ar">توصيل داخل الإمارات</span>
+          <span class="badge" data-lang="en">UAE Delivery</span>
+        </div>
+        <h3 data-lang="ar">بخور سوداني أصيل</h3>
+        <h3 data-lang="en">Authentic Sudanese Bukhoor</h3>
+        <p data-lang="ar">بخور مصنوع يدوياً بريحة مميزة، معبأ في برطمانات بغطاء ذهبي.</p>
+        <p data-lang="en">Handmade incense with a distinctive scent, packed in gold-lidded jars.</p>
+        <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="ar">اطلب الآن عبر واتساب</a>
+        <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="en">Order via WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <div class="section-eyebrow" data-lang="ar">طريقة العمل</div>
+    <div class="section-eyebrow" data-lang="en">The Process</div>
+    <h2 class="section-title" data-lang="ar">كيف يعمل السوق</h2>
+    <h2 class="section-title" data-lang="en">How 249Souq Works</h2>
+    <div class="divider" style="margin-bottom:48px;"></div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <h4 data-lang="ar">تصفح واطلب</h4>
+        <h4 data-lang="en">Browse & Order</h4>
+        <p data-lang="ar">راسلنا على واتساب — منتجات حقيقية من تجار سودانيين حقيقيين.</p>
+        <p data-lang="en">Message us on WhatsApp — real products from real Sudanese sellers.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h4 data-lang="ar">نحن نتولى التوصيل</h4>
+        <h4 data-lang="en">We Handle Logistics</h4>
+        <p data-lang="ar">249Souq تدير التوصيل عبر شركاء موثوقين ليتفرغ التجار لحرفتهم.</p>
+        <p data-lang="en">249Souq manages delivery through trusted partners so sellers can focus on their craft.</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h4 data-lang="ar">يصلك إلى باب بيتك</h4>
+        <h4 data-lang="en">Delivered to Your Door</h4>
+        <p data-lang="ar">توصيل سريع وموثوق داخل الإمارات ودول الخليج.</p>
+        <p data-lang="en">Fast, reliable delivery across the UAE and GCC.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sell">
+  <div class="container">
+    <div class="seller-cta">
+      <h2 data-lang="ar">هل أنت صاحب مشروع سوداني صغير؟</h2>
+      <h2 data-lang="en">Are You a Sudanese Small Business Owner?</h2>
+      <p data-lang="ar">انضم إلى 249Souq وصل إلى آلاف العملاء السودانيين حول العالم — بدون الحاجة لتخزين المنتجات أو إدارة التوصيل بنفسك.</p>
+      <p data-lang="en">Join 249Souq and reach thousands of Sudanese customers worldwide — without holding inventory or managing your own delivery.</p>
+      <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="ar">سجّل كتاجر الآن</a>
+      <a class="btn btn-primary" href="https://wa.me/971000000000" target="_blank" data-lang="en">Apply to Sell</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-logo">249Souq</div>
+    <div class="social">
+      <a href="#" target="_blank">Instagram</a>
+      <a href="#" target="_blank">TikTok</a>
+      <a href="https://wa.me/971000000000" target="_blank">WhatsApp</a>
+    </div>
+    <p data-lang="ar">&copy; 2026 249Souq.com</p>
+    <p data-lang="en">&copy; 2026 249Souq.com</p>
+  </div>
+</footer>
+
+<script>
+  function toggleLang(){
+    const body = document.body;
+    const btn = document.getElementById('langToggle');
+    const isEn = body.classList.toggle('en');
+    if(isEn){
+      btn.textContent = 'العربية';
+      document.documentElement.lang = 'en';
+      document.documentElement.dir = 'ltr';
+    } else {
+      btn.textContent = 'English';
+      document.documentElement.lang = 'ar';
+      document.documentElement.dir = 'rtl';
+    }
+  }
+</script>
+
+</body>
+</html>
