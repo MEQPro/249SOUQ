@@ -1,4 +1,11 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/q",
+      "destination": "/products.html?utm_source=qr&utm_medium=print&utm_campaign=bukhoor_launch",
+      "permanent": false
+    }
+  ]
 }
