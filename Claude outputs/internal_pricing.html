@@ -1,0 +1,495 @@
+<title>تسعير منتجات 249Souq</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF6EE; --cream-dim:#F1EADA; --paper:#FFFDF8; --line:#E4D9C0;
+  --ink:#241a0d; --ink-soft:#6b5c40; --gold:#B89650; --gold-deep:#8A6E30; --gold-tint:#F4EBD6;
+  --flag:#B4552F; --flag-tint:#FBEEE6; --good:#3E7A52; --good-tint:#E9F3EC;
+  --plat:#5B4B8A; --plat-tint:#EFEAF7;
+  --shadow: 0 1px 2px rgba(36,26,13,0.06), 0 8px 24px -12px rgba(36,26,13,0.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cream:#1A140B; --cream-dim:#221B10; --paper:#241D12; --line:#3C3020;
+    --ink:#F3E9D6; --ink-soft:#B8A683; --gold:#D4AE6A; --gold-deep:#E7C888; --gold-tint:#332816;
+    --flag:#E08A63; --flag-tint:#3A281E; --good:#7FC79A; --good-tint:#1E2E23;
+    --plat:#B6A4E8; --plat-tint:#2A2440;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"]{
+  --cream:#1A140B; --cream-dim:#221B10; --paper:#241D12; --line:#3C3020;
+  --ink:#F3E9D6; --ink-soft:#B8A683; --gold:#D4AE6A; --gold-deep:#E7C888; --gold-tint:#332816;
+  --flag:#E08A63; --flag-tint:#3A281E; --good:#7FC79A; --good-tint:#1E2E23;
+  --plat:#B6A4E8; --plat-tint:#2A2440;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Tajawal',sans-serif;direction:rtl;line-height:1.5;padding:2.5rem 1.25rem 6rem}
+.wrap{max-width:900px;margin:0 auto}
+.masthead{margin-bottom:1.5rem}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--gold-deep);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--ink-soft)}
+.status-dot.on{background:var(--good)}
+h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:900;margin:0 0 .4rem;text-wrap:balance}
+.sub{color:var(--ink-soft);font-size:14.5px;max-width:60ch}
+
+.product-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.p-pill{
+  border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:13.5px;border-radius:20px;
+  padding:.5rem 1.1rem;cursor:pointer;transition:all .15s;
+}
+.p-pill.active{border-color:var(--gold);background:var(--gold-tint);color:var(--gold-deep)}
+.p-pill:hover:not(.active){border-color:var(--gold)}
+.p-add{
+  border:1.5px dashed var(--line);background:transparent;color:var(--ink-soft);
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:13.5px;border-radius:20px;
+  padding:.5rem 1rem;cursor:pointer;
+}
+.p-add:hover{border-color:var(--gold);color:var(--gold-deep)}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:1.5rem;overflow:hidden}
+.card-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.card-head h2{font-size:1.02rem;font-weight:700;margin:0}
+.card-head .hint{font-size:12px;color:var(--ink-soft)}
+.card-body{padding:1.1rem 1.4rem 1.4rem}
+.card.muted{opacity:.9}
+.card.muted .card-head{background:var(--cream-dim)}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:right;font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;padding:0 .5rem .6rem}
+th.num, td.num{text-align:left}
+tr.row td{padding:.3rem .5rem;border-top:1px solid var(--line)}
+tr.row:first-child td{border-top:none}
+input.name-in, input.num-in{
+  width:100%;border:1px solid transparent;background:transparent;font-family:'Tajawal',sans-serif;
+  color:var(--ink);font-size:14px;padding:.45rem .55rem;border-radius:8px;transition:border-color .15s, background .15s;
+}
+input.num-in{font-family:'Space Mono',monospace;font-variant-numeric:tabular-nums;text-align:left;width:6rem}
+input.name-in:hover, input.num-in:hover{background:var(--cream-dim)}
+input.name-in:focus, input.num-in:focus{outline:none;border-color:var(--gold);background:var(--paper)}
+.flagged td{background:var(--flag-tint)}
+.flag-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:10.5px;font-weight:700;color:var(--flag);border:1px solid var(--flag);border-radius:20px;padding:.1rem .5rem;margin-inline-start:.4rem;white-space:nowrap}
+.row-actions{width:2rem;text-align:center}
+.del-btn{border:none;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:15px;padding:.25rem;border-radius:6px}
+.del-btn:hover{color:var(--flag);background:var(--flag-tint)}
+.add-row{margin-top:.6rem;border:1.5px dashed var(--line);background:transparent;color:var(--gold-deep);font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:.5rem 1rem;cursor:pointer;width:100%}
+.add-row:hover{border-color:var(--gold);background:var(--gold-tint)}
+tfoot td{padding:.7rem .5rem .1rem;border-top:2px solid var(--line);font-weight:700}
+tfoot .label{color:var(--ink-soft);font-weight:700;font-size:12.5px}
+tfoot .value{font-family:'Space Mono',monospace;text-align:left;font-size:14px}
+
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:600px){.pack-grid{grid-template-columns:1fr}}
+.pack-item{background:var(--cream-dim);border-radius:10px;padding:.9rem}
+.pack-item .pname{font-weight:700;font-size:13.5px;margin-bottom:.5rem}
+.pack-row{display:flex;align-items:center;gap:.4rem;font-size:13px;color:var(--ink-soft);flex-wrap:wrap}
+.pack-row input{width:4rem}
+.pack-result{margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:13px}
+.pack-result b{font-family:'Space Mono',monospace}
+
+.yield-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.yield-row input{width:5.5rem;font-size:1rem;font-weight:700;text-align:center;padding:.45rem}
+
+.pricing{background:var(--plat-tint);border-color:var(--plat)}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:600px){.price-grid{grid-template-columns:1fr}}
+.price-box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.price-box .lbl{font-size:12.5px;color:var(--ink-soft);margin-bottom:.4rem}
+.price-box .amt{display:flex;align-items:baseline;gap:.4rem}
+.price-box .amt input{font-size:1.3rem;font-weight:900;width:5.5rem;color:var(--plat)}
+.price-box .amt span{font-size:13px;color:var(--ink-soft)}
+.margin-strip{margin-top:.9rem;display:flex;justify-content:space-between;align-items:center;background:var(--paper);border-radius:10px;padding:.8rem 1rem}
+.margin-strip .k{font-size:13.5px;font-weight:700;color:var(--ink-soft)}
+.margin-strip .v{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:900;color:var(--plat)}
+
+.summary{background:linear-gradient(180deg, var(--gold-tint), var(--paper) 60%);border:1px solid var(--gold)}
+.sum-grid{display:grid;grid-template-columns:1fr auto;gap:.5rem 1rem;font-size:14px}
+.sum-grid .k{color:var(--ink-soft)}
+.sum-grid .v{font-family:'Space Mono',monospace;font-variant-numeric:tabular-nums;text-align:left}
+.sum-grid .v input.num-in{text-align:left;width:4.5rem;padding:.25rem .45rem}
+.sum-div{grid-column:1/-1;border-top:1px solid var(--line);margin:.25rem 0}
+.sum-total{font-size:1.02rem;font-weight:900}
+.sum-total .v{color:var(--gold-deep);font-size:1.15rem}
+.warn-inline{color:var(--flag);font-size:12px;font-weight:700}
+
+.verdict{margin-top:1rem;border-radius:10px;padding:.9rem 1.05rem;display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:14px}
+.verdict.good{background:var(--good-tint);color:var(--good)}
+.verdict.bad{background:var(--flag-tint);color:var(--flag)}
+.verdict.neutral{background:var(--cream-dim);color:var(--ink-soft)}
+.verdict .big{font-family:'Space Mono',monospace;font-size:1.15rem}
+
+.footnote{font-size:11.5px;color:var(--ink-soft);margin-top:1rem;line-height:1.7}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;gap:1rem;flex-wrap:wrap}
+.sync-note{font-size:11.5px;color:var(--ink-soft)}
+</style>
+
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow"><span class="status-dot" id="statusDot"></span><span id="statusText">جاري الاتصال بقاعدة البيانات…</span></div>
+    <h1>تسعير منتجات 249Souq</h1>
+    <p class="sub">أداتك الخاصة لتسعير كل منتج جديد — أضيفي منتجاً، عدّلي أرقامه، ويُحفظ كل شيء تلقائياً بحيث أقدر أراجعه معك في أي وقت. هذه النسخة سرية لكِ فقط.</p>
+  </div>
+
+  <div class="product-bar" id="productBar"></div>
+
+  <div id="app" style="display:none">
+
+    <div class="card">
+      <div class="card-head"><h2 id="prodTitle">المنتج</h2><span class="hint">اسم المنتج قابل للتعديل</span></div>
+      <div class="card-body">
+        <input class="name-in" id="prodName" style="font-size:1.1rem;font-weight:700;border:1px solid var(--line)" onchange="updateProdName(this.value)">
+      </div>
+    </div>
+
+    <div class="card muted">
+      <div class="card-head">
+        <h2>تكلفة الإنتاج لدى البائع (مرجعية)</h2>
+        <span class="hint">للفهم فقط — لا تدخل في حساب هامش المنصة أدناه</span>
+      </div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>البند</th><th class="num">السعر (د.إ)</th><th class="row-actions"></th></tr></thead>
+          <tbody id="rawBody"></tbody>
+          <tfoot><tr><td class="label">إجمالي المواد الخام</td><td class="value" id="rawTotal">—</td><td></td></tr></tfoot>
+        </table>
+        <button class="add-row" onclick="addRawRow()">+ إضافة بند</button>
+
+        <div class="pack-grid" style="margin-top:1rem">
+          <div class="pack-item">
+            <div class="pname">🏺 العلبة</div>
+            <div class="pack-row">حزمة <input class="num-in" id="jarPack" type="number" step="0.01"> د.إ / <input class="num-in" id="jarQty" type="number" step="1"> علب</div>
+            <div class="pack-result"><span>لكل علبة</span><b id="jarUnit">—</b></div>
+          </div>
+          <div class="pack-item">
+            <div class="pname">🛍️ الكيس</div>
+            <div class="pack-row">حزمة <input class="num-in" id="bagPack" type="number" step="0.01"> د.إ / <input class="num-in" id="bagQty" type="number" step="1"> أكياس</div>
+            <div class="pack-result"><span>لكل كيس</span><b id="bagUnit">—</b></div>
+          </div>
+        </div>
+
+        <div class="yield-row" style="margin-top:1rem">
+          <label>عدد العلب الناتجة من الدفعة</label>
+          <input id="yieldInput" type="number" step="1" min="0" placeholder="؟">
+          <span style="font-size:12px;color:var(--ink-soft)">تكلفة البائع التقديرية لكل علبة: <b id="sellerUnitCost" style="font-family:'Space Mono',monospace">—</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card pricing">
+      <div class="card-head"><h2>💰 التسعير الفعلي — هذا ما يحدد ربح المنصة</h2></div>
+      <div class="card-body">
+        <div class="price-grid">
+          <div class="price-box">
+            <div class="lbl">سعر الشراء من البائع (ما تدفعينه له)</div>
+            <div class="amt"><input class="num-in" id="merchantPrice" type="number" step="1"><span>د.إ</span></div>
+          </div>
+          <div class="price-box">
+            <div class="lbl">سعر البيع للعميل (على الموقع)</div>
+            <div class="amt"><input class="num-in" id="platformPrice" type="number" step="1"><span>د.إ</span></div>
+          </div>
+        </div>
+        <div class="margin-strip">
+          <span class="k">هامش المنصة قبل الرسوم</span>
+          <span class="v" id="platformMarginGross">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card summary">
+      <div class="card-head"><h2>📊 صافي الربح لكل وحدة</h2></div>
+      <div class="card-body">
+        <div class="sum-grid">
+          <div class="k">سعر البيع للعميل</div><div class="v" id="s_sell">—</div>
+          <div class="k">− سعر الشراء من البائع</div><div class="v" id="s_cost">—</div>
+          <div class="sum-div"></div>
+          <div class="k sum-total">هامش قبل الرسوم</div><div class="v sum-total" id="s_gross">—</div>
+
+          <div class="sum-div"></div>
+          <div class="k">رسوم Stripe <input class="num-in" id="stripePct" type="number" step="0.1" style="width:3.2rem">% + <input class="num-in" id="stripeFixed" type="number" step="0.1" style="width:3.2rem"> د.إ</div><div class="v" id="s_stripe">—</div>
+          <div class="k">رسوم Tabby (تقديرية) <input class="num-in" id="tabbyPct" type="number" step="0.1" style="width:3.2rem">%</div><div class="v" id="s_tabby">—</div>
+          <div class="k">تحويل بنكي / نقدي</div><div class="v" id="s_cash">—</div>
+
+          <div class="sum-div"></div>
+          <div class="k">تكلفة التوصيل <span class="warn-inline" id="deliveryWarn"></span></div><div class="v"><input class="num-in" id="deliveryCost" type="number" step="1"> د.إ</div>
+          <div class="sum-div"></div>
+          <div class="k sum-total">صافي الربح النهائي (عبر Stripe)</div><div class="v sum-total" id="s_final">—</div>
+        </div>
+
+        <div class="verdict" id="verdict"><span>—</span></div>
+      </div>
+    </div>
+
+    <p class="footnote">
+      قسم "تكلفة الإنتاج لدى البائع" مرجعي فقط لفهم هامش ربح البائعة ولمساعدتك في التفاوض على السعر — الحساب الفعلي لربح المنصة يعتمد فقط على الفرق بين سعر الشراء منها وسعر البيع للعميل. رسوم Tabby تقديرية وتحتاج تأكيد من لوحة تحكم Tabby. تكلفة التوصيل تبقى صفر حتى تُحدد فعلياً.
+    </p>
+  </div>
+
+  <div class="topbar" style="margin-top:1rem">
+    <span class="sync-note" id="syncNote"></span>
+  </div>
+</div>
+
+<script>
+let db = null;
+let products = {};
+let currentId = null;
+let saveTimer = null;
+
+const DEFAULT_PRODUCT = () => ({
+  name: 'بخور عبق الصندل',
+  rawItems: [
+    {name:'زيت صندل', price:35, flagged:false},
+    {name:'صندلية النعيم — تعبئة', price:20, flagged:false},
+    {name:'صندل مسحون', price:45, flagged:false},
+    {name:'كيس ضفرة معتّقة (٢ كيس)', price:40, flagged:false},
+    {name:'خام ضفرة', price:40, flagged:false},
+    {name:'فلير دمور', price:25, flagged:false},
+    {name:'مسك تركي (٢٥٠ غم)', price:40, flagged:false},
+    {name:'جواهر صندل', price:35, flagged:false},
+  ],
+  jarPack:14, jarQty:6, bagPack:5, bagQty:10, yieldVal:24,
+  merchantPrice:40, platformPrice:60,
+  stripePct:2.9, stripeFixed:1.0, tabbyPct:6.0, deliveryCost:0,
+});
+
+function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function fmt(v){ return v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' د.إ'; }
+function slugify(s){ return 'p_' + s.replace(/[^؀-ۿa-zA-Z0-9]+/g,'_').slice(0,40) + '_' + Date.now().toString(36).slice(-4); }
+
+function renderProductBar(){
+  const bar = document.getElementById('productBar');
+  bar.innerHTML = '';
+  Object.keys(products).forEach(id => {
+    const btn = document.createElement('button');
+    btn.className = 'p-pill' + (id === currentId ? ' active' : '');
+    btn.textContent = products[id].name || '(بدون اسم)';
+    btn.onclick = () => switchProduct(id);
+    bar.appendChild(btn);
+  });
+  const addBtn = document.createElement('button');
+  addBtn.className = 'p-add';
+  addBtn.textContent = '+ منتج جديد';
+  addBtn.onclick = addProduct;
+  bar.appendChild(addBtn);
+}
+
+function switchProduct(id){
+  currentId = id;
+  renderProductBar();
+  loadIntoForm(products[id]);
+  document.getElementById('app').style.display = 'block';
+}
+
+async function addProduct(){
+  const name = prompt('اسم المنتج الجديد:', 'منتج جديد');
+  if(!name) return;
+  const id = slugify(name);
+  const p = DEFAULT_PRODUCT();
+  p.name = name;
+  p.rawItems = [];
+  products[id] = p;
+  if(db) await db.doc('products/' + id).set(p);
+  switchProduct(id);
+}
+
+function loadIntoForm(p){
+  document.getElementById('prodTitle').textContent = p.name;
+  document.getElementById('prodName').value = p.name;
+  document.getElementById('jarPack').value = p.jarPack;
+  document.getElementById('jarQty').value = p.jarQty;
+  document.getElementById('bagPack').value = p.bagPack;
+  document.getElementById('bagQty').value = p.bagQty;
+  document.getElementById('yieldInput').value = p.yieldVal ?? '';
+  document.getElementById('merchantPrice').value = p.merchantPrice;
+  document.getElementById('platformPrice').value = p.platformPrice;
+  document.getElementById('stripePct').value = p.stripePct;
+  document.getElementById('stripeFixed').value = p.stripeFixed;
+  document.getElementById('tabbyPct').value = p.tabbyPct;
+  document.getElementById('deliveryCost').value = p.deliveryCost;
+  renderRaw();
+  compute();
+}
+
+function renderRaw(){
+  const p = products[currentId];
+  const body = document.getElementById('rawBody');
+  body.innerHTML = '';
+  p.rawItems.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'row' + (item.flagged ? ' flagged' : '');
+    tr.innerHTML = `
+      <td><input class="name-in" value="${(item.name||'').replace(/"/g,'&quot;')}" onchange="updateRawName(${i}, this.value)">
+        ${item.flagged ? '<span class="flag-badge">⚠ تحقّقي</span>' : ''}</td>
+      <td class="num"><input class="num-in" type="number" step="0.01" value="${item.price}" onchange="updateRawPrice(${i}, this.value)"></td>
+      <td class="row-actions"><button class="del-btn" onclick="deleteRawRow(${i})">✕</button></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function currentProduct(){ return products[currentId]; }
+
+function updateProdName(val){ currentProduct().name = val; document.getElementById('prodTitle').textContent = val; renderProductBar(); scheduleSave(); }
+function updateRawName(i, val){ currentProduct().rawItems[i].name = val; currentProduct().rawItems[i].flagged = false; scheduleSave(); renderRaw(); }
+function updateRawPrice(i, val){ currentProduct().rawItems[i].price = parseFloat(val)||0; currentProduct().rawItems[i].flagged = false; scheduleSave(); compute(); renderRaw(); }
+function deleteRawRow(i){ currentProduct().rawItems.splice(i,1); scheduleSave(); renderRaw(); compute(); }
+function addRawRow(){ currentProduct().rawItems.push({name:'بند جديد', price:0, flagged:false}); scheduleSave(); renderRaw(); compute(); }
+
+function syncFormToProduct(){
+  const p = currentProduct();
+  p.jarPack = num('jarPack'); p.jarQty = num('jarQty');
+  p.bagPack = num('bagPack'); p.bagQty = num('bagQty');
+  p.yieldVal = num('yieldInput');
+  p.merchantPrice = num('merchantPrice'); p.platformPrice = num('platformPrice');
+  p.stripePct = num('stripePct'); p.stripeFixed = num('stripeFixed'); p.tabbyPct = num('tabbyPct');
+  p.deliveryCost = num('deliveryCost');
+}
+
+function scheduleSave(){
+  syncFormToProduct();
+  clearTimeout(saveTimer);
+  document.getElementById('syncNote').textContent = 'جارٍ الحفظ…';
+  saveTimer = setTimeout(async () => {
+    if(!db){ document.getElementById('syncNote').textContent = 'غير متصل — لن يُحفظ'; return; }
+    try{
+      await db.doc('products/' + currentId).set({...currentProduct(), updatedAt: new Date().toISOString()});
+      document.getElementById('syncNote').textContent = 'تم الحفظ ✓ آخر تحديث ' + new Date().toLocaleTimeString('ar-AE');
+    }catch(e){
+      document.getElementById('syncNote').textContent = 'تعذّر الحفظ — سيُعاد المحاولة عند التعديل التالي';
+    }
+  }, 600);
+}
+
+function compute(){
+  syncFormToProduct();
+  const p = currentProduct();
+  const rawTotal = p.rawItems.reduce((s,i)=>s+(parseFloat(i.price)||0),0);
+  document.getElementById('rawTotal').textContent = fmt(rawTotal);
+
+  const jarUnit = num('jarQty') > 0 ? num('jarPack')/num('jarQty') : 0;
+  const bagUnit = num('bagQty') > 0 ? num('bagPack')/num('bagQty') : 0;
+  document.getElementById('jarUnit').textContent = fmt(jarUnit);
+  document.getElementById('bagUnit').textContent = fmt(bagUnit);
+
+  const yieldVal = num('yieldInput');
+  const sellerUnitCost = yieldVal > 0 ? (rawTotal/yieldVal) + jarUnit + bagUnit : null;
+  document.getElementById('sellerUnitCost').textContent = sellerUnitCost !== null ? fmt(sellerUnitCost) : '—';
+
+  const merchantPrice = num('merchantPrice');
+  const platformPrice = num('platformPrice');
+  const grossMargin = platformPrice - merchantPrice;
+  document.getElementById('platformMarginGross').textContent = fmt(grossMargin);
+
+  document.getElementById('s_sell').textContent = fmt(platformPrice);
+  document.getElementById('s_cost').textContent = fmt(merchantPrice);
+  document.getElementById('s_gross').textContent = fmt(grossMargin);
+
+  const stripeFee = platformPrice * (num('stripePct')/100) + num('stripeFixed');
+  const tabbyFee = platformPrice * (num('tabbyPct')/100);
+  const delivery = num('deliveryCost');
+
+  document.getElementById('s_stripe').textContent = fmt(grossMargin - stripeFee);
+  document.getElementById('s_tabby').textContent = fmt(grossMargin - tabbyFee);
+  document.getElementById('s_cash').textContent = fmt(grossMargin);
+
+  document.getElementById('deliveryWarn').textContent = delivery === 0 ? '⚠ لم تُحدد بعد' : '';
+
+  const finalNet = grossMargin - stripeFee - delivery;
+  document.getElementById('s_final').textContent = fmt(finalNet);
+
+  const verdict = document.getElementById('verdict');
+  if(delivery === 0){
+    verdict.className = 'verdict neutral';
+    verdict.innerHTML = '<span>الرقم أعلاه لا يشمل تكلفة التوصيل بعد — أضيفيها بمجرد تحديدها لمعرفة الربح الحقيقي</span>';
+  } else if(finalNet > 0){
+    verdict.className = 'verdict good';
+    verdict.innerHTML = `<span class="big">✓ مربح</span><span>صافي ربح تقريبي ${fmt(finalNet)} لكل وحدة عبر Stripe بعد كل الرسوم والتوصيل</span>`;
+  } else {
+    verdict.className = 'verdict bad';
+    verdict.innerHTML = `<span class="big">⚠ غير مربح</span><span>التكلفة والرسوم والتوصيل تتجاوز الهامش الحالي</span>`;
+  }
+}
+
+['jarPack','jarQty','bagPack','bagQty','yieldInput','merchantPrice','platformPrice','stripePct','stripeFixed','tabbyPct','deliveryCost'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{ scheduleSave(); compute(); });
+});
+
+function initLocalFallback(){
+  // Render something usable immediately, without waiting on the database.
+  // This guarantees the form is always editable even if the db connection
+  // is slow, unavailable, or fails — fixed after a report of a blank/
+  // uneditable page caused by gating the whole UI behind an await.
+  const id = 'p_bukhoor_sandalwood';
+  products[id] = DEFAULT_PRODUCT();
+  switchProduct(id);
+}
+
+async function init(){
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+
+  // Show an editable page right away — db sync (if any) upgrades it below.
+  initLocalFallback();
+
+  let claudeApi;
+  try{
+    claudeApi = window.claude;
+  }catch(e){ claudeApi = null; }
+
+  if(!claudeApi){
+    statusText.textContent = 'غير متصلة بقاعدة البيانات — التعديلات محلية فقط على هذا الجهاز';
+    return;
+  }
+
+  try{
+    db = await claudeApi.use('db');
+  }catch(e){
+    db = null;
+  }
+
+  if(!db){
+    statusText.textContent = 'غير متصلة بقاعدة البيانات — التعديلات محلية فقط على هذا الجهاز';
+    return;
+  }
+
+  try{
+    const snap = await db.collection('products').get();
+    const localId = 'p_bukhoor_sandalwood';
+
+    if(snap.empty){
+      // Nothing saved yet — push the current (local fallback) product up.
+      await db.doc('products/' + localId).set(products[localId]);
+    } else {
+      products = {};
+      snap.docs.forEach(d => { products[d.id] = d.data(); });
+    }
+
+    statusDot.classList.add('on');
+    statusText.textContent = 'متصلة — Claude يقدر يشوف أي تعديل تحفظينه هنا';
+
+    const firstId = Object.keys(products)[0];
+    switchProduct(firstId);
+
+    db.collection('products').onSnapshot(snap => {
+      snap.docChanges().forEach(change => {
+        if(change.type === 'removed'){ delete products[change.doc.id]; }
+        else { products[change.doc.id] = change.doc.data(); }
+      });
+      renderProductBar();
+      if(currentId && products[currentId] && document.activeElement.tagName !== 'INPUT'){
+        loadIntoForm(products[currentId]);
+      }
+    }, () => {
+      statusText.textContent = 'انقطع الاتصال بقاعدة البيانات — التعديلات محلية الآن';
+      statusDot.classList.remove('on');
+    });
+  }catch(e){
+    statusText.textContent = 'تعذّر الاتصال بقاعدة البيانات — التعديلات محلية فقط على هذا الجهاز';
+  }
+}
+
+init();
+</script>

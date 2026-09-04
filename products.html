@@ -31,10 +31,22 @@
 .btn-order:hover{background:var(--gold-light)}
 .btn-wa{background:transparent;color:var(--gold);border:1.5px solid var(--gold);padding:13px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
 .btn-wa:hover{background:rgba(184,150,80,0.1)}
-.btn-stripe{background:#635BFF;color:#fff;border:none;padding:14px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:800;cursor:pointer;width:100%;margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
-.btn-stripe:hover{background:#4f47e0}
-.btn-tabby{background:transparent;color:#00A991;border:1.5px solid #00A991;padding:13px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.btn-tabby:hover{background:rgba(0,169,145,0.1)}
+.btn-stripe{background:#fff;color:#1a1f36;border:1px solid rgba(255,255,255,0.1);padding:13px 16px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15.5px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:transform .15s, box-shadow .15s;box-shadow:0 1px 2px rgba(0,0,0,0.15)}
+.btn-stripe:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+.card-icons{display:flex;align-items:center;gap:6px}
+.card-icons svg{display:block}
+.secure-caption{text-align:center;font-size:11px;color:rgba(255,255,255,0.45);margin:.45rem 0 .85rem;display:flex;align-items:center;justify-content:center;gap:5px}
+.secure-caption b{color:#a89bff;font-weight:700}
+.btn-tabby{background:#EAFBF6;color:#0B4F45;border:1px solid #BEEFE0;padding:12px 16px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;width:100%;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:all .15s}
+.btn-tabby:hover{background:#DCF8F0;box-shadow:0 2px 8px rgba(0,184,153,0.15)}
+.tabby-left{display:flex;align-items:center;gap:8px}
+.tabby-word{font-weight:900;font-size:17px;color:#00B899;letter-spacing:-.3px;font-family:Arial,sans-serif}
+.tabby-sep{width:1px;height:16px;background:#BEEFE0}
+.tabby-dots{display:flex;gap:3px}
+.tabby-dots i{width:5px;height:5px;border-radius:50%;background:#00B899;display:block}
+.tabby-dots i:nth-child(2){opacity:.75}
+.tabby-dots i:nth-child(3){opacity:.5}
+.tabby-dots i:nth-child(4){opacity:.3}
 .maker-section{background:var(--cream-dark);padding:3.5rem 2rem}
 .maker-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center}
 .maker-big-avatar{width:90px;height:90px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid rgba(184,150,80,0.4);flex-shrink:0}
@@ -110,8 +122,28 @@
       </ul>
 
       <button class="btn-order" onclick="window.open('https://wa.me/971508810475?text=أريد طلب بخور عبق الصندل — 249Souq','_blank')">🛍 اطلب الآن عبر واتساب</button>
-      <button class="btn-stripe" onclick="window.open('https://buy.stripe.com/3cIaEW0VS6Qw8Kp9e93gk00','_blank')">💳 ادفع الآن — بطاقة بنكية</button>
-      <button class="btn-tabby" onclick="window.open('https://wa.me/971508810475?text=أريد الدفع بالتقسيط عبر Tabby — بخور عبق الصندل','_blank')">🗓️ قسّطها مع Tabby</button>
+
+      <button class="btn-stripe" onclick="window.open('https://buy.stripe.com/3cIaEW0VS6Qw8Kp9e93gk00','_blank')">
+        <span>الدفع بالبطاقة الائتمانية</span>
+        <span class="card-icons">
+          <svg width="30" height="20" viewBox="0 0 30 20"><rect width="30" height="20" rx="3" fill="#1A1F71"/><text x="15" y="14" font-family="Arial,sans-serif" font-style="italic" font-weight="900" font-size="9" fill="#fff" text-anchor="middle">VISA</text></svg>
+          <svg width="30" height="20" viewBox="0 0 30 20"><rect width="30" height="20" rx="3" fill="#fff"/><circle cx="12.5" cy="10" r="6" fill="#EB001B"/><circle cx="17.5" cy="10" r="6" fill="#F79E1B" fill-opacity="0.85"/></svg>
+        </span>
+      </button>
+      <div class="secure-caption">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M2 6V4a3.5 3.5 0 017 0v2" stroke="currentColor" stroke-width="1.1"/><rect x="1" y="6" width="9" height="6.2" rx="1.2" fill="currentColor"/></svg>
+        دفع آمن ومشفّر · بواسطة <b>Stripe</b>
+      </div>
+
+      <button class="btn-tabby" onclick="window.open('https://wa.me/971508810475?text=أريد الدفع بالتقسيط عبر Tabby — بخور عبق الصندل','_blank')">
+        <span class="tabby-left">
+          <span class="tabby-word">tabby</span>
+          <span class="tabby-sep"></span>
+          <span>٤ دفعات بدون فوائد</span>
+        </span>
+        <span class="tabby-dots"><i></i><i></i><i></i><i></i></span>
+      </button>
+
       <button class="btn-wa" onclick="window.open('https://wa.me/971508810475','_blank')">
         <i class="ti ti-brand-whatsapp"></i> تواصل معنا على واتساب
       </button>

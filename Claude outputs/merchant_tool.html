@@ -1,0 +1,333 @@
+<title>حاسبة تكلفة الإنتاج</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF6EE; --cream-dim:#F1EADA; --paper:#FFFDF8; --line:#E4D9C0;
+  --ink:#241a0d; --ink-soft:#6b5c40; --gold:#B89650; --gold-deep:#8A6E30; --gold-tint:#F4EBD6;
+  --good:#3E7A52; --good-tint:#E9F3EC; --wa:#25D366; --wa-deep:#1DA851;
+  --shadow: 0 1px 2px rgba(36,26,13,0.06), 0 8px 24px -12px rgba(36,26,13,0.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cream:#1A140B; --cream-dim:#221B10; --paper:#241D12; --line:#3C3020;
+    --ink:#F3E9D6; --ink-soft:#B8A683; --gold:#D4AE6A; --gold-deep:#E7C888; --gold-tint:#332816;
+    --good:#7FC79A; --good-tint:#1E2E23;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"]{
+  --cream:#1A140B; --cream-dim:#221B10; --paper:#241D12; --line:#3C3020;
+  --ink:#F3E9D6; --ink-soft:#B8A683; --gold:#D4AE6A; --gold-deep:#E7C888; --gold-tint:#332816;
+  --good:#7FC79A; --good-tint:#1E2E23;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Tajawal',sans-serif;direction:rtl;line-height:1.5;padding:2.5rem 1.25rem 6rem}
+.wrap{max-width:760px;margin:0 auto}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--gold-deep);text-transform:uppercase;margin-bottom:.5rem}
+h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:900;margin:0 0 .4rem;text-wrap:balance}
+.sub{color:var(--ink-soft);font-size:14.5px;max-width:60ch;margin-bottom:1.5rem}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:1.5rem;overflow:hidden}
+.card-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.card-head h2{font-size:1.02rem;font-weight:700;margin:0}
+.card-head .hint{font-size:12px;color:var(--ink-soft)}
+.card-body{padding:1.1rem 1.4rem 1.4rem}
+
+.prod-name{width:100%;font-size:1.1rem;font-weight:700;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:'Tajawal',sans-serif;padding:.7rem .9rem;border-radius:10px}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:right;font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;padding:0 .5rem .6rem}
+th.num, td.num{text-align:left}
+tr.row td{padding:.3rem .5rem;border-top:1px solid var(--line)}
+tr.row:first-child td{border-top:none}
+input.name-in, input.num-in{
+  width:100%;border:1px solid transparent;background:transparent;font-family:'Tajawal',sans-serif;
+  color:var(--ink);font-size:14.5px;padding:.5rem .6rem;border-radius:8px;transition:border-color .15s, background .15s;
+}
+input.num-in{font-family:'Space Mono',monospace;font-variant-numeric:tabular-nums;text-align:left;width:6rem}
+input.name-in:hover, input.num-in:hover{background:var(--cream-dim)}
+input.name-in:focus, input.num-in:focus{outline:none;border-color:var(--gold);background:var(--paper)}
+.row-actions{width:2rem;text-align:center}
+.del-btn{border:none;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:16px;padding:.3rem;border-radius:6px}
+.del-btn:hover{color:#B4552F;background:#FBEEE6}
+.add-row{margin-top:.6rem;border:1.5px dashed var(--line);background:transparent;color:var(--gold-deep);font-family:'Tajawal',sans-serif;font-weight:700;font-size:13.5px;border-radius:8px;padding:.55rem 1rem;cursor:pointer;width:100%}
+.add-row:hover{border-color:var(--gold);background:var(--gold-tint)}
+tfoot td{padding:.8rem .5rem .1rem;border-top:2px solid var(--line);font-weight:700}
+tfoot .label{color:var(--ink-soft);font-weight:700;font-size:13px}
+tfoot .value{font-family:'Space Mono',monospace;text-align:left;font-size:14.5px}
+
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:600px){.pack-grid{grid-template-columns:1fr}}
+.pack-item{background:var(--cream-dim);border-radius:10px;padding:.9rem}
+.pack-item .pname{font-weight:700;font-size:13.5px;margin-bottom:.5rem}
+.pack-row{display:flex;align-items:center;gap:.4rem;font-size:13px;color:var(--ink-soft);flex-wrap:wrap}
+.pack-row input{width:4rem}
+.pack-result{margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:13px}
+.pack-result b{font-family:'Space Mono',monospace}
+
+.yield-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.yield-row input{width:5.5rem;font-size:1rem;font-weight:700;text-align:center;padding:.45rem}
+
+.summary{background:linear-gradient(180deg, var(--gold-tint), var(--paper) 60%);border:1px solid var(--gold)}
+.result-big{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.result-big .k{font-size:14.5px;color:var(--ink-soft);font-weight:700}
+.result-big .v{font-family:'Space Mono',monospace;font-size:1.9rem;font-weight:900;color:var(--gold-deep)}
+.log-btn{
+  margin-top:1rem;width:100%;background:var(--gold);color:#fff;border:none;border-radius:10px;
+  padding:.85rem;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;
+}
+.log-btn:hover{background:var(--gold-deep)}
+
+.log-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.log-table th{text-align:right;font-size:11px;color:var(--ink-soft);padding:0 .4rem .5rem;font-weight:700}
+.log-table th.num, .log-table td.num{text-align:left}
+.log-table td{padding:.5rem .4rem;border-top:1px solid var(--line)}
+.log-empty{color:var(--ink-soft);font-size:13.5px;padding:1rem 0;text-align:center}
+.month-total{display:flex;justify-content:space-between;background:var(--cream-dim);border-radius:8px;padding:.7rem 1rem;margin-top:.8rem;font-size:13.5px;font-weight:700}
+.month-total b{font-family:'Space Mono',monospace;color:var(--gold-deep)}
+
+.wa-btn{
+  margin-top:1rem;width:100%;background:var(--wa);color:#fff;border:none;border-radius:10px;
+  padding:.85rem;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.wa-btn:hover{background:var(--wa-deep)}
+.reset-bar{display:flex;justify-content:flex-end;margin-bottom:1rem}
+.reset-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;border-radius:20px;padding:.4rem .9rem;cursor:pointer}
+.reset-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
+.footnote{font-size:11.5px;color:var(--ink-soft);margin-top:1rem;line-height:1.7}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">249Souq · دليل البائعة</div>
+  <h1>حاسبة تكلفة الإنتاج</h1>
+  <p class="sub">أدخلي تكلفة موادك والتغليف، واعرفي تكلفة القطعة الواحدة فوراً. كل رقم تحفظينه يبقى محفوظاً في متصفحك، وتقدرين تحفظي كل دفعة في سجل شهري بالأسفل.</p>
+
+  <div class="reset-bar"><button class="reset-btn" onclick="resetAll()">↺ بداية جديدة</button></div>
+
+  <div class="card">
+    <div class="card-head"><h2>اسم المنتج</h2></div>
+    <div class="card-body">
+      <input class="prod-name" id="prodName" placeholder="مثال: بخور عبق الصندل" onchange="save()">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>المواد الخام — لكل دفعة</h2>
+      <span class="hint">كل ما يدخل في تحضير الدفعة الواحدة</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>البند</th><th class="num">السعر (د.إ)</th><th class="row-actions"></th></tr></thead>
+        <tbody id="rawBody"></tbody>
+        <tfoot><tr><td class="label">إجمالي المواد الخام</td><td class="value" id="rawTotal">—</td><td></td></tr></tfoot>
+      </table>
+      <button class="add-row" onclick="addRawRow()">+ إضافة بند</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>التغليف — لكل قطعة</h2></div>
+    <div class="card-body">
+      <div class="pack-grid">
+        <div class="pack-item">
+          <div class="pname">🏺 العلبة</div>
+          <div class="pack-row">حزمة <input class="num-in" id="jarPack" type="number" step="0.01" value="14"> د.إ / <input class="num-in" id="jarQty" type="number" step="1" value="6"> علب</div>
+          <div class="pack-result"><span>لكل علبة</span><b id="jarUnit">—</b></div>
+        </div>
+        <div class="pack-item">
+          <div class="pname">🛍️ الكيس</div>
+          <div class="pack-row">حزمة <input class="num-in" id="bagPack" type="number" step="0.01" value="5"> د.إ / <input class="num-in" id="bagQty" type="number" step="1" value="10"> أكياس</div>
+          <div class="pack-result"><span>لكل كيس</span><b id="bagUnit">—</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>إنتاجية الدفعة</h2></div>
+    <div class="card-body">
+      <div class="yield-row">
+        <label for="yieldInput">كم قطعة تنتج هذه الدفعة؟</label>
+        <input id="yieldInput" type="number" step="1" min="0" placeholder="؟">
+      </div>
+    </div>
+  </div>
+
+  <div class="card summary">
+    <div class="card-head"><h2>💵 تكلفة القطعة الواحدة</h2></div>
+    <div class="card-body">
+      <div class="result-big">
+        <span class="k">التكلفة النهائية لكل قطعة</span>
+        <span class="v" id="unitCost">—</span>
+      </div>
+      <button class="log-btn" onclick="addToLog()">＋ حفظ هذه الدفعة في السجل الشهري</button>
+      <button class="wa-btn" onclick="shareWA()">📤 نسخ ومشاركة عبر واتساب</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>📅 سجل المشتريات</h2>
+      <span class="hint">دفعاتك المحفوظة — تُحفظ في متصفحك تلقائياً</span>
+    </div>
+    <div class="card-body">
+      <div class="month-total" id="monthTotal"></div>
+      <div style="overflow-x:auto;margin-top:.8rem">
+        <table class="log-table">
+          <thead><tr><th>التاريخ</th><th>المنتج</th><th class="num">تكلفة الدفعة</th><th class="num">عدد القطع</th><th class="num">لكل قطعة</th><th></th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+      <div class="log-empty" id="logEmpty">لا توجد دفعات محفوظة بعد</div>
+    </div>
+  </div>
+
+  <p class="footnote">هذه الصفحة أداة عامة لأي منتج تحضّرينه — غيّري اسم المنتج والبنود حسب كل دفعة جديدة. بياناتك محفوظة في هذا المتصفح فقط على هذا الجهاز.</p>
+</div>
+
+<script>
+const STORAGE_KEY = 'merchant_cost_v1';
+const DEFAULT_RAW = [{name:'', price:0}];
+let rawItems = [];
+let log = [];
+
+function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function fmt(v){ return v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' د.إ'; }
+
+function load(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    rawItems = saved.rawItems || DEFAULT_RAW.map(r=>({...r}));
+    log = saved.log || [];
+    document.getElementById('prodName').value = saved.prodName || '';
+    document.getElementById('jarPack').value = saved.jarPack ?? 14;
+    document.getElementById('jarQty').value = saved.jarQty ?? 6;
+    document.getElementById('bagPack').value = saved.bagPack ?? 5;
+    document.getElementById('bagQty').value = saved.bagQty ?? 10;
+    document.getElementById('yieldInput').value = saved.yieldVal ?? '';
+  }catch(e){
+    rawItems = DEFAULT_RAW.map(r=>({...r}));
+  }
+}
+
+function save(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      rawItems, log,
+      prodName: document.getElementById('prodName').value,
+      jarPack: num('jarPack'), jarQty: num('jarQty'),
+      bagPack: num('bagPack'), bagQty: num('bagQty'),
+      yieldVal: num('yieldInput'),
+    }));
+  }catch(e){}
+}
+
+function resetAll(){
+  if(!confirm('سيتم مسح المنتج الحالي (السجل الشهري يبقى محفوظاً). متأكدة؟')) return;
+  rawItems = DEFAULT_RAW.map(r=>({...r}));
+  document.getElementById('prodName').value = '';
+  document.getElementById('jarPack').value = 14;
+  document.getElementById('jarQty').value = 6;
+  document.getElementById('bagPack').value = 5;
+  document.getElementById('bagQty').value = 10;
+  document.getElementById('yieldInput').value = '';
+  save(); renderRaw(); compute();
+}
+
+function renderRaw(){
+  const body = document.getElementById('rawBody');
+  body.innerHTML = '';
+  rawItems.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'row';
+    tr.innerHTML = `
+      <td><input class="name-in" placeholder="اسم البند" value="${(item.name||'').replace(/"/g,'&quot;')}" onchange="updateName(${i}, this.value)"></td>
+      <td class="num"><input class="num-in" type="number" step="0.01" value="${item.price}" onchange="updatePrice(${i}, this.value)"></td>
+      <td class="row-actions"><button class="del-btn" onclick="deleteRow(${i})">✕</button></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function updateName(i, val){ rawItems[i].name = val; save(); }
+function updatePrice(i, val){ rawItems[i].price = parseFloat(val)||0; save(); compute(); }
+function deleteRow(i){ rawItems.splice(i,1); save(); renderRaw(); compute(); }
+function addRawRow(){ rawItems.push({name:'', price:0}); save(); renderRaw(); compute(); }
+
+function currentCalc(){
+  const rawTotal = rawItems.reduce((s,i)=>s+(parseFloat(i.price)||0),0);
+  const jarUnit = num('jarQty') > 0 ? num('jarPack')/num('jarQty') : 0;
+  const bagUnit = num('bagQty') > 0 ? num('bagPack')/num('bagQty') : 0;
+  const yieldVal = num('yieldInput');
+  const unitCost = yieldVal > 0 ? (rawTotal/yieldVal) + jarUnit + bagUnit : null;
+  return {rawTotal, jarUnit, bagUnit, yieldVal, unitCost};
+}
+
+function compute(){
+  const c = currentCalc();
+  document.getElementById('rawTotal').textContent = fmt(c.rawTotal);
+  document.getElementById('jarUnit').textContent = fmt(c.jarUnit);
+  document.getElementById('bagUnit').textContent = fmt(c.bagUnit);
+  document.getElementById('unitCost').textContent = c.unitCost !== null ? fmt(c.unitCost) : 'أدخلي عدد القطع أولاً';
+}
+
+function addToLog(){
+  const c = currentCalc();
+  if(c.unitCost === null){ alert('أدخلي عدد القطع الناتجة أولاً'); return; }
+  log.unshift({
+    date: new Date().toISOString().slice(0,10),
+    product: document.getElementById('prodName').value || '(بدون اسم)',
+    batchCost: c.rawTotal,
+    units: c.yieldVal,
+    unitCost: c.unitCost,
+  });
+  save();
+  renderLog();
+}
+
+function deleteLogEntry(i){ log.splice(i,1); save(); renderLog(); }
+
+function renderLog(){
+  const body = document.getElementById('logBody');
+  const empty = document.getElementById('logEmpty');
+  body.innerHTML = '';
+  if(log.length === 0){ empty.style.display = 'block'; }
+  else { empty.style.display = 'none'; }
+  log.forEach((entry, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${entry.date}</td><td>${entry.product}</td><td class="num">${fmt(entry.batchCost)}</td><td class="num">${entry.units}</td><td class="num">${fmt(entry.unitCost)}</td><td class="row-actions"><button class="del-btn" onclick="deleteLogEntry(${i})">✕</button></td>`;
+    body.appendChild(tr);
+  });
+
+  const thisMonth = new Date().toISOString().slice(0,7);
+  const monthEntries = log.filter(e => e.date.startsWith(thisMonth));
+  const monthTotal = monthEntries.reduce((s,e)=>s+e.batchCost,0);
+  document.getElementById('monthTotal').innerHTML = `<span>إجمالي دفعات هذا الشهر (${monthEntries.length})</span><b>${fmt(monthTotal)}</b>`;
+}
+
+function shareWA(){
+  const c = currentCalc();
+  const name = document.getElementById('prodName').value || 'المنتج';
+  let text = `تكلفة إنتاج: ${name}\n`;
+  text += `إجمالي المواد الخام: ${fmt(c.rawTotal)}\n`;
+  text += `تكلفة العلبة: ${fmt(c.jarUnit)} — تكلفة الكيس: ${fmt(c.bagUnit)}\n`;
+  if(c.yieldVal > 0){
+    text += `عدد القطع: ${c.yieldVal}\n`;
+    text += `تكلفة القطعة الواحدة: ${fmt(c.unitCost)}\n`;
+  }
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+['jarPack','jarQty','bagPack','bagQty','yieldInput'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{ save(); compute(); });
+});
+
+load();
+renderRaw();
+compute();
+renderLog();
+</script>
