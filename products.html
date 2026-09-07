@@ -65,7 +65,7 @@
 .reviews-inner{max-width:900px;margin:0 auto}
 .reviews-inner .section-tag{display:block;text-align:center;margin-bottom:.5rem}
 .reviews-title{font-size:1.5rem;font-weight:900;color:var(--brown-deep);text-align:center;margin-bottom:2rem}
-.reviews-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
 .review-card{background:var(--cream-dark);border:1px solid rgba(184,150,80,0.2);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem}
 .review-stars{color:var(--gold);font-size:15px;letter-spacing:2px}
 .review-quote{font-size:14.5px;color:var(--brown-deep);line-height:1.9}
@@ -109,7 +109,6 @@
       <div class="main-img"><img id="mainImg" src="img/bakhoor-poster.jpg" alt="بخور عبق الصندل"/></div>
       <div class="thumb-row">
         <div class="thumb active" onclick="setImg('img/bakhoor-poster.jpg',this)"><img src="img/bakhoor-poster.jpg" alt="بخور عبق الصندل"/></div>
-        <div class="thumb" onclick="setImg('img/gallery-jars.jpg',this)"><img src="img/gallery-jars.jpg" alt="عبوات بخور عبق الصندل"/></div>
         <div class="thumb" onclick="setImg('img/gallery-poster2.jpg',this)"><img src="img/gallery-poster2.jpg" alt="بخور عبق الصندل - إعلان"/></div>
       </div>
     </div>
@@ -220,6 +219,13 @@
           "اتخيلي إني ببخر بيه كل يوم من يوم ما جبته، ولسه كورة وحدة ما انتهت 💜"
         </p>
         <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — رسالة واتساب حقيقية</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">
+          "أحلى بخور في الإمارات، ماشاء الله تبارك الله ياساره. كل الناس عجبهم شديد شديد، وأحلى حاجة تمسك في البيت."
+        </p>
+        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — منشور واتساب حقيقي</div>
       </div>
     </div>
   </div>
