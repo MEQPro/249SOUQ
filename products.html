@@ -60,6 +60,22 @@
   .maker-big-avatar{margin:0 auto}
   .maker-stats{justify-content:center}
 }
+
+.reviews-section{padding:3.5rem 2rem;background:#fff}
+.reviews-inner{max-width:900px;margin:0 auto}
+.reviews-inner .section-tag{display:block;text-align:center;margin-bottom:.5rem}
+.reviews-title{font-size:1.5rem;font-weight:900;color:var(--brown-deep);text-align:center;margin-bottom:2rem}
+.reviews-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.review-card{background:var(--cream-dark);border:1px solid rgba(184,150,80,0.2);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.review-stars{color:var(--gold);font-size:15px;letter-spacing:2px}
+.review-quote{font-size:14.5px;color:var(--brown-deep);line-height:1.9}
+.review-photo{border-radius:10px;overflow:hidden;aspect-ratio:4/3}
+.review-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.review-meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--brown-mid)}
+.review-meta .wa-badge{color:#25D366;font-size:14px}
+@media(max-width:640px){
+  .reviews-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -170,6 +186,35 @@
         <div class="maker-stat"><div class="maker-stat-num">100%</div><div class="maker-stat-label">طبيعي</div></div>
         <div class="maker-stat"><div class="maker-stat-num">يدوي</div><div class="maker-stat-label">صنع يدوي</div></div>
         <div class="maker-stat"><div class="maker-stat-num">سوداني</div><div class="maker-stat-label">أصل المنتج</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider"></div>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="reviews-inner">
+    <span class="section-tag" style="text-align:center;display:block">آراء عملائنا</span>
+    <div class="reviews-title">شهادات حقيقية من عملاء 249Souq</div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">
+          "ماشاء الله رهيب رهيب 😍 بخور العافية يارب، كل شهر حا اطلب منك."
+        </p>
+        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — رسالة واتساب حقيقية</div>
+      </div>
+      <div class="review-card">
+        <div class="review-photo">
+          <img src="img/testimonial-lifestyle.jpg" alt="بخور عبق الصندل في بيت إحدى العميلات" loading="lazy"/>
+        </div>
+        <p class="review-quote">
+          "اتخيلي إني ببخر بيه كل يوم من يوم ما جبته، ولسه كورة وحدة ما انتهت 💜"
+        </p>
+        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — رسالة واتساب حقيقية</div>
       </div>
     </div>
   </div>
