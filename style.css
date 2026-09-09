@@ -112,7 +112,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .hero-banner-section{background:linear-gradient(180deg,rgba(13,10,4,.55),rgba(13,10,4,.88)),url('img/hero-banner.jpg') center 22%/cover no-repeat;min-height:90vh;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;position:relative;overflow:hidden}
 
 @media(max-width:680px){
-  .nav-links,.nav-cta,.nav-icon-btn{display:none}
+  .nav-links,.nav-cta{display:none}
   .nav-burger{display:block}
   .footer-top{grid-template-columns:1fr}
   .footer-brand{margin-bottom:.5rem}
