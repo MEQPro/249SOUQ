@@ -116,6 +116,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
   .nav-burger{display:block}
   .footer-top{grid-template-columns:1fr}
   .footer-brand{margin-bottom:.5rem}
-  .hero-banner-section{min-height:auto;padding:2.75rem 1.25rem 3rem;background-position:center 8%;background-image:linear-gradient(180deg,rgba(13,10,4,.62),rgba(13,10,4,.93)),url('img/hero-banner.jpg')}
+  .hero-banner-section{
+    min-height:auto;
+    padding:calc(100vw * 0.563 + 1.5rem) 1.25rem 3rem;
+    background-color:var(--brown-deep);
+    background-image:linear-gradient(180deg,rgba(13,10,4,.1) 0%,rgba(13,10,4,.45) 48%,rgba(13,10,4,.92) 68%,var(--brown-deep) 82%),url('img/hero-banner.jpg');
+    background-size:100% 100%,100% auto;
+    background-position:center,top center;
+    background-repeat:no-repeat,no-repeat;
+  }
   .hero-parcel-badge{position:static;display:inline-flex;margin-top:1.25rem}
 }
