@@ -18,20 +18,22 @@
 html{scroll-behavior:smooth}
 body{font-family:'Tajawal',sans-serif;direction:rtl;background:var(--cream);color:var(--brown)}
 
-/* ── NAV ── */
-nav{background:var(--brown-deep);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(184,150,80,0.2)}
+/* ── NAV (light, storefront-style) ── */
+nav{background:#fff;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--cream-dark);box-shadow:0 1px 8px rgba(26,18,8,0.04)}
 .nav-brand{display:flex;flex-direction:column;justify-content:center}
-.logo-text{font-size:22px;font-weight:900;color:var(--gold);text-decoration:none;line-height:1.1}
-.logo-sub{font-size:10px;color:#555;line-height:1}
-.nav-links{display:flex;gap:1.5rem;list-style:none}
-.nav-links a{color:#ccc;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
-.nav-links a:hover,.nav-links a.active{color:var(--gold)}
-.nav-cta{background:var(--gold);color:var(--brown-deep);border:none;padding:8px 20px;border-radius:6px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s}
-.nav-cta:hover{background:var(--gold-light)}
-.nav-burger{display:none;background:none;border:none;color:var(--gold);font-size:22px;cursor:pointer;padding:4px}
-.nav-mobile{display:none;flex-direction:column;background:var(--brown-deep);border-top:1px solid rgba(184,150,80,0.15);padding:1rem 2rem;gap:.75rem}
-.nav-mobile a{color:#ccc;text-decoration:none;font-size:15px;font-weight:500;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
-.nav-mobile a:hover{color:var(--gold)}
+.logo-text{font-size:22px;font-weight:900;color:var(--brown-deep);text-decoration:none;line-height:1.1}
+.logo-sub{font-size:10px;color:#999;line-height:1}
+.nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
+.nav-links a{color:var(--brown-mid);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-dark)}
+.nav-icon-btn{background:none;border:none;color:var(--brown-mid);font-size:19px;cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .2s}
+.nav-icon-btn:hover{color:var(--gold-dark)}
+.nav-cta{background:var(--gold);color:#fff;border:none;padding:8px 20px;border-radius:6px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s}
+.nav-cta:hover{background:var(--gold-dark)}
+.nav-burger{display:none;background:none;border:none;color:var(--brown-deep);font-size:22px;cursor:pointer;padding:4px}
+.nav-mobile{display:none;flex-direction:column;background:#fff;border-top:1px solid var(--cream-dark);padding:1rem 2rem;gap:.75rem}
+.nav-mobile a{color:var(--brown-mid);text-decoration:none;font-size:15px;font-weight:500;padding:.4rem 0;border-bottom:1px solid var(--cream-dark)}
+.nav-mobile a:hover{color:var(--gold-dark)}
 
 /* ── DIVIDER ── */
 .divider{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);position:relative}
@@ -98,6 +100,12 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 
 /* ── HERITAGE CATEGORY ICON RING (for product category icons) ── */
 .cat-icon-ring{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);box-shadow:0 0 0 3px var(--cream),0 0 0 4px var(--maroon);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);font-size:22px}
+
+
+/* ── HERO PARCEL BADGE ── */
+.hero-parcel-badge{position:absolute;display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:2}
+.hero-parcel-badge i{font-size:22px;color:var(--maroon)}
+.hero-parcel-badge span{font-size:13px;font-weight:800;color:var(--brown-deep);line-height:1.3}
 
 /* ── RESPONSIVE ── */
 @media(max-width:680px){
