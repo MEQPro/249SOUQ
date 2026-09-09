@@ -108,9 +108,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .hero-parcel-badge span{font-size:13px;font-weight:800;color:var(--brown-deep);line-height:1.3}
 
 /* ── RESPONSIVE ── */
+/* ── HERO BANNER SECTION ── */
+.hero-banner-section{background:linear-gradient(180deg,rgba(13,10,4,.55),rgba(13,10,4,.88)),url('img/hero-banner.jpg') center 22%/cover no-repeat;min-height:90vh;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;position:relative;overflow:hidden}
+
 @media(max-width:680px){
-  .nav-links,.nav-cta{display:none}
+  .nav-links,.nav-cta,.nav-icon-btn{display:none}
   .nav-burger{display:block}
   .footer-top{grid-template-columns:1fr}
   .footer-brand{margin-bottom:.5rem}
+  .hero-banner-section{min-height:auto;padding:2.75rem 1.25rem 3rem;background-position:center 8%;background-image:linear-gradient(180deg,rgba(13,10,4,.62),rgba(13,10,4,.93)),url('img/hero-banner.jpg')}
+  .hero-parcel-badge{position:static;display:inline-flex;margin-top:1.25rem}
 }
