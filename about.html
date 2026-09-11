@@ -16,7 +16,12 @@
 <nav>
   <div class="nav-brand"><a href="index.html" class="logo-text">249Souq</a><span class="logo-sub">طعم البيت، وين ما مشيت</span></div>
   <ul class="nav-links">
-    <li><a href="products.html">المنتجات</a></li>
+    <li class="nav-dropdown"><a href="products.html">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
+      <div class="nav-dropdown-menu">
+        <a href="products.html" class="nav-dropdown-item">عطور وبخور</a>
+        <div class="nav-dropdown-item is-soon">ملابس <span class="nav-soon-badge">قريباً</span></div>
+      </div>
+    </li>
     <li><a href="about.html" class="active">من نحن</a></li>
     <li><a href="sellers.html">انضم كبائع</a></li>
     <li><a href="contact.html">تواصل معنا</a></li>
@@ -27,7 +32,8 @@
   <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
 </nav>
 <div class="nav-mobile" id="nav-mobile">
-  <a href="products.html">المنتجات</a><a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
+  <a href="products.html">المنتجات</a>
+  <div class="nav-mobile-soon">ملابس <span class="nav-soon-badge">قريباً</span></div><a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
 </div>
 <div class="divider"></div>
 
