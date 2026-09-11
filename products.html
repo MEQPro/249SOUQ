@@ -84,6 +84,13 @@
 .review-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .review-meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--brown-mid)}
 .review-meta .wa-badge{color:#25D366;font-size:14px}
+.wa-bubble{background:#DCF8C6;border-radius:10px 10px 10px 2px;padding:12px 14px 6px;box-shadow:0 1px 1px rgba(0,0,0,0.08)}
+.wa-bubble .review-quote{margin:0;color:#0B141A}
+.wa-bubble-media{padding:6px 6px 8px}
+.wa-bubble-media img{width:100%;border-radius:6px;display:block;margin-bottom:8px}
+.wa-bubble-media .review-quote{padding:0 6px}
+.wa-ticks-row{display:flex;justify-content:flex-end;margin-top:4px}
+.wa-ticks{color:#53BDEB;font-size:13px;font-weight:700;letter-spacing:-1px}
 @media(max-width:640px){
   .reviews-grid{grid-template-columns:1fr}
 }
@@ -227,27 +234,26 @@
     <div class="reviews-title">شهادات حقيقية من عملاء 249Souq</div>
     <div class="reviews-grid">
       <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-quote">
-          "ماشاء الله رهيب رهيب 😍 بخور العافية يارب، كل شهر حا اطلب منك."
-        </p>
-        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — رسالة واتساب حقيقية</div>
-      </div>
-      <div class="review-card">
-        <div class="review-photo">
-          <img src="img/testimonial-lifestyle.jpg" alt="بخور عبق الصندل في بيت إحدى العميلات" loading="lazy"/>
+        <div class="wa-bubble">
+          <p class="review-quote">"ماشاء الله رهيب رهيب 😍 بخور العافية يارب، كل شهر حا اطلب منك."</p>
+          <div class="wa-ticks-row"><span class="wa-ticks">✓✓</span></div>
         </div>
-        <p class="review-quote">
-          "اتخيلي إني ببخر بيه كل يوم من يوم ما جبته، ولسه كورة وحدة ما انتهت 💜"
-        </p>
-        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — رسالة واتساب حقيقية</div>
+        <div class="review-meta">عميلة من الإمارات — رسالة واتساب حقيقية</div>
       </div>
       <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-quote">
-          "أحلى بخور في الإمارات، ماشاء الله تبارك الله ياساره. كل الناس عجبهم شديد شديد، وأحلى حاجة تمسك في البيت."
-        </p>
-        <div class="review-meta"><span class="wa-badge">✔✔</span> عميلة من الإمارات — منشور واتساب حقيقي</div>
+        <div class="wa-bubble wa-bubble-media">
+          <img src="img/testimonial-lifestyle.jpg" alt="بخور عبق الصندل في بيت إحدى العميلات" loading="lazy"/>
+          <p class="review-quote">"اتخيلي إني ببخر بيه كل يوم من يوم ما جبته، ولسه كورة وحدة ما انتهت 💜"</p>
+          <div class="wa-ticks-row"><span class="wa-ticks">✓✓</span></div>
+        </div>
+        <div class="review-meta">عميلة من الإمارات — رسالة واتساب حقيقية</div>
+      </div>
+      <div class="review-card">
+        <div class="wa-bubble">
+          <p class="review-quote">"أحلى بخور في الإمارات، ماشاء الله تبارك الله ياساره. كل الناس عجبهم شديد شديد، وأحلى حاجة تمسك في البيت."</p>
+          <div class="wa-ticks-row"><span class="wa-ticks">✓✓</span></div>
+        </div>
+        <div class="review-meta">عميلة من الإمارات — منشور واتساب حقيقي</div>
       </div>
     </div>
   </div>
@@ -304,5 +310,6 @@
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function setImg(src,el){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
