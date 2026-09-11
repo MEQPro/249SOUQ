@@ -28,6 +28,9 @@
 .maker-badge{margin-right:auto;background:rgba(184,150,80,0.15);color:var(--gold);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(184,150,80,0.3)}
 .price-row{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap}
 .price-main{font-size:2.2rem;font-weight:900;color:var(--gold)}
+.live-viewers{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#bbb;margin:-.6rem 0 1.25rem}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#25D366;display:inline-block;flex-shrink:0;animation:livePulse 1.6s infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 7px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
 .tabby-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 12px;font-size:12px;color:#ccc}
 .features{list-style:none;margin-bottom:1.75rem;display:flex;flex-direction:column;gap:.4rem}
 .features li{display:flex;align-items:center;gap:10px;font-size:14px;color:#ccc;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
@@ -162,6 +165,8 @@
         <div style="font-size:1rem;color:#aaa;font-weight:500">AED <span class="price-main">60</span></div>
         <div class="tabby-pill">أو <strong style="color:#fff;margin:0 4px">4 × 15 AED</strong> بدون فوائد مع Tabby</div>
       </div>
+
+      <div class="live-viewers"><span class="live-dot"></span><span id="liveViewerCount">7</span> شخص يشاهدون هذا المنتج الآن</div>
 
       <ul class="features">
         <li><i class="ti ti-box feat-icon"></i>حجم العبوة: 100 غرام</li>
@@ -319,6 +324,17 @@
 <script>
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function setImg(src,el){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
+(function(){
+  var el=document.getElementById('liveViewerCount');
+  if(!el)return;
+  var count=Math.floor(Math.random()*(13-4+1))+4;
+  el.textContent=count;
+  setInterval(function(){
+    var delta=Math.random()<0.5?-1:1;
+    count=Math.min(15,Math.max(3,count+delta));
+    el.textContent=count;
+  },30000+Math.random()*15000);
+})();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
