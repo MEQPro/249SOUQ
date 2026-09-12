@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Lalezar&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -21,6 +21,7 @@
 }
 html{scroll-behavior:smooth}
 body{font-family:'Tajawal',sans-serif;direction:rtl;background:var(--cream);color:var(--brown)}
+h1,h2,.section-title,.logo-text,.footer-logo,.policy-title,.reviews-title{font-family:'Lalezar','Tajawal',sans-serif;font-weight:400;letter-spacing:.5px}
 
 /* ── NAV (light, storefront-style) ── */
 nav{background:#fff;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--cream-dark);box-shadow:0 1px 8px rgba(26,18,8,0.04)}
