@@ -28,10 +28,10 @@ nav{background:#fff;padding:0 2rem;display:flex;align-items:center;justify-conte
 .logo-text{font-size:22px;font-weight:900;text-decoration:none;line-height:1.1}
 .logo-text .lg-n{color:var(--green)}
 .logo-text .lg-s{color:var(--flag-red)}
-.logo-sub{font-size:10px;color:#999;line-height:1}
+.logo-sub{font-size:10px;color:var(--brown-deep);line-height:1}
 .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
-.nav-links a{color:var(--brown-mid);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s}
-.nav-links a:hover,.nav-links a.active{color:var(--gold-dark)}
+.nav-links a{color:var(--green);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--green-dark)}
 .nav-icon-btn{background:none;border:none;color:var(--brown-mid);font-size:19px;cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .2s}
 .nav-icon-btn:hover{color:var(--gold-dark)}
 .nav-cta{background:var(--green);color:#fff;border:none;padding:8px 20px;border-radius:6px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s}
@@ -113,7 +113,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 
 
 /* ── HERITAGE STEP BADGE (double gold/maroon ring, used for numbered process icons) ── */
-.step-badge{width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);box-shadow:0 0 0 3px var(--cream-dark),0 0 0 4px var(--maroon-light);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--gold-dark)}
+.step-badge{width:76px;height:76px;border-radius:50%;border:2px solid var(--gold);box-shadow:0 0 0 3px var(--cream-dark),0 0 0 4px var(--maroon-light);background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--brown-deep)}
 .step-num{position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--maroon);border:1.5px solid var(--gold-light);border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
 
 /* ── HERITAGE CATEGORY ICON RING (for product category icons) ── */
