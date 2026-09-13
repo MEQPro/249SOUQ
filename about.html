@@ -16,18 +16,18 @@
 <nav>
   <div class="nav-brand"><a href="index.html" class="logo-text"><span class="lg-n">249</span><span class="lg-s">Souq</span></a><span class="logo-sub">طعم البيت، وين ما مشيت</span></div>
   <ul class="nav-links">
-    <li class="nav-dropdown"><a href="products.html">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
+    <li class="nav-dropdown"><a href="javascript:void(0)" onclick="toggleDropdown(event,this)">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-group">
-          <div class="nav-dropdown-cat">العطور والبخور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">العطور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
             <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
             <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-            <a href="products.html" class="nav-dropdown-item">بخور</a>
           </div>
         </div>
+        <a href="products.html" class="nav-dropdown-item nav-dropdown-top">بخور</a>
         <div class="nav-dropdown-group">
-          <div class="nav-dropdown-cat">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
             <div class="nav-dropdown-item is-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
             <div class="nav-dropdown-item is-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
@@ -45,22 +45,27 @@
   <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
 </nav>
 <div class="nav-mobile" id="nav-mobile">
-  <a href="products.html">المنتجات</a>
   <div class="nav-mobile-group">
-    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور والبخور <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">المنتجات <i class="ti ti-chevron-down"></i></div>
     <div class="nav-mobile-submenu">
-      <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-      <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-group">
+        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور <i class="ti ti-chevron-down"></i></div>
+        <div class="nav-mobile-submenu">
+          <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+          <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+        </div>
+      </div>
       <a href="products.html">بخور</a>
+      <div class="nav-mobile-group">
+        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
+        <div class="nav-mobile-submenu">
+          <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+          <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="nav-mobile-group">
-    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
-    <div class="nav-mobile-submenu">
-      <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
-      <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
-    </div>
-  </div><a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
+  <a href="sellers.html">انضم كبائع</a><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a>
 </div>
 <div class="divider"></div>
 
@@ -106,7 +111,9 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/971508810475" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
-<script>function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}</script>
+<script>function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
+function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
+document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

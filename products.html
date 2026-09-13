@@ -15,8 +15,8 @@
 <style>
 .product-wrap{max-width:900px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
 .gallery{display:flex;flex-direction:column;gap:.75rem}
-.main-img{border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,80,0.3);aspect-ratio:1023/1537;cursor:zoom-in}
-.main-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.main-img{border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,80,0.3);aspect-ratio:1023/1537;cursor:zoom-in;background:#FAF6EE;display:flex;align-items:center;justify-content:center}
+.main-img img{width:100%;height:100%;object-fit:contain;display:block;padding:22px;transition:transform .4s}
 .main-img:hover img{transform:scale(1.04)}
 .thumb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
 .thumb{border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;aspect-ratio:1;transition:border-color .2s}
@@ -107,18 +107,18 @@
     <span class="logo-sub">طعم البيت، وين ما مشيت</span>
   </div>
   <ul class="nav-links">
-    <li class="nav-dropdown"><a href="products.html" class="active">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
+    <li class="nav-dropdown"><a href="javascript:void(0)" class="active" onclick="toggleDropdown(event,this)">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-group">
-          <div class="nav-dropdown-cat">العطور والبخور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">العطور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
             <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
             <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-            <a href="products.html" class="nav-dropdown-item">بخور</a>
           </div>
         </div>
+        <a href="products.html" class="nav-dropdown-item nav-dropdown-top">بخور</a>
         <div class="nav-dropdown-group">
-          <div class="nav-dropdown-cat">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
             <div class="nav-dropdown-item is-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
             <div class="nav-dropdown-item is-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
@@ -136,20 +136,24 @@
   <button class="nav-burger" onclick="toggleMenu()" aria-label="القائمة">&#9776;</button>
 </nav>
 <div class="nav-mobile" id="nav-mobile">
-  <a href="products.html">المنتجات</a>
   <div class="nav-mobile-group">
-    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور والبخور <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">المنتجات <i class="ti ti-chevron-down"></i></div>
     <div class="nav-mobile-submenu">
-      <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-      <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-group">
+        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور <i class="ti ti-chevron-down"></i></div>
+        <div class="nav-mobile-submenu">
+          <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+          <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+        </div>
+      </div>
       <a href="products.html">بخور</a>
-    </div>
-  </div>
-  <div class="nav-mobile-group">
-    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
-    <div class="nav-mobile-submenu">
-      <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
-      <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-group">
+        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
+        <div class="nav-mobile-submenu">
+          <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+          <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+        </div>
+      </div>
     </div>
   </div>
   <a href="sellers.html">انضم كبائع</a>
@@ -349,6 +353,8 @@
 <a class="wa-float" href="https://wa.me/971508810475?text=أريد طلب بخور عبق الصندل" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
 <script>
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
+function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
+document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});
 function setImg(src,el){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
 (function(){
   var el=document.getElementById('liveViewerCount');

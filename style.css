@@ -40,19 +40,22 @@ nav{background:#fff;padding:0 2rem;display:flex;align-items:center;justify-conte
 .nav-burger{display:none;background:none;border:none;color:var(--brown-deep);font-size:22px;cursor:pointer;padding:4px}
 .nav-dropdown{position:relative}
 .nav-dropdown>a{display:flex;align-items:center;gap:4px}
-.nav-dropdown-caret{font-size:11px;margin-top:1px}
-.nav-dropdown-menu{position:absolute;top:100%;right:0;margin-top:.6rem;background:var(--green-dark);border:1px solid var(--green);border-radius:12px;box-shadow:0 12px 28px rgba(20,12,4,0.22);min-width:210px;padding:.5rem;display:none;flex-direction:column;gap:2px;z-index:60}
-.nav-dropdown:hover .nav-dropdown-menu{display:flex}
+.nav-dropdown-caret{font-size:11px;margin-top:1px;transition:transform .2s}
+.nav-dropdown.open .nav-dropdown-caret{transform:rotate(180deg)}
+.nav-dropdown-menu{position:absolute;top:100%;right:0;margin-top:.6rem;background:#fff;border:1px solid rgba(4,106,56,0.25);border-radius:12px;box-shadow:0 12px 28px rgba(20,12,4,0.14);min-width:210px;padding:.5rem;display:none;flex-direction:column;gap:2px;z-index:60}
+.nav-dropdown.open .nav-dropdown-menu{display:flex}
 .nav-dropdown-group{position:relative}
-.nav-dropdown-cat{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.7rem .8rem;border-radius:9px;color:#fff;font-size:13.5px;font-weight:800;cursor:default;transition:background .15s}
-.nav-dropdown-group:hover .nav-dropdown-cat{background:rgba(255,255,255,0.12)}
+.nav-dropdown-cat{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.7rem .8rem;border-radius:9px;color:var(--green-dark);font-size:13.5px;font-weight:800;cursor:pointer;transition:background .15s}
+.nav-dropdown-group:hover .nav-dropdown-cat,.nav-dropdown-group.sub-open .nav-dropdown-cat{background:rgba(4,106,56,0.08)}
 .nav-cat-caret{font-size:11px}
-.nav-dropdown-submenu{position:absolute;top:0;right:100%;margin-right:6px;background:var(--green);border:1px solid var(--green-dark);border-radius:12px;box-shadow:0 12px 28px rgba(20,12,4,0.22);min-width:180px;padding:.5rem;display:none;flex-direction:column;gap:2px}
-.nav-dropdown-group:hover .nav-dropdown-submenu{display:flex}
-.nav-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.65rem .8rem;border-radius:9px;color:#fff;text-decoration:none;font-size:13.5px;font-weight:600;transition:background .15s}
-a.nav-dropdown-item:hover{background:rgba(255,255,255,0.16)}
-.nav-dropdown-item.is-soon{cursor:default;opacity:.8}
-.nav-soon-badge{background:rgba(255,255,255,0.16);color:#fff;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid rgba(255,255,255,0.3);white-space:nowrap}
+.nav-dropdown-submenu{position:absolute;top:0;right:100%;margin-right:6px;background:#fff;border:1px solid rgba(4,106,56,0.2);border-radius:12px;box-shadow:0 12px 28px rgba(20,12,4,0.14);min-width:180px;padding:.5rem;display:none;flex-direction:column;gap:2px}
+.nav-dropdown-group:hover .nav-dropdown-submenu,.nav-dropdown-group.sub-open .nav-dropdown-submenu{display:flex}
+.nav-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.65rem .8rem;border-radius:9px;color:var(--green-dark);text-decoration:none;font-size:13.5px;font-weight:600;transition:background .15s}
+a.nav-dropdown-item:hover{background:rgba(4,106,56,0.08)}
+.nav-dropdown-item.is-soon{cursor:default;opacity:.7;color:var(--brown-mid)}
+.nav-dropdown-item.nav-dropdown-top{font-weight:800;color:var(--green-dark)}
+.nav-dropdown-item.nav-dropdown-top::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.nav-soon-badge{background:rgba(4,106,56,0.08);color:var(--green-dark);font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid rgba(4,106,56,0.25);white-space:nowrap}
 .nav-mobile-group{border-bottom:1px solid var(--cream-dark)}
 .nav-mobile-cat{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:.5rem 0;color:var(--green-dark);font-size:15px;font-weight:700;cursor:pointer}
 .nav-mobile-cat i{transition:transform .2s;font-size:14px}
@@ -126,9 +129,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .back-link:hover{color:var(--gold)}
 
 
-/* ── STEP BADGE (how-to-order icons) ── */
-.step-badge{width:76px;height:76px;border-radius:50%;border:2px solid var(--green);background:#fff;box-shadow:0 6px 18px rgba(4,106,56,0.14);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--green)}
-.step-num{position:absolute;top:-6px;right:-6px;width:24px;height:24px;background:var(--green-dark);border:2px solid #fff;border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
+/* ── STEP BADGE (how-to-order icons — monochrome black/white, high contrast) ── */
+.step-badge{width:76px;height:76px;border-radius:50%;border:2px solid #000;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000}
+.step-num{position:absolute;top:-6px;right:-6px;width:24px;height:24px;background:#000;border:2px solid #fff;border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
 
 /* ── WHY-249SOUQ CARDS ── */
 .why-card{background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s,transform .2s}
