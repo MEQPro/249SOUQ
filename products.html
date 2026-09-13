@@ -61,6 +61,16 @@
 .btn-bank:hover{background:#EDE4D0;box-shadow:0 2px 8px rgba(184,150,80,0.18)}
 .btn-bank-left{display:flex;align-items:center;gap:8px}
 .btn-bank svg{display:block;color:var(--gold)}
+.sticky-order-bar{display:none}
+@media(max-width:680px){
+  .sticky-order-bar{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid rgba(0,0,0,0.1);padding:10px 16px;align-items:center;justify-content:space-between;gap:12px;z-index:200;box-shadow:0 -4px 16px rgba(0,0,0,0.1)}
+  .sticky-price{display:flex;flex-direction:column;line-height:1.15}
+  .sticky-price b{font-size:17px;font-weight:900;color:var(--brown-deep)}
+  .sticky-price span{font-size:10.5px;font-weight:600;color:var(--brown-mid)}
+  .sticky-order-btn{background:var(--green);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:6px;white-space:nowrap;cursor:pointer}
+  .product-wrap{padding-bottom:4.5rem}
+  .wa-float{display:none}
+}
 
 .maker-section{background:var(--cream-dark);padding:3.5rem 2rem}
 .maker-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center}
@@ -352,6 +362,11 @@
 </footer>
 
 <a class="wa-float" href="https://wa.me/971508810475?text=أريد طلب بخور عبق الصندل" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
+
+<div class="sticky-order-bar">
+  <div class="sticky-price"><span>AED</span><b>60</b></div>
+  <button class="sticky-order-btn" onclick="window.open('https://wa.me/971508810475?text=أريد طلب بخور عبق الصندل — 249Souq','_blank')"><i class="ti ti-brand-whatsapp"></i> اطلب الآن</button>
+</div>
 <script>
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
