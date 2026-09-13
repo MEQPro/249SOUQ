@@ -15,7 +15,8 @@
 <style>
 .product-wrap{max-width:900px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
 .gallery{display:flex;flex-direction:column;gap:.75rem}
-.main-img{border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,80,0.3);aspect-ratio:1023/1537;cursor:zoom-in;background:#FAF6EE;display:flex;align-items:center;justify-content:center}
+.main-img{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,80,0.3);aspect-ratio:1023/1537;cursor:zoom-in;background:#FAF6EE;display:flex;align-items:center;justify-content:center}
+.weight-badge{position:absolute;top:14px;right:14px;background:var(--green-dark);color:#fff;font-size:12.5px;font-weight:800;padding:6px 14px;border-radius:20px;z-index:2;box-shadow:0 4px 10px rgba(0,0,0,0.15)}
 .main-img img{width:100%;height:100%;object-fit:contain;display:block;padding:22px;transition:transform .4s}
 .main-img:hover img{transform:scale(1.04)}
 .thumb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
@@ -110,13 +111,13 @@
     <li class="nav-dropdown"><a href="javascript:void(0)" class="active" onclick="toggleDropdown(event,this)">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-group">
-          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">العطور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">العطور والبخور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
+            <a href="products.html" class="nav-dropdown-item">بخور</a>
             <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
             <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
           </div>
         </div>
-        <a href="products.html" class="nav-dropdown-item nav-dropdown-top">بخور</a>
         <div class="nav-dropdown-group">
           <div class="nav-dropdown-cat" onclick="this.parentElement.classList.toggle('sub-open')">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
           <div class="nav-dropdown-submenu">
@@ -140,13 +141,13 @@
     <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">المنتجات <i class="ti ti-chevron-down"></i></div>
     <div class="nav-mobile-submenu">
       <div class="nav-mobile-group">
-        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور <i class="ti ti-chevron-down"></i></div>
+        <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور والبخور <i class="ti ti-chevron-down"></i></div>
         <div class="nav-mobile-submenu">
+          <a href="products.html">بخور</a>
           <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
           <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
         </div>
       </div>
-      <a href="products.html">بخور</a>
       <div class="nav-mobile-group">
         <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
         <div class="nav-mobile-submenu">
@@ -167,7 +168,7 @@
   <div class="product-wrap">
     <!-- GALLERY -->
     <div class="gallery">
-      <div class="main-img"><img id="mainImg" src="img/bakhoor-thankyou-jar.png" alt="بخور عبق الصندل"/></div>
+      <div class="main-img"><span class="weight-badge">100 غم</span><img id="mainImg" src="img/bakhoor-thankyou-jar.png" alt="بخور عبق الصندل"/></div>
       <div class="thumb-row">
         <div class="thumb active" onclick="setImg('img/bakhoor-thankyou-jar.png',this)"><img src="img/bakhoor-thankyou-jar.png" alt="بخور عبق الصندل"/></div>
         <div class="thumb" onclick="setImg('img/bakhoor-poster.jpg',this)"><img src="img/bakhoor-poster.jpg" alt="بخور عبق الصندل - بوستر"/></div>
@@ -186,7 +187,7 @@
         <div class="maker-badge">✦ موثّقة</div>
       </div>
 
-      <h1 style="font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:900;color:var(--brown-deep);margin-bottom:.4rem;line-height:1.3">بخور عبق الصندل</h1>
+      <h1 style="font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:900;color:var(--brown-deep);margin-bottom:.4rem;line-height:1.3">بخور عبق الصندل <span style="font-size:13px;font-weight:700;color:var(--green-dark);background:rgba(4,106,56,0.08);border:1px solid rgba(4,106,56,0.25);padding:3px 10px;border-radius:20px;vertical-align:middle">100 غم</span></h1>
       <p style="font-size:14px;color:var(--brown-mid);margin-bottom:1.5rem">ريحة فخمة... تدوم وتملأ المكان</p>
 
       <a href="#reviews" style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;text-decoration:none;color:var(--gold-dark);font-size:14px;letter-spacing:1px">★★★★★ <span style="color:var(--brown-mid);letter-spacing:normal">آراء عملائنا الحقيقية</span></a>

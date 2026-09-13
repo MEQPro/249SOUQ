@@ -53,8 +53,6 @@ nav{background:#fff;padding:0 2rem;display:flex;align-items:center;justify-conte
 .nav-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.65rem .8rem;border-radius:9px;color:var(--green-dark);text-decoration:none;font-size:13.5px;font-weight:600;transition:background .15s}
 a.nav-dropdown-item:hover{background:rgba(4,106,56,0.08)}
 .nav-dropdown-item.is-soon{cursor:default;opacity:.7;color:var(--brown-mid)}
-.nav-dropdown-item.nav-dropdown-top{font-weight:800;color:var(--green-dark)}
-.nav-dropdown-item.nav-dropdown-top::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
 .nav-soon-badge{background:rgba(4,106,56,0.08);color:var(--green-dark);font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid rgba(4,106,56,0.25);white-space:nowrap}
 .nav-mobile-group{border-bottom:1px solid var(--cream-dark)}
 .nav-mobile-cat{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:.5rem 0;color:var(--green-dark);font-size:15px;font-weight:700;cursor:pointer}
@@ -129,8 +127,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .back-link:hover{color:var(--gold)}
 
 
-/* ── STEP BADGE (how-to-order icons — monochrome black/white, high contrast) ── */
-.step-badge{width:76px;height:76px;border-radius:50%;border:2px solid #000;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000}
+/* ── STEP BADGE (how-to-order icons — black circle, white icon, high contrast) ── */
+.step-badge{width:76px;height:76px;border-radius:50%;background:#000;box-shadow:0 6px 18px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff}
 .step-num{position:absolute;top:-6px;right:-6px;width:24px;height:24px;background:#000;border:2px solid #fff;border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
 
 /* ── WHY-249SOUQ CARDS ── */
