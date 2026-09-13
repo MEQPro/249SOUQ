@@ -23,10 +23,21 @@
   <ul class="nav-links">
     <li class="nav-dropdown"><a href="products.html">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
       <div class="nav-dropdown-menu">
-        <a href="products.html" class="nav-dropdown-item">بخور</a>
-        <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-        <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-        <div class="nav-dropdown-item is-soon">ملابس <span class="nav-soon-badge">قريباً</span></div>
+        <div class="nav-dropdown-group">
+          <div class="nav-dropdown-cat">العطور والبخور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-submenu">
+            <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+            <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+            <a href="products.html" class="nav-dropdown-item">بخور</a>
+          </div>
+        </div>
+        <div class="nav-dropdown-group">
+          <div class="nav-dropdown-cat">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-submenu">
+            <div class="nav-dropdown-item is-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+            <div class="nav-dropdown-item is-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+          </div>
+        </div>
       </div>
     </li>
     <li><a href="about.html">من نحن</a></li>
@@ -40,9 +51,21 @@
 </nav>
 <div class="nav-mobile" id="nav-mobile">
   <a href="products.html">المنتجات</a>
-  <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-  <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-  <div class="nav-mobile-soon">ملابس <span class="nav-soon-badge">قريباً</span></div>
+  <div class="nav-mobile-group">
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور والبخور <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-submenu">
+      <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+      <a href="products.html">بخور</a>
+    </div>
+  </div>
+  <div class="nav-mobile-group">
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-submenu">
+      <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+    </div>
+  </div>
   <a href="sellers.html">انضم كبائع</a>
   <a href="about.html">من نحن</a>
   <a href="contact.html">تواصل معنا</a>
@@ -50,7 +73,7 @@
 
 <!-- HERO -->
 <section class="hero-banner-section">
-  <div style="position:absolute;inset:0;opacity:.035;background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
+  <div style="position:absolute;inset:0;opacity:.05;background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
   <div style="max-width:780px;text-align:center;position:relative;z-index:1">
     <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(184,150,80,0.12);border:1px solid rgba(184,150,80,0.35);color:var(--gold-light);font-size:14px;padding:7px 20px;border-radius:24px;margin-bottom:2rem;font-weight:700">
       <span style="width:8px;height:8px;background:var(--gold);border-radius:50%;display:inline-block"></span>
@@ -69,10 +92,10 @@
       <button class="btn-primary" onclick="window.location.href='products.html'"><i class="ti ti-shopping-bag"></i> تسوق الآن</button>
       <button class="btn-primary" onclick="window.location.href='sellers.html'">انضم كبائع</button>
     </div>
-    <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.07)">
-      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-shield-check" style="color:var(--gold);font-size:18px"></i>دفع آمن وموثوق</div>
-      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-truck-delivery" style="color:var(--gold);font-size:18px"></i>توصيل للإمارات والخليج</div>
-      <div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><i class="ti ti-heart" style="color:var(--gold);font-size:18px"></i>صنع بحب بأيادي سودانية</div>
+    <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.09)">
+      <div style="display:flex;align-items:center;gap:8px;color:#999;font-size:13px"><i class="ti ti-shield-check" style="color:var(--gold);font-size:18px"></i>دفع آمن وموثوق</div>
+      <div style="display:flex;align-items:center;gap:8px;color:#999;font-size:13px"><i class="ti ti-truck-delivery" style="color:var(--gold);font-size:18px"></i>توصيل للإمارات والخليج</div>
+      <div style="display:flex;align-items:center;gap:8px;color:#999;font-size:13px"><i class="ti ti-heart" style="color:var(--gold);font-size:18px"></i>صنع بحب بأيادي سودانية</div>
     </div>
   </div>
 </section>
@@ -84,20 +107,20 @@
   <div style="max-width:860px;margin:0 auto">
     <div class="section-tag" style="text-align:center">لماذا 249Souq</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem;margin-top:1.5rem">
-      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
-        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🔐</div>
+      <div class="why-card">
+        <div class="why-icon"><i class="ti ti-shield-check"></i></div>
         <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">منصة موثوقة</div>
       </div>
-      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
-        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🚚</div>
+      <div class="why-card">
+        <div class="why-icon"><i class="ti ti-truck-delivery"></i></div>
         <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">شحن بأسعار منافسة</div>
       </div>
-      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
-        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🤝</div>
+      <div class="why-card">
+        <div class="why-icon"><i class="ti ti-users-group"></i></div>
         <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">مبنية من المجتمع</div>
       </div>
-      <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:1.75rem 1.25rem;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
-        <div style="width:56px;height:56px;background:rgba(184,150,80,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px">🌐</div>
+      <div class="why-card">
+        <div class="why-icon"><i class="ti ti-world"></i></div>
         <div style="font-size:1rem;font-weight:800;color:var(--brown-deep)">وصول عالمي</div>
       </div>
     </div>
@@ -158,7 +181,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-logo"><span class="lg-n">249</span><span class="lg-s">Souq</span></div>
-        <div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div>
+        <div class="footer-tagline">طعم البيت، وين ما مشيت</div>
         <div class="footer-social">
           <a class="social-btn" href="https://instagram.com/249souq" target="_blank" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a>
           <a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a>

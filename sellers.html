@@ -49,10 +49,21 @@
   <ul class="nav-links">
     <li class="nav-dropdown"><a href="products.html">المنتجات <i class="ti ti-chevron-down nav-dropdown-caret"></i></a>
       <div class="nav-dropdown-menu">
-        <a href="products.html" class="nav-dropdown-item">بخور</a>
-        <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-        <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-        <div class="nav-dropdown-item is-soon">ملابس <span class="nav-soon-badge">قريباً</span></div>
+        <div class="nav-dropdown-group">
+          <div class="nav-dropdown-cat">العطور والبخور <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-submenu">
+            <div class="nav-dropdown-item is-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+            <div class="nav-dropdown-item is-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+            <a href="products.html" class="nav-dropdown-item">بخور</a>
+          </div>
+        </div>
+        <div class="nav-dropdown-group">
+          <div class="nav-dropdown-cat">ملابس <i class="ti ti-chevron-left nav-cat-caret"></i></div>
+          <div class="nav-dropdown-submenu">
+            <div class="nav-dropdown-item is-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+            <div class="nav-dropdown-item is-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+          </div>
+        </div>
       </div>
     </li>
     <li><a href="about.html">من نحن</a></li>
@@ -66,9 +77,21 @@
 </nav>
 <div class="nav-mobile" id="nav-mobile">
   <a href="products.html">المنتجات</a>
-  <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
-  <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
-  <div class="nav-mobile-soon">ملابس <span class="nav-soon-badge">قريباً</span></div>
+  <div class="nav-mobile-group">
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">العطور والبخور <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-submenu">
+      <div class="nav-mobile-soon">عطور <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-soon">دلكة <span class="nav-soon-badge">قريباً</span></div>
+      <a href="products.html">بخور</a>
+    </div>
+  </div>
+  <div class="nav-mobile-group">
+    <div class="nav-mobile-cat" onclick="this.parentElement.classList.toggle('open')">ملابس <i class="ti ti-chevron-down"></i></div>
+    <div class="nav-mobile-submenu">
+      <div class="nav-mobile-soon">رجالي <span class="nav-soon-badge">قريباً</span></div>
+      <div class="nav-mobile-soon">حريمي <span class="nav-soon-badge">قريباً</span></div>
+    </div>
+  </div>
   <a href="sellers.html">انضم كبائع</a>
   <a href="about.html">من نحن</a>
   <a href="contact.html">تواصل معنا</a>
@@ -151,7 +174,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-logo"><span class="lg-n">249</span><span class="lg-s">Souq</span></div>
-        <div class="footer-tagline">طعم البيت، وين ما مشيت 🫶</div>
+        <div class="footer-tagline">طعم البيت، وين ما مشيت</div>
         <div class="footer-social">
           <a class="social-btn" href="https://instagram.com/249souq" target="_blank" aria-label="انستغرام"><i class="ti ti-brand-instagram"></i></a>
           <a class="social-btn" href="#" aria-label="تيك توك"><i class="ti ti-brand-tiktok"></i></a>
