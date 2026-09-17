@@ -167,5 +167,5 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
   .hero-parcel-badge{position:static;display:inline-flex;margin-top:1.25rem}
 }
 
-.site-logo-img{height:34px;width:auto;display:block}
+.site-logo-img{height:22px;width:auto;display:block}
 .footer-logo-img{height:64px;width:auto;display:block;margin-bottom:.3rem}
