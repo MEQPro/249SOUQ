@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>تسجيل طلب — 249Souq (داخلي)</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#B89650; --gold-light:#D4AE6A; --gold-dark:#8A6E30; --gold-pale:#EDE0C4;
+  --cream:#FAF6EE; --cream-dark:#F2EBD9;
+  --brown-deep:#1A1208; --brown-mid:#5A4A32;
+  --green:#046A38; --green-dark:#03502A;
+  --line:rgba(184,150,80,0.25);
+}
+*{box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;margin:0;background:var(--cream-dark);color:var(--brown-deep)}
+.wrap{max-width:640px;margin:0 auto;padding:2.25rem 1.25rem}
+.top{margin-bottom:1.5rem}
+.title{font-size:1.3rem;font-weight:500}
+.sub{font-size:12.5px;color:var(--brown-mid);margin-top:4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.75rem}
+.section-label{font-size:11.5px;font-weight:700;color:var(--gold-dark);letter-spacing:1px;margin:1.4rem 0 .8rem;text-transform:uppercase}
+.section-label:first-child{margin-top:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem}
+.row.single{grid-template-columns:1fr}
+.field label{display:block;font-size:12px;color:var(--brown-mid);margin-bottom:.35rem;font-weight:600}
+.field input,.field select{width:100%;padding:.6rem .7rem;border:1px solid var(--line);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13.5px;color:var(--brown-deep);background:#FDFBF6}
+.hint{font-size:10.5px;color:var(--brown-mid);margin-top:3px}
+.summary{background:var(--gold-pale);border-radius:10px;padding:14px 16px;margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:10px 18px;font-size:12.5px}
+.summary b{color:var(--brown-deep)}
+.btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:.85rem;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:700;margin-top:1.4rem;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:default}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--brown-mid);width:auto;padding:.5rem 1rem;font-size:12.5px;margin-top:.75rem}
+.msg{font-size:13px;margin-top:1rem;padding:.7rem 1rem;border-radius:8px}
+.msg.ok{background:rgba(4,106,56,0.1);color:var(--green-dark)}
+.msg.err{background:rgba(122,31,43,0.1);color:#7A1F2B}
+#loginScreen .card{max-width:360px;margin:4rem auto 0}
+.hidden{display:none !important}
+.top-actions{display:flex;justify-content:space-between;align-items:center}
+a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="wrap">
+  <div class="card">
+    <div class="title" style="text-align:center;margin-bottom:1rem">دخول الإدارة</div>
+    <div class="field">
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPassword" placeholder="••••••••"/>
+    </div>
+    <button class="btn" id="loginBtn">دخول</button>
+    <div id="loginMsg"></div>
+  </div>
+</div>
+
+<div id="appScreen" class="wrap hidden">
+  <div class="top">
+    <div class="top-actions">
+      <div>
+        <div class="title">تسجيل طلب جديد</div>
+        <div class="sub">للاستخدام الداخلي فقط — سلوى</div>
+      </div>
+      <a class="logout" id="logoutBtn">تسجيل خروج</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">بيانات العميل</div>
+    <div class="row">
+      <div class="field"><label>اسم العميل</label><input id="customerName" placeholder="مثال: فاطمة أحمد"/></div>
+      <div class="field"><label>رقم الواتساب</label><input id="customerPhone" placeholder="+9715xxxxxxxx"/><div class="hint">المعرّف الفريد للعميل</div></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>الإمارة / المدينة</label>
+        <select id="emirate"><option value="دبي">دبي</option><option value="أبوظبي">أبوظبي</option><option value="الشارقة">الشارقة</option><option value="أخرى">أخرى</option></select>
+      </div>
+      <div class="field"><label>مصدر العميل</label>
+        <select id="sourceChannel"><option value="تيك توك">تيك توك</option><option value="انستقرام">انستقرام</option><option value="مجموعة واتساب">مجموعة واتساب</option><option value="QR / بروشور">QR / بروشور</option><option value="إحالة من عميل">إحالة من عميل</option><option value="أخرى">أخرى</option></select>
+      </div>
+    </div>
+
+    <div class="section-label">التوصيل</div>
+    <div class="row">
+      <div class="field"><label>شركة التوصيل</label>
+        <input id="courierName" list="courierList" placeholder="اكتب اسم الشركة"/>
+        <datalist id="courierList"></datalist>
+        <div class="hint">يُحفظ تلقائيًا لأول مرة ويظهر كخيار لاحقًا</div>
+      </div>
+      <div class="field"><label>طريقة الدفع</label>
+        <select id="paymentMethod">
+          <option value="card">بطاقة ائتمان</option>
+          <option value="tabby">تابي</option>
+          <option value="bank_transfer">تحويل بنكي</option>
+          <option value="cash_on_delivery">نقدًا عند الاستلام (COD)</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label>رسوم التوصيل على العميل</label><input id="deliveryFeeCharged" value="20"/><div class="hint">AED — قابل للتعديل</div></div>
+      <div class="field"><label>تكلفة شركة الشحن الفعلية</label><input id="deliveryCostActual" value="16"/><div class="hint">AED — قابل للتعديل حسب العقد</div></div>
+    </div>
+
+    <div class="section-label">تفاصيل الطلب</div>
+    <div class="row">
+      <div class="field"><label>البائع</label><select id="sellerSelect"></select></div>
+      <div class="field"><label>الكمية</label><input id="quantity" value="1"/></div>
+    </div>
+    <div class="row single">
+      <div class="field"><label>عرض/كود خصم (اختياري)</label><input id="promoCode" placeholder="مثال: BUNDLE2 أو خصم 10%"/><div class="hint">للتوثيق فقط — عدّلي الأسعار أدناه لتعكس العرض</div></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>سعر البيع للعميل (للوحدة)</label><input id="unitPriceCustomer" value="60"/><div class="hint">AED — قابل للتعديل (عروض/باقات)</div></div>
+      <div class="field"><label>سعر البائعة (للوحدة)</label><input id="unitPriceSeller" value="0"/><div class="hint">AED — يُعبأ تلقائيًا من بيانات البائعة، قابل للتعديل</div></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>حالة الدفع</label>
+        <select id="paymentStatus"><option value="paid">مدفوع</option><option value="pending">معلّق</option></select>
+      </div>
+      <div class="field"><label>حالة التوصيل</label>
+        <select id="deliveryStatus"><option value="preparing">قيد التجهيز</option><option value="shipped">تم الشحن</option><option value="delivered">تم التوصيل</option></select>
+      </div>
+    </div>
+    <div class="row single">
+      <div class="field"><label>ملاحظات (اختياري)</label><input id="notes" placeholder=""/></div>
+    </div>
+
+    <div class="summary" id="summaryBox"></div>
+
+    <button class="btn" id="submitBtn">حفظ الطلب</button>
+    <div id="submitMsg"></div>
+  </div>
+</div>
+
+<script>
+const loginScreen = document.getElementById('loginScreen');
+const appScreen = document.getElementById('appScreen');
+let sellersCache = [];
+
+function showMsg(el, text, ok){
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+}
+
+async function checkSession(){
+  const r = await fetch('/api/admin-session');
+  const j = await r.json();
+  if(j.authenticated){
+    loginScreen.classList.add('hidden');
+    appScreen.classList.remove('hidden');
+    await loadCouriers();
+    await loadSellers();
+    updateSummary();
+  } else {
+    loginScreen.classList.remove('hidden');
+    appScreen.classList.add('hidden');
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const password = document.getElementById('loginPassword').value;
+  const r = await fetch('/api/admin-login', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password})
+  });
+  const msgEl = document.getElementById('loginMsg');
+  if(r.ok){ checkSession(); }
+  else { showMsg(msgEl, 'كلمة المرور غير صحيحة', false); }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/admin-logout', {method:'POST'});
+  checkSession();
+});
+
+async function loadCouriers(){
+  const r = await fetch('/api/couriers');
+  if(!r.ok) return;
+  const j = await r.json();
+  const list = document.getElementById('courierList');
+  list.innerHTML = '';
+  (j.couriers||[]).forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    list.appendChild(opt);
+  });
+}
+
+async function loadSellers(){
+  const r = await fetch('/api/sellers');
+  if(!r.ok) return;
+  const j = await r.json();
+  sellersCache = j.sellers || [];
+  const sel = document.getElementById('sellerSelect');
+  sel.innerHTML = '';
+  sellersCache.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name + ' — ' + s.product_name;
+    opt.dataset.payout = s.default_payout_price;
+    opt.dataset.product = s.product_name;
+    sel.appendChild(opt);
+  });
+  applySellerDefaults();
+}
+
+function applySellerDefaults(){
+  const sel = document.getElementById('sellerSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if(!opt) return;
+  document.getElementById('unitPriceSeller').value = opt.dataset.payout || 0;
+}
+
+document.getElementById('sellerSelect').addEventListener('change', applySellerDefaults);
+
+function num(id){ return parseFloat(document.getElementById(id).value || '0') || 0; }
+
+function updateSummary(){
+  const qty = num('quantity');
+  const priceCustomer = num('unitPriceCustomer');
+  const priceSeller = num('unitPriceSeller');
+  const deliveryCharged = num('deliveryFeeCharged');
+  const deliveryCost = num('deliveryCostActual');
+
+  const customerTotal = qty*priceCustomer + deliveryCharged;
+  const sellerPayout = qty*priceSeller;
+  const productMargin = qty*(priceCustomer-priceSeller);
+  const logisticsMargin = deliveryCharged - deliveryCost;
+
+  document.getElementById('summaryBox').innerHTML =
+    '<span>إجمالي العميل: <b>AED ' + customerTotal.toFixed(2) + '</b></span>' +
+    '<span>مستحقات البائعة: <b>AED ' + sellerPayout.toFixed(2) + '</b></span>' +
+    '<span>هامش المنتج: <b>AED ' + productMargin.toFixed(2) + '</b></span>' +
+    '<span>هامش التوصيل: <b>AED ' + logisticsMargin.toFixed(2) + '</b></span>';
+}
+
+['quantity','unitPriceCustomer','unitPriceSeller','deliveryFeeCharged','deliveryCostActual'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateSummary);
+});
+
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('submitBtn');
+  const msgEl = document.getElementById('submitMsg');
+  btn.disabled = true;
+
+  const sel = document.getElementById('sellerSelect');
+  const sellerOpt = sel.options[sel.selectedIndex];
+
+  const payload = {
+    customer_name: document.getElementById('customerName').value,
+    customer_phone: document.getElementById('customerPhone').value,
+    emirate: document.getElementById('emirate').value,
+    source_channel: document.getElementById('sourceChannel').value,
+    seller_id: sel.value,
+    product_name: sellerOpt ? sellerOpt.dataset.product : '',
+    quantity: num('quantity'),
+    unit_price_customer: num('unitPriceCustomer'),
+    unit_price_seller: num('unitPriceSeller'),
+    promo_code: document.getElementById('promoCode').value,
+    delivery_fee_charged: num('deliveryFeeCharged'),
+    delivery_cost_actual: num('deliveryCostActual'),
+    courier_name: document.getElementById('courierName').value,
+    payment_method: document.getElementById('paymentMethod').value,
+    payment_status: document.getElementById('paymentStatus').value,
+    delivery_status: document.getElementById('deliveryStatus').value,
+    notes: document.getElementById('notes').value
+  };
+
+  try {
+    const r = await fetch('/api/log-order', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if(r.ok){
+      showMsg(msgEl, 'تم حفظ الطلب بنجاح ✓', true);
+      document.getElementById('customerName').value='';
+      document.getElementById('customerPhone').value='';
+      document.getElementById('promoCode').value='';
+      document.getElementById('notes').value='';
+      document.getElementById('quantity').value='1';
+      await loadCouriers();
+      updateSummary();
+    } else {
+      showMsg(msgEl, 'حدث خطأ: ' + (j.error||'غير معروف'), false);
+    }
+  } catch(e){
+    showMsg(msgEl, 'تعذّر الاتصال بالخادم', false);
+  }
+  btn.disabled = false;
+});
+
+checkSession();
+</script>
+</body>
+</html>
