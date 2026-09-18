@@ -74,8 +74,20 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
       <div class="field"><label>رقم الواتساب</label><input id="customerPhone" placeholder="مثال: 0501234567 أو 971501234567"/><div class="hint" id="phonePreview">سيتم حفظه بصيغة: —</div></div>
     </div>
     <div class="row">
-      <div class="field"><label>الإمارة / المدينة</label>
-        <select id="emirate"><option value="دبي">دبي</option><option value="أبوظبي">أبوظبي</option><option value="الشارقة">الشارقة</option><option value="أخرى">أخرى</option></select>
+      <div class="field">
+        <label>الإمارة</label>
+        <select id="emirate">
+          <option value="أبوظبي">أبوظبي</option>
+          <option value="دبي">دبي</option>
+          <option value="الشارقة">الشارقة</option>
+          <option value="عجمان">عجمان</option>
+          <option value="أم القيوين">أم القيوين</option>
+          <option value="رأس الخيمة">رأس الخيمة</option>
+          <option value="الفجيرة">الفجيرة</option>
+          <option value="أخرى">أخرى (منطقة محددة)</option>
+        </select>
+        <input id="emirateOther" class="hidden" placeholder="مثال: العين، المنطقة الغربية" style="margin-top:.5rem;width:100%;padding:.6rem .7rem;border:1px solid var(--line);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13.5px;background:#FDFBF6"/>
+        <div class="hint">اختاري "أخرى" لمناطق مثل العين أو المنطقة الغربية</div>
       </div>
       <div class="field"><label>مصدر العميل</label>
         <select id="sourceChannel"><option value="تيك توك">تيك توك</option><option value="انستقرام">انستقرام</option><option value="مجموعة واتساب">مجموعة واتساب</option><option value="QR / بروشور">QR / بروشور</option><option value="إحالة من عميل">إحالة من عميل</option><option value="أخرى">أخرى</option></select>
@@ -238,6 +250,22 @@ function applySellerDefaults(){
 
 document.getElementById('sellerSelect').addEventListener('change', applySellerDefaults);
 
+// --- Emirate "other" field toggle (Al Ain, Western Region, etc.) ---
+document.getElementById('emirate').addEventListener('change', (e) => {
+  const otherField = document.getElementById('emirateOther');
+  if(e.target.value === 'أخرى'){ otherField.classList.remove('hidden'); }
+  else { otherField.classList.add('hidden'); otherField.value=''; }
+});
+
+function getEmirateValue(){
+  const sel = document.getElementById('emirate');
+  if(sel.value === 'أخرى'){
+    const other = document.getElementById('emirateOther').value.trim();
+    return other || 'أخرى';
+  }
+  return sel.value;
+}
+
 // --- Phone number live preview (client-side mirror of the server's normalizePhone) ---
 function normalizePhonePreview(raw){
   if(!raw) return null;
@@ -360,7 +388,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   const payload = {
     customer_name: document.getElementById('customerName').value,
     customer_phone: document.getElementById('customerPhone').value,
-    emirate: document.getElementById('emirate').value,
+    emirate: getEmirateValue(),
     source_channel: document.getElementById('sourceChannel').value,
     seller_id: sel.value,
     product_name: sellerOpt ? sellerOpt.dataset.product : '',
