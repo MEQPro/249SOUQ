@@ -153,6 +153,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 @media(max-width:680px){
   .nav-links,.nav-cta{display:none}
   .nav-burger{display:block}
+  .product-teaser-grid{grid-template-columns:1fr !important;text-align:center !important}
+  .product-teaser-grid > div:last-child{text-align:center !important}
+  .product-teaser-grid p{margin-left:auto;margin-right:auto}
   .footer-top{grid-template-columns:1fr}
   .footer-brand{margin-bottom:.5rem}
   .hero-banner-section{
