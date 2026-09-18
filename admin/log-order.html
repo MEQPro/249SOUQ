@@ -71,7 +71,7 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
     <div class="section-label">بيانات العميل</div>
     <div class="row">
       <div class="field"><label>اسم العميل</label><input id="customerName" placeholder="مثال: فاطمة أحمد"/></div>
-      <div class="field"><label>رقم الواتساب</label><input id="customerPhone" placeholder="+9715xxxxxxxx"/><div class="hint">المعرّف الفريد للعميل</div></div>
+      <div class="field"><label>رقم الواتساب</label><input id="customerPhone" placeholder="مثال: 0501234567 أو 971501234567"/><div class="hint" id="phonePreview">سيتم حفظه بصيغة: —</div></div>
     </div>
     <div class="row">
       <div class="field"><label>الإمارة / المدينة</label>
@@ -105,8 +105,30 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
 
     <div class="section-label">تفاصيل الطلب</div>
     <div class="row">
-      <div class="field"><label>البائع</label><select id="sellerSelect"></select></div>
+      <div class="field">
+        <label>البائع
+          <a href="javascript:void(0)" id="editSellerLink" style="font-weight:400;font-size:11px;color:var(--gold-dark);text-decoration:underline;margin-right:8px">تعديل بيانات البائع</a>
+          <a href="javascript:void(0)" id="addSellerLink" style="font-weight:400;font-size:11px;color:var(--gold-dark);text-decoration:underline;margin-right:8px">+ إضافة بائع جديد</a>
+        </label>
+        <select id="sellerSelect"></select>
+      </div>
       <div class="field"><label>الكمية</label><input id="quantity" value="1"/></div>
+    </div>
+
+    <div id="sellerEditPanel" class="hidden" style="background:var(--cream-dark);border-radius:10px;padding:1rem;margin-bottom:.9rem">
+      <div class="row">
+        <div class="field"><label>اسم البائع</label><input id="editSellerName"/></div>
+        <div class="field"><label>اسم المنتج</label><input id="editSellerProduct"/></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>سعر البائع الافتراضي (للوحدة، AED)</label><input id="editSellerPrice"/></div>
+        <div class="field" id="editSellerSlugField"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="editSellerSlug" placeholder="مثال: sara"/></div>
+      </div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn" id="saveSellerBtn" style="margin-top:.5rem">حفظ</button>
+        <button class="btn btn-ghost" id="cancelSellerBtn" style="margin-top:.5rem">إلغاء</button>
+      </div>
+      <div id="sellerEditMsg"></div>
     </div>
     <div class="row single">
       <div class="field"><label>عرض/كود خصم (اختياري)</label><input id="promoCode" placeholder="مثال: BUNDLE2 أو خصم 10%"/><div class="hint">للتوثيق فقط — عدّلي الأسعار أدناه لتعكس العرض</div></div>
@@ -200,6 +222,8 @@ async function loadSellers(){
     opt.textContent = s.name + ' — ' + s.product_name;
     opt.dataset.payout = s.default_payout_price;
     opt.dataset.product = s.product_name;
+    opt.dataset.name = s.name;
+    opt.dataset.slug = s.dashboard_slug;
     sel.appendChild(opt);
   });
   applySellerDefaults();
@@ -213,6 +237,92 @@ function applySellerDefaults(){
 }
 
 document.getElementById('sellerSelect').addEventListener('change', applySellerDefaults);
+
+// --- Phone number live preview (client-side mirror of the server's normalizePhone) ---
+function normalizePhonePreview(raw){
+  if(!raw) return null;
+  const hasPlus = raw.trim().startsWith('+');
+  const digits = raw.replace(/\D/g, '');
+  if(!digits) return null;
+  if(hasPlus) return '+' + digits;
+  if(digits.startsWith('00')) return '+' + digits.slice(2);
+  if(digits.startsWith('971')) return '+' + digits;
+  if(digits.startsWith('0') && digits.length === 10) return '+971' + digits.slice(1);
+  if(digits.length === 9 && digits.startsWith('5')) return '+971' + digits;
+  return '+' + digits;
+}
+document.getElementById('customerPhone').addEventListener('input', (e) => {
+  const preview = document.getElementById('phonePreview');
+  const normalized = normalizePhonePreview(e.target.value);
+  preview.textContent = 'سيتم حفظه بصيغة: ' + (normalized || '—');
+});
+
+// --- Edit / add seller panel ---
+const sellerEditPanel = document.getElementById('sellerEditPanel');
+const editSellerSlugField = document.getElementById('editSellerSlugField');
+let sellerEditMode = null; // 'edit' | 'add'
+
+function openSellerPanel(mode){
+  sellerEditMode = mode;
+  sellerEditPanel.classList.remove('hidden');
+  document.getElementById('sellerEditMsg').textContent = '';
+  if(mode === 'edit'){
+    const sel = document.getElementById('sellerSelect');
+    const opt = sel.options[sel.selectedIndex];
+    if(!opt){ sellerEditPanel.classList.add('hidden'); return; }
+    document.getElementById('editSellerName').value = opt.dataset.name || '';
+    document.getElementById('editSellerProduct').value = opt.dataset.product || '';
+    document.getElementById('editSellerPrice').value = opt.dataset.payout || '';
+    editSellerSlugField.classList.add('hidden'); // slug stays fixed once a seller has a live link
+  } else {
+    document.getElementById('editSellerName').value = '';
+    document.getElementById('editSellerProduct').value = '';
+    document.getElementById('editSellerPrice').value = '';
+    document.getElementById('editSellerSlug').value = '';
+    editSellerSlugField.classList.remove('hidden');
+  }
+}
+
+document.getElementById('editSellerLink').addEventListener('click', () => openSellerPanel('edit'));
+document.getElementById('addSellerLink').addEventListener('click', () => openSellerPanel('add'));
+document.getElementById('cancelSellerBtn').addEventListener('click', () => sellerEditPanel.classList.add('hidden'));
+
+document.getElementById('saveSellerBtn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('sellerEditMsg');
+  const name = document.getElementById('editSellerName').value.trim();
+  const product_name = document.getElementById('editSellerProduct').value.trim();
+  const default_payout_price = parseFloat(document.getElementById('editSellerPrice').value || '0') || 0;
+
+  if(!name || !product_name){
+    showMsg(msgEl, 'الاسم واسم المنتج مطلوبان', false);
+    return;
+  }
+
+  let res, body;
+  if(sellerEditMode === 'edit'){
+    const sel = document.getElementById('sellerSelect');
+    const id = sel.value;
+    res = await fetch('/api/sellers', {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id, name, product_name, default_payout_price })
+    });
+  } else {
+    const dashboard_slug = document.getElementById('editSellerSlug').value.trim();
+    if(!dashboard_slug){ showMsg(msgEl, 'رابط لوحة البائع مطلوب لإضافة بائع جديد', false); return; }
+    res = await fetch('/api/sellers', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, product_name, dashboard_slug, default_payout_price })
+    });
+  }
+  body = await res.json();
+  if(res.ok){
+    showMsg(msgEl, 'تم الحفظ بنجاح ✓', true);
+    await loadSellers();
+    setTimeout(() => sellerEditPanel.classList.add('hidden'), 800);
+  } else {
+    showMsg(msgEl, 'حدث خطأ: ' + (body.error || 'غير معروف'), false);
+  }
+});
 
 function num(id){ return parseFloat(document.getElementById(id).value || '0') || 0; }
 
