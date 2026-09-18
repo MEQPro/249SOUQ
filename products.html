@@ -337,6 +337,45 @@
 
 <div class="divider"></div>
 
+<!-- FAQ -->
+<section class="faq-section" style="background:var(--cream)">
+  <div class="faq-inner">
+    <span class="section-tag" style="text-align:center;display:block">الأسئلة الشائعة</span>
+    <div class="reviews-title" style="margin-bottom:1.5rem">عندك سؤال؟ يمكن تلقى إجابته هنا</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">البخور ده صناعة يدوية؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">أيوة، صناعة يدوية 100% بأيادي سودانية معتمدة، كل كورة بتتحضر بعناية من غير أي إضافات صناعية.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كم تدوم ريحة البخور؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">ريحة قوية وفخمة بتدوم لساعات طويلة وبتملا البيت كامل، والكورة الواحدة بتكفيك أكثر من مرة.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كيف اطلب المنتج؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">اضغط على زر "اطلب عبر واتساب"، اختار الكمية، وحنكمل الطلب معاك مباشرة على واتساب.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">شنو وسائل الدفع المتاحة؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">تقدر تدفع بالبطاقة الائتمانية، عبر تابي (أقساط)، أو تحويل بنكي مباشر.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كم مدة التوصيل؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">حاليًا بنوصل للإمارات خلال 2-4 أيام عمل من تأكيد الطلب.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">فيه إمكانية استرجاع المنتج؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">بسبب طبيعة البخور كمنتج استهلاكي، ما بنقبل استرجاع بعد الاستخدام. لكن لو وصلك المنتج تالف أو فيه مشكلة، تواصل معانا فورًا وحنحل الموضوع.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">هل المنتج مستورد ولا سوداني أصلي؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">سوداني أصلي 100%، من صانعة سودانية معتمدة، من غير أي وسيط.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
@@ -389,6 +428,7 @@
 <script>
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
+function toggleFaq(el){el.closest(".faq-item").classList.toggle("open")}
 document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});
 function setImg(src,el){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
 (function(){

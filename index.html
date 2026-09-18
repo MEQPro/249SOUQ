@@ -193,6 +193,33 @@
 
 <div class="divider"></div>
 
+<!-- FAQ -->
+<section class="faq-section" style="background:var(--cream)">
+  <div class="faq-inner">
+    <span class="section-tag" style="text-align:center;display:block">الأسئلة الشائعة</span>
+    <div class="reviews-title" style="margin-bottom:1.5rem">عندك سؤال؟ يمكن تلقى إجابته هنا</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">شنو هو 249Souq؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">سوق إلكتروني يجمع منتجات سودانية أصيلة من صانعين وصانعات سودانيين، ويوصلها لبيتك في الخليج.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كيف اطلب من الموقع؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">تصفح المنتج، تواصل معانا عبر واتساب، ادفع بأمان، وحنوصلك الطلب لبيتك.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">وين بتوصلوا حاليًا؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">حاليًا بنوصل للإمارات، وقريبًا بنوسع لباقي دول الخليج وأوروبا.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">هل المنتجات أصلية سودانية 100%؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">أيوة، كل منتج عندنا مصنوع بأيادي سودانية معتمدة، من غير أي وسيط أو تقليد.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -240,6 +267,7 @@
 <a class="wa-float" href="https://wa.me/971508810475" target="_blank" aria-label="واتساب"><i class="ti ti-brand-whatsapp"></i></a>
 <script>function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
+function toggleFaq(el){el.closest(".faq-item").classList.toggle("open")}
 document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
