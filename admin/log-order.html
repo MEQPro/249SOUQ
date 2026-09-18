@@ -118,13 +118,16 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
     <div class="section-label">تفاصيل الطلب</div>
     <div class="row">
       <div class="field">
-        <label>البائع
-          <a href="javascript:void(0)" id="editSellerLink" style="font-weight:400;font-size:11px;color:var(--gold-dark);text-decoration:underline;margin-right:8px">تعديل بيانات البائع</a>
-          <a href="javascript:void(0)" id="addSellerLink" style="font-weight:400;font-size:11px;color:var(--gold-dark);text-decoration:underline;margin-right:8px">+ إضافة بائع جديد</a>
-        </label>
+        <label>البائع</label>
         <select id="sellerSelect"></select>
       </div>
       <div class="field"><label>الكمية</label><input id="quantity" value="1"/></div>
+    </div>
+    <div class="row" style="margin-top:-.4rem">
+      <div class="field" style="grid-column:1 / -1;display:flex;gap:.6rem">
+        <button type="button" id="editSellerLink" class="btn-ghost" style="width:auto;margin-top:0;background:var(--gold-pale);border-color:var(--gold-dark);color:var(--brown-deep)">✎ تعديل بيانات البائع المُختار أعلاه</button>
+        <button type="button" id="addSellerLink" class="btn-ghost" style="width:auto;margin-top:0">＋ هذا بائع جديد بالكامل</button>
+      </div>
     </div>
 
     <div id="sellerEditPanel" class="hidden" style="background:var(--cream-dark);border-radius:10px;padding:1rem;margin-bottom:.9rem">
