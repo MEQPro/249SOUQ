@@ -137,7 +137,7 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
         <div class="field" id="editSellerSlugField"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="editSellerSlug" placeholder="مثال: sara"/></div>
       </div>
       <div style="display:flex;gap:.6rem">
-        <button class="btn" id="saveSellerBtn" style="margin-top:.5rem">حفظ</button>
+        <button class="btn" id="saveSellerBtn" style="margin-top:.5rem;background:var(--gold-dark)">حفظ بيانات البائع (هذا لا يحفظ الطلب)</button>
         <button class="btn btn-ghost" id="cancelSellerBtn" style="margin-top:.5rem">إلغاء</button>
       </div>
       <div id="sellerEditMsg"></div>
@@ -290,9 +290,16 @@ const sellerEditPanel = document.getElementById('sellerEditPanel');
 const editSellerSlugField = document.getElementById('editSellerSlugField');
 let sellerEditMode = null; // 'edit' | 'add'
 
+function setOrderFormLocked(locked){
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = locked;
+  submitBtn.textContent = locked ? 'أكملي حفظ بيانات البائع أولاً' : 'حفظ الطلب';
+}
+
 function openSellerPanel(mode){
   sellerEditMode = mode;
   sellerEditPanel.classList.remove('hidden');
+  setOrderFormLocked(true);
   document.getElementById('sellerEditMsg').textContent = '';
   if(mode === 'edit'){
     const sel = document.getElementById('sellerSelect');
@@ -313,7 +320,10 @@ function openSellerPanel(mode){
 
 document.getElementById('editSellerLink').addEventListener('click', () => openSellerPanel('edit'));
 document.getElementById('addSellerLink').addEventListener('click', () => openSellerPanel('add'));
-document.getElementById('cancelSellerBtn').addEventListener('click', () => sellerEditPanel.classList.add('hidden'));
+document.getElementById('cancelSellerBtn').addEventListener('click', () => {
+  sellerEditPanel.classList.add('hidden');
+  setOrderFormLocked(false);
+});
 
 document.getElementById('saveSellerBtn').addEventListener('click', async () => {
   const msgEl = document.getElementById('sellerEditMsg');
@@ -346,7 +356,7 @@ document.getElementById('saveSellerBtn').addEventListener('click', async () => {
   if(res.ok){
     showMsg(msgEl, 'تم الحفظ بنجاح ✓', true);
     await loadSellers();
-    setTimeout(() => sellerEditPanel.classList.add('hidden'), 800);
+    setTimeout(() => { sellerEditPanel.classList.add('hidden'); setOrderFormLocked(false); }, 800);
   } else {
     showMsg(msgEl, 'حدث خطأ: ' + (body.error || 'غير معروف'), false);
   }
@@ -376,6 +386,17 @@ function updateSummary(){
 ['quantity','unitPriceCustomer','unitPriceSeller','deliveryFeeCharged','deliveryCostActual'].forEach(id => {
   document.getElementById(id).addEventListener('input', updateSummary);
 });
+
+function friendlyOrderError(code){
+  const map = {
+    seller_id_required: 'الرجاء اختيار البائع قبل حفظ الطلب',
+    customer_phone_required: 'الرجاء إدخال رقم واتساب العميل',
+    product_name_required: 'تعذّر تحديد المنتج — تأكدي من اختيار البائع',
+    quantity_invalid: 'الرجاء إدخال كمية صحيحة (رقم أكبر من صفر)',
+    prices_required: 'الرجاء إدخال سعر البيع للعميل وسعر البائعة'
+  };
+  return map[code] || ('حدث خطأ: ' + (code || 'غير معروف'));
+}
 
 document.getElementById('submitBtn').addEventListener('click', async () => {
   const btn = document.getElementById('submitBtn');
@@ -420,7 +441,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       await loadCouriers();
       updateSummary();
     } else {
-      showMsg(msgEl, 'حدث خطأ: ' + (j.error||'غير معروف'), false);
+      showMsg(msgEl, friendlyOrderError(j.error), false);
     }
   } catch(e){
     showMsg(msgEl, 'تعذّر الاتصال بالخادم', false);
