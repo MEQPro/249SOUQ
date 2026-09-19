@@ -1,4 +1,5 @@
 const { getServiceClient } = require('./_supabase');
+const { normalizePhone } = require('./_phone');
 
 function monthKey(dateStr) {
   const d = new Date(dateStr);
@@ -13,7 +14,9 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') { res.status(405).json({ error: 'method_not_allowed' }); return; }
 
   const slug = req.query && req.query.slug;
+  const phoneInput = req.query && req.query.phone;
   if (!slug) { res.status(400).json({ error: 'slug_required' }); return; }
+  if (!phoneInput) { res.status(400).json({ error: 'phone_required' }); return; }
 
   const supabase = getServiceClient();
 
@@ -21,12 +24,21 @@ module.exports = async (req, res) => {
   // and never accept an id here — only a slug, so this stays a private-link lookup.
   const { data: seller, error: sellerErr } = await supabase
     .from('sellers')
-    .select('id, name, product_name')
+    .select('id, name, product_name, phone')
     .eq('dashboard_slug', slug)
     .maybeSingle();
 
   if (sellerErr) { res.status(500).json({ error: sellerErr.message }); return; }
   if (!seller) { res.status(404).json({ error: 'seller_not_found' }); return; }
+
+  // Second factor: the seller's own registered phone number, same idea as a
+  // bank-statement PDF password. The private slug alone is not enough.
+  if (!seller.phone) { res.status(403).json({ error: 'phone_not_set' }); return; }
+  const normalizedInput = normalizePhone(phoneInput);
+  if (!normalizedInput || normalizedInput !== seller.phone) {
+    res.status(403).json({ error: 'phone_mismatch' });
+    return;
+  }
 
   // Only the fields this seller is allowed to see about their own orders:
   // quantity and THEIR payout price — never the customer's price, name, phone, or address.

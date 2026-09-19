@@ -58,7 +58,14 @@
   .pill.cancelled{background:#F5E1DE; color:var(--red);}
   .empty-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:24px 0;}
   .loading-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:50px 0;}
-  .error-note{color:var(--red); font-size:13px; text-align:center; padding:50px 20px;}
+  .error-note{color:var(--red); font-size:13px; text-align:center; padding:20px 20px 0;}
+
+  #lockScreen{max-width:380px; margin:60px auto; background:var(--surface); border-radius:16px; padding:32px; box-shadow:0 4px 24px rgba(58,42,29,0.1); text-align:center;}
+  #lockScreen h2{color:var(--brown-deep); margin:0 0 6px;}
+  #lockScreen p{color:var(--ink-muted); font-size:13px; margin-top:0; margin-bottom:20px;}
+  #lockScreen input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--cream-dark); font-family:inherit; font-size:15px; margin-bottom:12px; text-align:center; direction:ltr;}
+  #lockScreen button{width:100%; padding:12px; border:none; border-radius:10px; background:var(--gold-dark); color:#fff; font-family:inherit; font-weight:700; font-size:15px; cursor:pointer;}
+  #lockScreen button:hover{background:var(--brown-mid);}
 </style>
 </head>
 <body>
@@ -69,7 +76,15 @@
 </div>
 
 <div class="wrap">
-  <div id="loadingNote" class="loading-note">جاري تحميل بياناتك...</div>
+  <div id="lockScreen">
+    <h2>🔒 تأكيد الهوية</h2>
+    <p>لحماية بياناتك، أدخلي رقم هاتفك المسجل لدى 249Souq</p>
+    <input type="tel" id="phoneInput" placeholder="05XXXXXXXX" dir="ltr" />
+    <button id="unlockBtn">عرض لوحتي</button>
+    <div id="lockError" class="error-note"></div>
+  </div>
+
+  <div id="loadingNote" class="loading-note" style="display:none;">جاري تحميل بياناتك...</div>
 
   <div id="dashboardContent" style="display:none;">
     <div class="privacy-note">هذا الرابط خاص بك — لا تشاركيه مع أحد</div>
@@ -134,21 +149,40 @@ function renderMonthlyChart(series){
   });
 }
 
-async function loadSellerDashboard(){
+function friendlyLockError(code){
+  if(code === 'phone_not_set') return 'لم يتم تسجيل رقم هاتفك بعد. تواصلي مع سلوى لإضافته.';
+  if(code === 'phone_mismatch') return 'رقم الهاتف غير مطابق. تأكدي من إدخال رقمك المسجل لدى 249Souq.';
+  if(code === 'seller_not_found') return 'رابط غير صحيح. تأكدي من الرابط الذي أرسلناه لك.';
+  return 'حدث خطأ، حاولي مرة أخرى.';
+}
+
+async function loadSellerDashboard(phone){
   const slug = getSlugFromUrl();
   if(!slug){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('loadingNote').style.display = 'block';
     document.getElementById('loadingNote').className = 'error-note';
     document.getElementById('loadingNote').textContent = 'رابط غير صحيح. تأكدي من الرابط الذي أرسلناه لك.';
     return;
   }
 
+  const lockErrorEl = document.getElementById('lockError');
+  lockErrorEl.textContent = '';
+
   try{
-    const r = await fetch('/api/seller-dashboard?slug=' + encodeURIComponent(slug));
+    const r = await fetch('/api/seller-dashboard?slug=' + encodeURIComponent(slug) + '&phone=' + encodeURIComponent(phone));
     if(!r.ok){
       const d = await r.json().catch(() => ({}));
-      throw new Error(d.error || 'failed');
+      lockErrorEl.textContent = friendlyLockError(d.error);
+      return;
     }
     const d = await r.json();
+
+    // Convenience only for this tab session — the server re-checks the phone on every load.
+    try{ sessionStorage.setItem('seller_phone_' + slug, phone); }catch(e){}
+
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('loadingNote').style.display = 'none';
 
     document.getElementById('sellerHeading').textContent = 'أهلًا ' + d.seller_name;
     document.getElementById('sellerSub').textContent = d.product_name + ' — 249Souq';
@@ -179,15 +213,34 @@ async function loadSellerDashboard(){
       });
     }
 
-    document.getElementById('loadingNote').style.display = 'none';
     document.getElementById('dashboardContent').style.display = 'block';
   }catch(e){
-    document.getElementById('loadingNote').className = 'error-note';
-    document.getElementById('loadingNote').textContent = 'تعذر العثور على بياناتك. تأكدي من الرابط أو تواصلي مع سلوى.';
+    lockErrorEl.textContent = 'تعذر الاتصال بالخادم. حاولي مرة أخرى.';
   }
 }
 
-loadSellerDashboard();
+document.getElementById('unlockBtn').addEventListener('click', () => {
+  const phone = document.getElementById('phoneInput').value.trim();
+  if(!phone){
+    document.getElementById('lockError').textContent = 'الرجاء إدخال رقم هاتفك';
+    return;
+  }
+  loadSellerDashboard(phone);
+});
+document.getElementById('phoneInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('unlockBtn').click();
+});
+
+// Convenience: if this phone already unlocked this link earlier in the same tab session,
+// pre-fill it (still re-verified server-side on every load — this saves retyping only).
+(function prefillFromSession(){
+  const slug = getSlugFromUrl();
+  if(!slug) return;
+  try{
+    const saved = sessionStorage.getItem('seller_phone_' + slug);
+    if(saved) document.getElementById('phoneInput').value = saved;
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

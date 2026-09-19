@@ -142,6 +142,9 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
         <div class="field"><label>سعر البائع الافتراضي (للوحدة، AED)</label><input id="editSellerPrice"/></div>
         <div class="field" id="editSellerSlugField"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="editSellerSlug" placeholder="مثال: sara"/></div>
       </div>
+      <div class="row single">
+        <div class="field"><label>رقم هاتف البائعة (لفتح لوحتها — مطلوب لتفعيل الرابط)</label><input id="editSellerPhone" placeholder="05XXXXXXXX" dir="ltr"/></div>
+      </div>
       <div class="row single" id="sellerLinkPreviewRow" style="margin-bottom:.6rem">
         <div class="field"><label>رابط لوحة البائع الخاص بها (انسخيه وأرسليه لها)</label><input id="sellerLinkPreview" readonly style="background:#fff;color:var(--green-dark);font-weight:600" onclick="this.select()"/></div>
       </div>
@@ -245,6 +248,7 @@ async function loadSellers(){
     opt.dataset.product = s.product_name;
     opt.dataset.name = s.name;
     opt.dataset.slug = s.dashboard_slug;
+    opt.dataset.phone = s.phone || '';
     sel.appendChild(opt);
   });
   applySellerDefaults();
@@ -317,6 +321,7 @@ function openSellerPanel(mode){
     document.getElementById('editSellerName').value = opt.dataset.name || '';
     document.getElementById('editSellerProduct').value = opt.dataset.product || '';
     document.getElementById('editSellerPrice').value = opt.dataset.payout || '';
+    document.getElementById('editSellerPhone').value = opt.dataset.phone || '';
     editSellerSlugField.classList.add('hidden'); // slug stays fixed once a seller has a live link
     document.getElementById('sellerLinkPreview').value = opt.dataset.slug ? (window.location.origin + '/dashboard/' + opt.dataset.slug) : '';
   } else {
@@ -324,6 +329,7 @@ function openSellerPanel(mode){
     document.getElementById('editSellerProduct').value = '';
     document.getElementById('editSellerPrice').value = '';
     document.getElementById('editSellerSlug').value = '';
+    document.getElementById('editSellerPhone').value = '';
     editSellerSlugField.classList.remove('hidden');
     document.getElementById('sellerLinkPreview').value = '';
   }
@@ -346,6 +352,7 @@ document.getElementById('saveSellerBtn').addEventListener('click', async () => {
   const name = document.getElementById('editSellerName').value.trim();
   const product_name = document.getElementById('editSellerProduct').value.trim();
   const default_payout_price = parseFloat(document.getElementById('editSellerPrice').value || '0') || 0;
+  const phone = document.getElementById('editSellerPhone').value.trim();
 
   if(!name || !product_name){
     showMsg(msgEl, 'الاسم واسم المنتج مطلوبان', false);
@@ -358,14 +365,14 @@ document.getElementById('saveSellerBtn').addEventListener('click', async () => {
     const id = sel.value;
     res = await fetch('/api/sellers', {
       method:'PUT', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ id, name, product_name, default_payout_price })
+      body: JSON.stringify({ id, name, product_name, default_payout_price, phone })
     });
   } else {
     const dashboard_slug = document.getElementById('editSellerSlug').value.trim();
     if(!dashboard_slug){ showMsg(msgEl, 'رابط لوحة البائع مطلوب لإضافة بائع جديد', false); return; }
     res = await fetch('/api/sellers', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ name, product_name, dashboard_slug, default_payout_price })
+      body: JSON.stringify({ name, product_name, dashboard_slug, default_payout_price, phone })
     });
   }
   body = await res.json();
