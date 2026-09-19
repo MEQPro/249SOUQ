@@ -111,7 +111,7 @@
   .modal-msg.err{color:var(--red);}
   .modal-msg.ok{color:var(--green-dark);}
 
-  #sellerReportSelect option{color:var(--brown-deep); background:#fff;}
+  #sellerReportSelect option, #courierReportSelect option{color:var(--brown-deep); background:#fff;}
 
   .report-modal-box{max-width:640px;}
   .report-actions{display:flex; gap:10px; margin-bottom:16px;}
@@ -124,11 +124,14 @@
   @media print{
     /* display:none removes these from layout entirely (unlike visibility:hidden, which
        keeps their height and pushes the report onto later pages, leaving blank pages).
-       Hide everything except the report modal's content. */
-    #loginScreen, .topbar, #mainWrap, #editOverlay{display:none !important;}
-    #reportOverlay{display:block !important; position:static !important; background:none !important; padding:0 !important; inset:auto !important;}
+       Hide everything except whichever modal is currently open (.visible). NOTE: as of
+       Sep 19 this still doesn't fully fix multi-page/blank-page printing in testing —
+       logged as a known bug, revisit with a dedicated print-only page if it recurs. */
+    #loginScreen, .topbar, #mainWrap{display:none !important;}
+    .modal-overlay{display:none !important;}
+    .modal-overlay.visible{display:block !important; position:static !important; background:none !important; padding:0 !important; inset:auto !important;}
     .modal-box{position:static !important; max-width:none !important; max-height:none !important; overflow:visible !important; box-shadow:none !important; padding:0 !important; margin:0 !important;}
-    #sellerReportPrintArea{position:static !important; padding:20px;}
+    #sellerReportPrintArea, #courierReportPrintArea{position:static !important; padding:20px;}
     .report-actions{display:none !important;}
   }
 </style>
@@ -149,9 +152,12 @@
       <h1>Growth Dashboard <span style="color:var(--cream-dark); font-weight:400;">| 249Souq</span></h1>
       <div class="sub">نظرة شاملة على المبيعات، الهامش، والعملاء</div>
     </div>
-    <div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
       <select id="sellerReportSelect" style="background:rgba(255,255,255,0.1); color:var(--cream); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;">
         <option value="">📄 تقرير بائع...</option>
+      </select>
+      <select id="courierReportSelect" style="background:rgba(255,255,255,0.1); color:var(--cream); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;">
+        <option value="">🚚 تقرير شركة توصيل...</option>
       </select>
     </div>
     <div class="nav-links">
@@ -331,6 +337,47 @@
             <table>
               <thead><tr><th>التاريخ</th><th>الكمية</th><th>مستحقاته</th><th>حالة التوصيل</th></tr></thead>
               <tbody id="reportActivityTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="courierOverlay">
+  <div class="modal-box report-modal-box">
+    <div class="report-actions">
+      <button class="btn-print" id="courierPrintBtn">🖨️ طباعة / حفظ PDF</button>
+      <button class="btn-print" id="courierCopyBtn" style="background:var(--green-dark);">📋 نسخ كشف الشحن (للواتساب)</button>
+      <button class="btn-cancel" id="courierCloseBtn" style="flex:0;padding:9px 16px;">إغلاق</button>
+    </div>
+    <div id="courierReportPrintArea">
+      <div id="courierLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
+      <div id="courierContent" style="display:none;">
+        <div style="text-align:center; margin-bottom:18px;">
+          <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء شركة التوصيل — 249Souq</div>
+          <div id="courierName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
+          <div id="courierDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
+        </div>
+        <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
+          <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="courierOrderCount">-</div></div>
+          <div class="stat-tile green"><div class="label">إجمالي هامش الشحن (درهم)</div><div class="value green" id="courierTotalMargin">-</div></div>
+          <div class="stat-tile"><div class="label">متوسط الهامش لكل طلب</div><div class="value" id="courierAvgMargin">-</div></div>
+          <div class="stat-tile"><div class="label">قيد التجهيز</div><div class="value" id="courierStatusPreparing">-</div></div>
+          <div class="stat-tile"><div class="label">تم الشحن</div><div class="value" id="courierStatusShipped">-</div></div>
+          <div class="stat-tile green"><div class="label">تم التوصيل</div><div class="value green" id="courierStatusDelivered">-</div></div>
+        </div>
+        <div style="margin-top:18px;">
+          <h3 style="font-size:14px; margin-bottom:10px;">هامش الشحن شهريًا <span class="muted">(آخر 6 أشهر)</span></h3>
+          <div class="bar-chart" id="courierMonthlyChart" style="height:130px;"></div>
+        </div>
+        <div style="margin-top:18px;">
+          <h3 style="font-size:14px; margin-bottom:10px;">كشف الشحن اليومي <span class="muted">(الطلبات قيد التجهيز — جاهزة للتسليم)</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th><th>العنوان</th><th>المنتج</th><th>الكمية</th><th>الوزن التقريبي (غم)</th></tr></thead>
+              <tbody id="courierManifestTbody"></tbody>
             </table>
           </div>
         </div>
@@ -687,7 +734,139 @@ document.getElementById('reportOverlay').addEventListener('click', (e) => {
 });
 document.getElementById('reportPrintBtn').addEventListener('click', () => window.print());
 
+async function loadCourierReportOptions(){
+  try{
+    const r = await fetch('/api/couriers');
+    if(!r.ok) return;
+    const d = await r.json();
+    const sel = document.getElementById('courierReportSelect');
+    const allOpt = document.createElement('option');
+    allOpt.value = 'all';
+    allOpt.textContent = 'كل شركات التوصيل (إجمالي)';
+    sel.appendChild(allOpt);
+    (d.couriers || []).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+  }catch(e){ /* non-critical */ }
+}
+
+function renderCourierMonthlyChart(series){
+  const el = document.getElementById('courierMonthlyChart');
+  el.innerHTML = '';
+  if(!series.length){ el.innerHTML = '<div class="empty-note">لا توجد بيانات كافية بعد</div>'; return; }
+  const max = Math.max(...series.map(s => Math.abs(s.margin)), 1);
+  series.forEach(s => {
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    const heightPct = Math.max((Math.abs(s.margin) / max) * 100, 2);
+    col.innerHTML = `
+      <div class="bar-val">${fmt(s.margin)}</div>
+      <div class="bar" style="height:${heightPct}%"></div>
+      <div class="bar-label">${s.label}</div>
+    `;
+    el.appendChild(col);
+  });
+}
+
+let currentCourierManifest = [];
+
+document.getElementById('courierReportSelect').addEventListener('change', async (e) => {
+  const courierId = e.target.value;
+  if(!courierId) return;
+
+  document.getElementById('courierOverlay').classList.add('visible');
+  document.getElementById('courierLoading').style.display = 'block';
+  document.getElementById('courierContent').style.display = 'none';
+
+  try{
+    const r = await fetch('/api/courier-report?courier_id=' + encodeURIComponent(courierId));
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+
+    document.getElementById('courierName').textContent = d.courier_name;
+    document.getElementById('courierDate').textContent = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
+
+    document.getElementById('courierOrderCount').textContent = fmt(d.totals.orderCount);
+    document.getElementById('courierTotalMargin').textContent = fmt(d.totals.totalMargin);
+    document.getElementById('courierAvgMargin').textContent = fmt(Math.round(d.totals.avgMarginPerOrder));
+    document.getElementById('courierStatusPreparing').textContent = fmt(d.totals.statusBreakdown.preparing || 0);
+    document.getElementById('courierStatusShipped').textContent = fmt(d.totals.statusBreakdown.shipped || 0);
+    document.getElementById('courierStatusDelivered').textContent = fmt(d.totals.statusBreakdown.delivered || 0);
+
+    renderCourierMonthlyChart(d.monthlySeries);
+
+    currentCourierManifest = d.pendingManifest || [];
+    const tbody = document.getElementById('courierManifestTbody');
+    tbody.innerHTML = '';
+    if(!currentCourierManifest.length){
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-note">لا توجد طلبات قيد التجهيز حاليًا</td></tr>';
+    } else {
+      currentCourierManifest.forEach(m => {
+        const tr = document.createElement('tr');
+        const dateStr = new Date(m.date).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
+        tr.innerHTML = `
+          <td>${dateStr}</td>
+          <td>${m.customer_name || '-'}</td>
+          <td dir="ltr">${m.customer_phone || '-'}</td>
+          <td>${m.emirate || '-'}</td>
+          <td>${m.address || '-'}</td>
+          <td>${m.product_name || '-'}</td>
+          <td>${m.quantity}</td>
+          <td>${m.weight_grams ? fmt(m.weight_grams) : '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('courierLoading').style.display = 'none';
+    document.getElementById('courierContent').style.display = 'block';
+  }catch(e){
+    document.getElementById('courierLoading').textContent = 'تعذر تحميل تقرير شركة التوصيل.';
+  }
+});
+
+document.getElementById('courierCloseBtn').addEventListener('click', () => {
+  document.getElementById('courierOverlay').classList.remove('visible');
+  document.getElementById('courierReportSelect').value = '';
+});
+document.getElementById('courierOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'courierOverlay'){
+    document.getElementById('courierOverlay').classList.remove('visible');
+    document.getElementById('courierReportSelect').value = '';
+  }
+});
+document.getElementById('courierPrintBtn').addEventListener('click', () => window.print());
+
+document.getElementById('courierCopyBtn').addEventListener('click', async () => {
+  if(!currentCourierManifest.length){
+    alert('لا توجد طلبات قيد التجهيز لنسخها حاليًا.');
+    return;
+  }
+  const courierLabel = document.getElementById('courierName').textContent;
+  const dateLabel = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
+  let text = `كشف الشحن اليومي — 249Souq\nشركة التوصيل: ${courierLabel}\nالتاريخ: ${dateLabel}\nعدد الطلبات: ${currentCourierManifest.length}\n\n`;
+  currentCourierManifest.forEach((m, i) => {
+    text += `${i + 1}) ${m.customer_name || '-'}\n`;
+    text += `   📞 ${m.customer_phone || '-'}\n`;
+    text += `   📍 ${m.emirate || '-'}${m.address ? ' — ' + m.address : ''}\n`;
+    text += `   📦 ${m.product_name || '-'} × ${m.quantity}${m.weight_grams ? ' (≈' + fmt(m.weight_grams) + ' غم)' : ''}\n\n`;
+  });
+  try{
+    await navigator.clipboard.writeText(text);
+    const btn = document.getElementById('courierCopyBtn');
+    const original = btn.textContent;
+    btn.textContent = '✅ تم النسخ';
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  }catch(e){
+    alert('تعذر النسخ التلقائي، حاول مرة أخرى.');
+  }
+});
+
 loadSellerReportOptions();
+loadCourierReportOptions();
 checkSession();
 </script>
 </body>

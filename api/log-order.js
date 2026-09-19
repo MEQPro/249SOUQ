@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   }
 
   const {
-    customer_name, customer_phone, emirate, source_channel,
+    customer_name, customer_phone, emirate, source_channel, address,
     seller_id, product_name, quantity,
     unit_price_customer, unit_price_seller, promo_code,
     delivery_fee_charged, delivery_cost_actual, courier_name,
@@ -46,17 +46,21 @@ module.exports = async (req, res) => {
   if (!customerId) {
     const { data: newCust, error: custErr } = await supabase
       .from('customers')
-      .insert({ phone, name: customer_name || null, emirate: emirate || null, source_channel: source_channel || null })
+      .insert({
+        phone, name: customer_name || null, emirate: emirate || null,
+        source_channel: source_channel || null, address: address || null
+      })
       .select('id')
       .single();
     if (custErr) { res.status(500).json({ error: custErr.message }); return; }
     customerId = newCust.id;
-  } else if (customer_name || emirate || source_channel) {
+  } else if (customer_name || emirate || source_channel || address) {
     // Keep the profile fresh without wiping fields we weren't given this time
     const update = {};
     if (customer_name) update.name = customer_name;
     if (emirate) update.emirate = emirate;
     if (source_channel) update.source_channel = source_channel;
+    if (address) update.address = address;
     await supabase.from('customers').update(update).eq('id', customerId);
   }
 
