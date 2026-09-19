@@ -110,6 +110,23 @@
   .modal-msg{font-size:12.5px; margin-top:10px; min-height:16px;}
   .modal-msg.err{color:var(--red);}
   .modal-msg.ok{color:var(--green-dark);}
+
+  #sellerReportSelect option{color:var(--brown-deep); background:#fff;}
+
+  .report-modal-box{max-width:640px;}
+  .report-actions{display:flex; gap:10px; margin-bottom:16px;}
+  .report-actions button{padding:9px 16px; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;}
+  .btn-print{background:var(--gold-dark); color:#fff;}
+  .btn-print:hover{background:var(--brown-mid);}
+  #sellerReportPrintArea .stat-tile{padding:12px;}
+  #sellerReportPrintArea .stat-tile .value{font-size:19px;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #sellerReportPrintArea, #sellerReportPrintArea *{visibility:visible;}
+    #sellerReportPrintArea{position:absolute; top:0; right:0; left:0; padding:20px;}
+    .report-actions, .modal-actions{display:none !important;}
+  }
 </style>
 </head>
 <body>
@@ -127,6 +144,11 @@
     <div>
       <h1>Growth Dashboard <span style="color:var(--cream-dark); font-weight:400;">| 249Souq</span></h1>
       <div class="sub">نظرة شاملة على المبيعات، الهامش، والعملاء</div>
+    </div>
+    <div>
+      <select id="sellerReportSelect" style="background:rgba(255,255,255,0.1); color:var(--cream); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;">
+        <option value="">📄 تقرير بائع...</option>
+      </select>
     </div>
     <div class="nav-links">
       <a href="/admin/log-order.html">＋ تسجيل طلب جديد</a>
@@ -270,6 +292,45 @@
     <div class="modal-actions">
       <button class="btn-save" id="editSaveBtn">حفظ التعديلات</button>
       <button class="btn-cancel" id="editCancelBtn">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reportOverlay">
+  <div class="modal-box report-modal-box">
+    <div class="report-actions">
+      <button class="btn-print" id="reportPrintBtn">🖨️ طباعة / حفظ PDF</button>
+      <button class="btn-cancel" id="reportCloseBtn" style="flex:0;padding:9px 16px;">إغلاق</button>
+    </div>
+    <div id="sellerReportPrintArea">
+      <div id="reportLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
+      <div id="reportContent" style="display:none;">
+        <div style="text-align:center; margin-bottom:18px;">
+          <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء البائع — 249Souq</div>
+          <div id="reportSellerName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
+          <div id="reportDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
+        </div>
+        <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
+          <div class="stat-tile green"><div class="label">الوحدات هذا الشهر</div><div class="value green" id="reportMonthUnits">-</div></div>
+          <div class="stat-tile green"><div class="label">مستحقاته هذا الشهر</div><div class="value green" id="reportMonthPayout">-</div></div>
+          <div class="stat-tile"><div class="label">إجمالي الوحدات</div><div class="value" id="reportTotalUnits">-</div></div>
+          <div class="stat-tile"><div class="label">إجمالي مستحقاته</div><div class="value" id="reportTotalPayout">-</div></div>
+          <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="reportOrderCount">-</div></div>
+        </div>
+        <div style="margin-top:18px;">
+          <h3 style="font-size:14px; margin-bottom:10px;">الوحدات شهريًا (آخر 6 أشهر)</h3>
+          <div class="bar-chart" id="reportMonthlyChart" style="height:130px;"></div>
+        </div>
+        <div style="margin-top:18px;">
+          <h3 style="font-size:14px; margin-bottom:10px;">آخر النشاط</h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>التاريخ</th><th>الكمية</th><th>مستحقاته</th><th>حالة التوصيل</th></tr></thead>
+              <tbody id="reportActivityTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -528,6 +589,101 @@ document.getElementById('editSaveBtn').addEventListener('click', async () => {
   }
 });
 
+async function loadSellerReportOptions(){
+  try{
+    const r = await fetch('/api/sellers');
+    if(!r.ok) return;
+    const d = await r.json();
+    const sel = document.getElementById('sellerReportSelect');
+    (d.sellers || []).forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name + ' — ' + s.product_name;
+      sel.appendChild(opt);
+    });
+  }catch(e){ /* non-critical */ }
+}
+
+function renderReportMonthlyChart(series){
+  const el = document.getElementById('reportMonthlyChart');
+  el.innerHTML = '';
+  if(!series.length){ el.innerHTML = '<div class="empty-note">لا توجد بيانات كافية بعد</div>'; return; }
+  const max = Math.max(...series.map(s => s.units), 1);
+  series.forEach(s => {
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    const heightPct = Math.max((s.units / max) * 100, 2);
+    col.innerHTML = `
+      <div class="bar-val">${fmt(s.units)}</div>
+      <div class="bar" style="height:${heightPct}%"></div>
+      <div class="bar-label">${s.label}</div>
+    `;
+    el.appendChild(col);
+  });
+}
+
+document.getElementById('sellerReportSelect').addEventListener('change', async (e) => {
+  const sellerId = e.target.value;
+  if(!sellerId) return;
+
+  document.getElementById('reportOverlay').classList.add('visible');
+  document.getElementById('reportLoading').style.display = 'block';
+  document.getElementById('reportContent').style.display = 'none';
+
+  try{
+    const r = await fetch('/api/admin-seller-report?seller_id=' + encodeURIComponent(sellerId));
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+
+    document.getElementById('reportSellerName').textContent = d.seller_name + ' — ' + d.product_name;
+    document.getElementById('reportDate').textContent = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
+
+    document.getElementById('reportMonthUnits').textContent = fmt(d.currentMonth.units);
+    document.getElementById('reportMonthPayout').textContent = fmt(d.currentMonth.payout);
+    document.getElementById('reportTotalUnits').textContent = fmt(d.totals.totalUnits);
+    document.getElementById('reportTotalPayout').textContent = fmt(d.totals.totalPayout);
+    document.getElementById('reportOrderCount').textContent = fmt(d.totals.orderCount);
+
+    renderReportMonthlyChart(d.monthlySeries);
+
+    const tbody = document.getElementById('reportActivityTbody');
+    tbody.innerHTML = '';
+    if(!d.recentActivity.length){
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-note">لا توجد طلبات مسجلة بعد</td></tr>';
+    } else {
+      d.recentActivity.forEach(a => {
+        const tr = document.createElement('tr');
+        const dateStr = new Date(a.date).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
+        tr.innerHTML = `
+          <td>${dateStr}</td>
+          <td>${a.quantity}</td>
+          <td>${fmt(a.payout)}</td>
+          <td><span class="pill ${pillClass(a.delivery_status)}">${STATUS_LABELS[a.delivery_status] || a.delivery_status || '-'}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('reportLoading').style.display = 'none';
+    document.getElementById('reportContent').style.display = 'block';
+  }catch(e){
+    document.getElementById('reportLoading').textContent = 'تعذر تحميل تقرير هذا البائع.';
+  }
+});
+
+document.getElementById('reportCloseBtn').addEventListener('click', () => {
+  document.getElementById('reportOverlay').classList.remove('visible');
+  document.getElementById('sellerReportSelect').value = '';
+});
+document.getElementById('reportOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'reportOverlay'){
+    document.getElementById('reportOverlay').classList.remove('visible');
+    document.getElementById('sellerReportSelect').value = '';
+  }
+});
+document.getElementById('reportPrintBtn').addEventListener('click', () => window.print());
+
+loadSellerReportOptions();
 checkSession();
 </script>
 </body>
