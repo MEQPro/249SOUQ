@@ -11,7 +11,7 @@
   "rewrites": [
     {
       "source": "/dashboard/:slug",
-      "destination": "/seller/dashboard.html"
+      "destination": "/seller/dashboard"
     }
   ]
 }
