@@ -109,6 +109,10 @@
   .action-btn.primary{background:var(--gold-pale); color:var(--gold-dark);}
   .action-btn.primary:hover{background:var(--gold-light);}
 
+  /* A cell marked dir="ltr" (phone numbers, so +971... reads left-to-right) still needs to
+     visually align to the right like the rest of this RTL table, or the column looks jagged. */
+  td[dir="ltr"]{text-align:right;}
+
   .modal-overlay{display:none; position:fixed; inset:0; background:rgba(58,42,29,0.45); align-items:center; justify-content:center; z-index:100; padding:20px;}
   .modal-overlay.visible{display:flex;}
   .modal-box{background:var(--surface); border-radius:16px; padding:26px; max-width:520px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,0.25);}
@@ -435,10 +439,11 @@
             <tbody id="couriersTbody"><tr><td colspan="2" class="empty-note">جاري التحميل...</td></tr></tbody>
           </table>
         </div>
+        <button class="edit-btn" id="addCourierBtn" style="margin-top:14px;">+ إضافة شركة توصيل جديدة</button>
       </div>
 
       <div class="card" id="courierEditCard" style="display:none;">
-        <h3>تعديل اسم شركة التوصيل</h3>
+        <h3 id="courierEditTitle">تعديل اسم شركة التوصيل</h3>
         <div class="modal-row single">
           <div class="modal-field"><label>الاسم</label><input id="courEditName"/></div>
         </div>
@@ -1364,7 +1369,7 @@ function renderCouriersTable(){
   tbody.innerHTML = '';
   const rows = [{id: 'all', name: 'كل شركات التوصيل (إجمالي)', __all: true}, ...couriersCache];
   if(!couriersCache.length){
-    tbody.innerHTML = '<tr><td colspan="2" class="empty-note">لا توجد شركات توصيل مسجّلة بعد — تُضاف تلقائيًا من نموذج تسجيل الطلب</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="2" class="empty-note">لا توجد شركات توصيل مسجّلة بعد — أضيفي واحدة أدناه، أو ستُضاف تلقائيًا عند كتابة اسمها في نموذج تسجيل الطلب</td></tr>';
     return;
   }
   rows.forEach(c => {
@@ -1391,17 +1396,26 @@ function renderCouriersTable(){
 }
 
 function openCourierEdit(id){
-  const c = couriersCache.find(x => String(x.id) === String(id));
-  if(!c) return;
-  currentEditCourierId = id;
-  document.getElementById('courEditName').value = c.name || '';
+  document.getElementById('courierReportCard').style.display = 'none';
+  document.getElementById('courierManifestCard').style.display = 'none';
+  if(id){
+    const c = couriersCache.find(x => String(x.id) === String(id));
+    if(!c) return;
+    currentEditCourierId = id;
+    document.getElementById('courierEditTitle').textContent = 'تعديل اسم شركة التوصيل';
+    document.getElementById('courEditName').value = c.name || '';
+  } else {
+    currentEditCourierId = null;
+    document.getElementById('courierEditTitle').textContent = 'إضافة شركة توصيل جديدة';
+    document.getElementById('courEditName').value = '';
+  }
   document.getElementById('courEditMsg').textContent = '';
   document.getElementById('courEditMsg').className = 'modal-msg';
   document.getElementById('courierEditCard').style.display = 'block';
-  document.getElementById('courierReportCard').style.display = 'none';
-  document.getElementById('courierManifestCard').style.display = 'none';
   document.getElementById('courierEditCard').scrollIntoView({behavior:'smooth', block:'start'});
 }
+
+document.getElementById('addCourierBtn').addEventListener('click', () => openCourierEdit(null));
 
 document.getElementById('courEditCancelBtn').addEventListener('click', () => {
   document.getElementById('courierEditCard').style.display = 'none';
@@ -1414,8 +1428,9 @@ document.getElementById('courEditSaveBtn').addEventListener('click', async () =>
   if(!name){ msgEl.textContent = 'الاسم مطلوب'; msgEl.className = 'modal-msg err'; return; }
   try{
     const r = await fetch('/api/couriers', {
-      method: 'PUT', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ id: currentEditCourierId, name })
+      method: currentEditCourierId ? 'PUT' : 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(currentEditCourierId ? { id: currentEditCourierId, name } : { name })
     });
     const d = await r.json();
     if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
