@@ -124,7 +124,12 @@
   @media print{
     body *{visibility:hidden;}
     #sellerReportPrintArea, #sellerReportPrintArea *{visibility:visible;}
-    #sellerReportPrintArea{position:absolute; top:0; right:0; left:0; padding:20px;}
+    /* The overlay/box are position:fixed for on-screen use, which makes browsers repeat
+       them on every printed page. Reset them to normal static flow for print so the
+       report prints once, not once per page. */
+    .modal-overlay{position:static !important; display:block !important; background:none !important; padding:0 !important; inset:auto !important;}
+    .modal-box{position:static !important; max-width:none !important; max-height:none !important; overflow:visible !important; box-shadow:none !important; padding:0 !important; margin:0 !important;}
+    #sellerReportPrintArea{position:static !important; padding:20px;}
     .report-actions, .modal-actions{display:none !important;}
   }
 </style>
