@@ -37,6 +37,16 @@
   .nav-links a:hover{background:rgba(255,255,255,0.18);}
   .nav-links a.logout{background:rgba(180,72,58,0.25);}
 
+  .tab-nav{
+    max-width:1180px; margin:0 auto; padding:16px 24px 0; display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    background:var(--surface); color:var(--brown-mid); border:1px solid var(--cream-dark); border-radius:10px 10px 0 0;
+    padding:11px 20px; font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; transition:all .15s;
+  }
+  .tab-btn:hover{background:var(--cream-dark);}
+  .tab-btn.active{background:var(--brown-deep); color:var(--gold-light); border-color:var(--brown-deep);}
+
   #loginScreen{max-width:380px; margin:80px auto; background:var(--surface); border-radius:16px; padding:32px; box-shadow:0 4px 24px rgba(58,42,29,0.1); text-align:center;}
   #loginScreen h2{color:var(--brown-deep); margin-top:0;}
   #loginScreen input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--cream-dark); font-family:inherit; font-size:15px; margin-bottom:12px;}
@@ -44,8 +54,11 @@
   #loginScreen button:hover{background:var(--brown-mid);}
   #loginError{color:var(--red); font-size:13px; min-height:18px;}
 
-  .wrap{max-width:1180px; margin:0 auto; padding:24px; display:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:20px 24px 24px; display:none;}
   .wrap.visible{display:block;}
+
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
 
   .stat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:24px;}
   .stat-tile{background:var(--surface); border-radius:14px; padding:16px 18px; box-shadow:0 2px 10px rgba(58,42,29,0.06); border-inline-start:4px solid var(--gold);}
@@ -91,6 +104,10 @@
 
   .edit-btn{background:var(--gold-pale); color:var(--gold-dark); border:none; border-radius:7px; padding:5px 12px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;}
   .edit-btn:hover{background:var(--gold-light);}
+  .action-btn{background:var(--cream-dark); color:var(--brown-mid); border:none; border-radius:7px; padding:5px 10px; font-family:inherit; font-size:11.5px; font-weight:700; cursor:pointer; margin-inline-start:4px;}
+  .action-btn:hover{background:#e8ddc4;}
+  .action-btn.primary{background:var(--gold-pale); color:var(--gold-dark);}
+  .action-btn.primary:hover{background:var(--gold-light);}
 
   .modal-overlay{display:none; position:fixed; inset:0; background:rgba(58,42,29,0.45); align-items:center; justify-content:center; z-index:100; padding:20px;}
   .modal-overlay.visible{display:flex;}
@@ -111,28 +128,23 @@
   .modal-msg.err{color:var(--red);}
   .modal-msg.ok{color:var(--green-dark);}
 
-  #sellerReportSelect option, #courierReportSelect option{color:var(--brown-deep); background:#fff;}
-
-  .report-modal-box{max-width:640px;}
   .report-actions{display:flex; gap:10px; margin-bottom:16px;}
   .report-actions button{padding:9px 16px; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;}
   .btn-print{background:var(--gold-dark); color:#fff;}
   .btn-print:hover{background:var(--brown-mid);}
-  #sellerReportPrintArea .stat-tile{padding:12px;}
-  #sellerReportPrintArea .stat-tile .value{font-size:19px;}
+  .btn-copy{background:var(--green-dark); color:#fff;}
+  .btn-copy:hover{background:var(--green);}
+
+  #printStage{display:none;}
+  #printStage .stat-tile{padding:12px;}
+  #printStage .stat-tile .value{font-size:19px;}
 
   @media print{
-    /* display:none removes these from layout entirely (unlike visibility:hidden, which
-       keeps their height and pushes the report onto later pages, leaving blank pages).
-       Hide everything except whichever modal is currently open (.visible). NOTE: as of
-       Sep 19 this still doesn't fully fix multi-page/blank-page printing in testing —
-       logged as a known bug, revisit with a dedicated print-only page if it recurs. */
-    #loginScreen, .topbar, #mainWrap{display:none !important;}
-    .modal-overlay{display:none !important;}
-    .modal-overlay.visible{display:block !important; position:static !important; background:none !important; padding:0 !important; inset:auto !important;}
-    .modal-box{position:static !important; max-width:none !important; max-height:none !important; overflow:visible !important; box-shadow:none !important; padding:0 !important; margin:0 !important;}
-    #sellerReportPrintArea, #courierReportPrintArea{position:static !important; padding:20px;}
-    .report-actions{display:none !important;}
+    /* Everything printable is built fresh into #printStage right before printing, so
+       printing never depends on the on-screen layout (fixed/hidden elements, tabs,
+       scroll containers) — this replaces the earlier modal-based print approach. */
+    body.printing > *:not(#printStage){display:none !important;}
+    #printStage{display:block !important; padding:20px;}
   }
 </style>
 </head>
@@ -150,70 +162,337 @@
   <div class="topbar">
     <div>
       <h1>Growth Dashboard <span style="color:var(--cream-dark); font-weight:400;">| 249Souq</span></h1>
-      <div class="sub">نظرة شاملة على المبيعات، الهامش، والعملاء</div>
-    </div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <select id="sellerReportSelect" style="background:rgba(255,255,255,0.1); color:var(--cream); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;">
-        <option value="">📄 تقرير بائع...</option>
-      </select>
-      <select id="courierReportSelect" style="background:rgba(255,255,255,0.1); color:var(--cream); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;">
-        <option value="">🚚 تقرير شركة توصيل...</option>
-      </select>
+      <div class="sub">نظرة شاملة على المبيعات، العملاء، البائعين، وشركات التوصيل</div>
     </div>
     <div class="nav-links">
-      <a href="/admin/log-order.html">＋ تسجيل طلب جديد</a>
       <a href="#" id="logoutBtn" class="logout">تسجيل الخروج</a>
     </div>
+  </div>
+
+  <div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="overview">📊 نظرة عامة</button>
+    <button class="tab-btn" data-tab="newOrder">🧾 تسجيل طلب جديد</button>
+    <button class="tab-btn" data-tab="clients">👥 العملاء</button>
+    <button class="tab-btn" data-tab="sellers">🏷️ البائعين</button>
+    <button class="tab-btn" data-tab="couriers">🚚 شركات التوصيل</button>
   </div>
 
   <div class="wrap" id="mainWrap">
     <div id="loadingNote" class="loading-note">جاري تحميل البيانات...</div>
 
-    <div id="dashboardContent" style="display:none;">
-      <div class="stat-grid">
-        <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="statOrders">-</div></div>
-        <div class="stat-tile green"><div class="label">إجمالي الإيرادات (درهم)</div><div class="value green" id="statRevenue">-</div></div>
-        <div class="stat-tile green"><div class="label">هامش المنتج (درهم)</div><div class="value green" id="statProductMargin">-</div></div>
-        <div class="stat-tile green"><div class="label">هامش الشحن (درهم)</div><div class="value green" id="statLogisticsMargin">-</div></div>
-        <div class="stat-tile"><div class="label">مستحقات البائعين (درهم)</div><div class="value" id="statPayout">-</div></div>
-        <div class="stat-tile"><div class="label">عملاء فريدون</div><div class="value" id="statCustomers">-</div></div>
-        <div class="stat-tile"><div class="label">نسبة تكرار الشراء</div><div class="value" id="statRepeat">-</div></div>
-      </div>
-
-      <div class="card">
-        <h3>الإيرادات الأسبوعية <span class="muted">(آخر 8 أسابيع)</span></h3>
-        <div class="bar-chart" id="weeklyChart"></div>
-      </div>
-
-      <div class="two-col">
-        <div class="card">
-          <h3>حسب قناة الوصول</h3>
-          <div id="channelBars"></div>
+    <!-- ===================== OVERVIEW TAB ===================== -->
+    <div class="tab-panel active" id="panelOverview">
+      <div id="dashboardContent" style="display:none;">
+        <div class="stat-grid">
+          <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="statOrders">-</div></div>
+          <div class="stat-tile green"><div class="label">إجمالي الإيرادات (درهم)</div><div class="value green" id="statRevenue">-</div></div>
+          <div class="stat-tile green"><div class="label">هامش المنتج (درهم)</div><div class="value green" id="statProductMargin">-</div></div>
+          <div class="stat-tile green"><div class="label">هامش الشحن (درهم)</div><div class="value green" id="statLogisticsMargin">-</div></div>
+          <div class="stat-tile"><div class="label">مستحقات البائعين (درهم)</div><div class="value" id="statPayout">-</div></div>
+          <div class="stat-tile"><div class="label">عملاء فريدون</div><div class="value" id="statCustomers">-</div></div>
+          <div class="stat-tile"><div class="label">نسبة تكرار الشراء</div><div class="value" id="statRepeat">-</div></div>
         </div>
+
         <div class="card">
-          <h3>حسب الإمارة</h3>
-          <div id="emirateBars"></div>
+          <h3>الإيرادات الأسبوعية <span class="muted">(آخر 8 أسابيع)</span></h3>
+          <div class="bar-chart" id="weeklyChart"></div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>حسب قناة الوصول</h3>
+            <div id="channelBars"></div>
+          </div>
+          <div class="card">
+            <h3>حسب الإمارة</h3>
+            <div id="emirateBars"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>طرق الدفع</h3>
+          <div id="paymentBars"></div>
+        </div>
+
+        <div class="card">
+          <h3>آخر الطلبات <span class="muted">(أحدث 15 طلبًا)</span></h3>
+          <div class="table-scroll">
+            <table id="ordersTable">
+              <thead>
+                <tr>
+                  <th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th>
+                  <th>المنتج</th><th>الكمية</th><th>إجمالي العميل</th><th>مستحق البائع</th>
+                  <th>هامش المنتج</th><th>هامش الشحن</th><th>الدفع</th><th>حالة الدفع</th>
+                  <th>حالة التوصيل</th><th>شركة التوصيل</th><th>البائع</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="ordersTbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </div>
 
+    <!-- ===================== NEW ORDER TAB ===================== -->
+    <div class="tab-panel" id="panelNewOrder">
       <div class="card">
-        <h3>طرق الدفع</h3>
-        <div id="paymentBars"></div>
+        <h3>تسجيل طلب جديد</h3>
+        <div class="modal-row">
+          <div class="modal-field"><label>اسم العميل</label><input id="noCustomerName" placeholder="مثال: فاطمة أحمد"/></div>
+          <div class="modal-field"><label>رقم الواتساب</label><input id="noCustomerPhone" dir="ltr" placeholder="0501234567 أو 971501234567"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field">
+            <label>الإمارة</label>
+            <select id="noEmirate">
+              <option value="أبوظبي">أبوظبي</option>
+              <option value="دبي">دبي</option>
+              <option value="الشارقة">الشارقة</option>
+              <option value="عجمان">عجمان</option>
+              <option value="أم القيوين">أم القيوين</option>
+              <option value="رأس الخيمة">رأس الخيمة</option>
+              <option value="الفجيرة">الفجيرة</option>
+              <option value="أخرى">أخرى (منطقة محددة)</option>
+            </select>
+            <input id="noEmirateOther" style="display:none; margin-top:8px; width:100%; padding:9px 10px; border:1px solid var(--cream-dark); border-radius:8px; font-family:inherit; font-size:13.5px; background:var(--cream);" placeholder="مثال: العين، المنطقة الغربية"/>
+          </div>
+          <div class="modal-field"><label>مصدر العميل</label>
+            <select id="noSourceChannel">
+              <option value="تيك توك">تيك توك</option>
+              <option value="انستقرام">انستقرام</option>
+              <option value="مجموعة واتساب">مجموعة واتساب</option>
+              <option value="QR / بروشور">QR / بروشور</option>
+              <option value="إحالة من عميل">إحالة من عميل</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-row single">
+          <div class="modal-field"><label>العنوان التفصيلي (اختياري)</label><input id="noCustomerAddress" placeholder="مثال: بناية النخيل، شقة 302، شارع الوحدة"/></div>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-field"><label>شركة التوصيل</label><input id="noCourierName" list="noCourierList" placeholder="اكتب اسم الشركة"/><datalist id="noCourierList"></datalist></div>
+          <div class="modal-field"><label>طريقة الدفع</label>
+            <select id="noPaymentMethod">
+              <option value="card">بطاقة ائتمان</option>
+              <option value="tabby">تابي</option>
+              <option value="bank_transfer">تحويل بنكي</option>
+              <option value="cash_on_delivery">نقدًا عند الاستلام (COD)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>رسوم التوصيل على العميل</label><input type="number" id="noDeliveryFeeCharged" value="20"/></div>
+          <div class="modal-field"><label>تكلفة شركة الشحن الفعلية</label><input type="number" id="noDeliveryCostActual" value="16"/></div>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-field"><label>البائع</label><select id="noSellerSelect"></select></div>
+          <div class="modal-field"><label>الكمية</label><input type="number" id="noQuantity" value="1" min="1"/></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <button type="button" class="action-btn" id="noAddSellerBtn">＋ هذا بائع جديد بالكامل</button>
+        </div>
+
+        <div class="modal-row single">
+          <div class="modal-field"><label>عرض/كود خصم (اختياري)</label><input id="noPromoCode" placeholder="مثال: BUNDLE2 أو خصم 10%"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>سعر البيع للعميل (للوحدة)</label><input type="number" id="noUnitPriceCustomer" value="60"/></div>
+          <div class="modal-field"><label>سعر البائعة (للوحدة)</label><input type="number" id="noUnitPriceSeller" value="0"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>حالة الدفع</label>
+            <select id="noPaymentStatus"><option value="paid">مدفوع</option><option value="pending">معلّق</option></select>
+          </div>
+          <div class="modal-field"><label>حالة التوصيل</label>
+            <select id="noDeliveryStatus"><option value="preparing">قيد التجهيز</option><option value="shipped">تم الشحن</option><option value="delivered">تم التوصيل</option></select>
+          </div>
+        </div>
+        <div class="modal-row single">
+          <div class="modal-field"><label>ملاحظات (اختياري)</label><input id="noNotes"/></div>
+        </div>
+
+        <div class="modal-readonly" id="noSummaryBox">-</div>
+        <div class="modal-msg" id="noSubmitMsg"></div>
+        <button class="btn-save" id="noSubmitBtn" style="width:100%; padding:12px; margin-top:6px;">حفظ الطلب</button>
       </div>
+    </div>
 
+    <!-- ===================== CLIENTS TAB ===================== -->
+    <div class="tab-panel" id="panelClients">
       <div class="card">
-        <h3>آخر الطلبات <span class="muted">(أحدث 15 طلبًا)</span></h3>
+        <h3>العملاء <span class="muted">(كل من طلب من قبل — يمكن تعديل بياناتهم مباشرة هنا)</span></h3>
+        <input type="text" id="clientSearchInput" placeholder="بحث بالاسم أو رقم الهاتف..."
+          style="width:100%; padding:10px 12px; border:1px solid var(--cream-dark); border-radius:8px; font-family:inherit; font-size:13.5px; margin-bottom:14px; background:var(--cream);"/>
         <div class="table-scroll">
-          <table id="ordersTable">
-            <thead>
-              <tr>
-                <th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th>
-                <th>المنتج</th><th>الكمية</th><th>إجمالي العميل</th><th>مستحق البائع</th>
-                <th>هامش المنتج</th><th>هامش الشحن</th><th>الدفع</th><th>حالة الدفع</th>
-                <th>حالة التوصيل</th><th>شركة التوصيل</th><th>البائع</th><th></th>
-              </tr>
-            </thead>
-            <tbody id="ordersTbody"></tbody>
+          <table id="clientsTable">
+            <thead><tr><th>الاسم</th><th>الهاتف</th><th>الإمارة</th><th>العنوان</th><th>القناة</th><th></th></tr></thead>
+            <tbody id="clientsTbody"><tr><td colspan="6" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="clientEditCard" style="display:none;">
+        <h3>تعديل بيانات العميل</h3>
+        <div class="modal-row">
+          <div class="modal-field"><label>الاسم</label><input id="cEditName"/></div>
+          <div class="modal-field"><label>الهاتف</label><input id="cEditPhone" dir="ltr" placeholder="05XXXXXXXX"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>الإمارة</label><input id="cEditEmirate"/></div>
+          <div class="modal-field"><label>العنوان التفصيلي</label><input id="cEditAddress"/></div>
+        </div>
+        <div class="modal-msg" id="cEditMsg"></div>
+        <div class="modal-actions">
+          <button class="btn-save" id="cEditSaveBtn">حفظ</button>
+          <button class="btn-cancel" id="cEditCancelBtn">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== SELLERS TAB ===================== -->
+    <div class="tab-panel" id="panelSellers">
+      <div class="card">
+        <h3>البائعين <span class="muted">(الأسعار، الهاتف، وزن الوحدة، ورابط لوحة البائع)</span></h3>
+        <div class="table-scroll">
+          <table id="sellersTable">
+            <thead><tr><th>الاسم</th><th>المنتج</th><th>سعر البائع (AED)</th><th>الهاتف</th><th>وزن الوحدة (غم)</th><th>رابط اللوحة</th><th></th></tr></thead>
+            <tbody id="sellersTbody"><tr><td colspan="7" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+        <button class="edit-btn" id="addSellerBtn" style="margin-top:14px;">+ إضافة بائع جديد</button>
+      </div>
+
+      <div class="card" id="sellerEditCard" style="display:none;">
+        <h3 id="sellerEditTitle">تعديل بيانات البائع</h3>
+        <div class="modal-row">
+          <div class="modal-field"><label>اسم البائع</label><input id="sEditName"/></div>
+          <div class="modal-field"><label>اسم المنتج</label><input id="sEditProduct"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>سعر البائع الافتراضي (للوحدة، AED)</label><input id="sEditPrice" type="number" min="0" step="0.01"/></div>
+          <div class="modal-field" id="sEditSlugField"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="sEditSlug" placeholder="مثال: sara"/></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label>رقم هاتف البائعة (لفتح لوحتها)</label><input id="sEditPhone" dir="ltr" placeholder="05XXXXXXXX"/></div>
+          <div class="modal-field"><label>وزن الوحدة الواحدة (غرام، لكشف الشحن)</label><input id="sEditWeight" dir="ltr" placeholder="مثال: 100"/></div>
+        </div>
+        <div class="modal-readonly" id="sEditLinkPreview" style="display:none;"></div>
+        <div class="modal-msg" id="sEditMsg"></div>
+        <div class="modal-actions">
+          <button class="btn-save" id="sEditSaveBtn">حفظ</button>
+          <button class="btn-cancel" id="sEditCancelBtn">إلغاء</button>
+        </div>
+      </div>
+
+      <div class="card" id="sellerReportCard" style="display:none;">
+        <div class="report-actions">
+          <button class="btn-print" id="sellerReportPrintBtn">🖨️ طباعة / حفظ PDF</button>
+          <button class="btn-cancel" id="sellerReportCloseBtn" style="flex:0; padding:9px 16px;">إغلاق التقرير</button>
+        </div>
+        <div id="sellerReportContent">
+          <div id="reportLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
+          <div id="reportContent" style="display:none;">
+            <div style="text-align:center; margin-bottom:18px;">
+              <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء البائع — 249Souq</div>
+              <div id="reportSellerName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
+              <div id="reportDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
+            </div>
+            <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
+              <div class="stat-tile green"><div class="label">الوحدات هذا الشهر</div><div class="value green" id="reportMonthUnits">-</div></div>
+              <div class="stat-tile green"><div class="label">مستحقاته هذا الشهر</div><div class="value green" id="reportMonthPayout">-</div></div>
+              <div class="stat-tile"><div class="label">إجمالي الوحدات</div><div class="value" id="reportTotalUnits">-</div></div>
+              <div class="stat-tile"><div class="label">إجمالي مستحقاته</div><div class="value" id="reportTotalPayout">-</div></div>
+              <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="reportOrderCount">-</div></div>
+            </div>
+            <div style="margin-top:18px;">
+              <h3 style="font-size:14px; margin-bottom:10px;">الوحدات شهريًا (آخر 6 أشهر)</h3>
+              <div class="bar-chart" id="reportMonthlyChart" style="height:130px;"></div>
+            </div>
+            <div style="margin-top:18px;">
+              <h3 style="font-size:14px; margin-bottom:10px;">آخر النشاط</h3>
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th>التاريخ</th><th>الكمية</th><th>مستحقاته</th><th>حالة التوصيل</th></tr></thead>
+                  <tbody id="reportActivityTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== COURIERS TAB ===================== -->
+    <div class="tab-panel" id="panelCouriers">
+      <div class="card">
+        <h3>شركات التوصيل</h3>
+        <div class="table-scroll">
+          <table id="couriersTable">
+            <thead><tr><th>الاسم</th><th></th></tr></thead>
+            <tbody id="couriersTbody"><tr><td colspan="2" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="courierEditCard" style="display:none;">
+        <h3>تعديل اسم شركة التوصيل</h3>
+        <div class="modal-row single">
+          <div class="modal-field"><label>الاسم</label><input id="courEditName"/></div>
+        </div>
+        <div class="modal-msg" id="courEditMsg"></div>
+        <div class="modal-actions">
+          <button class="btn-save" id="courEditSaveBtn">حفظ</button>
+          <button class="btn-cancel" id="courEditCancelBtn">إلغاء</button>
+        </div>
+      </div>
+
+      <div class="card" id="courierReportCard" style="display:none;">
+        <div class="report-actions">
+          <button class="btn-print" id="courierReportPrintBtn">🖨️ طباعة / حفظ PDF</button>
+          <button class="btn-cancel" id="courierReportCloseBtn" style="flex:0; padding:9px 16px;">إغلاق</button>
+        </div>
+        <div id="courierReportContent">
+          <div id="courierLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
+          <div id="courierContent" style="display:none;">
+            <div style="text-align:center; margin-bottom:18px;">
+              <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء شركة التوصيل — 249Souq</div>
+              <div id="courierName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
+              <div id="courierDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
+            </div>
+            <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
+              <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="courierOrderCount">-</div></div>
+              <div class="stat-tile green"><div class="label">إجمالي هامش الشحن (درهم)</div><div class="value green" id="courierTotalMargin">-</div></div>
+              <div class="stat-tile"><div class="label">متوسط الهامش لكل طلب</div><div class="value" id="courierAvgMargin">-</div></div>
+              <div class="stat-tile"><div class="label">قيد التجهيز</div><div class="value" id="courierStatusPreparing">-</div></div>
+              <div class="stat-tile"><div class="label">تم الشحن</div><div class="value" id="courierStatusShipped">-</div></div>
+              <div class="stat-tile green"><div class="label">تم التوصيل</div><div class="value green" id="courierStatusDelivered">-</div></div>
+            </div>
+            <div style="margin-top:18px;">
+              <h3 style="font-size:14px; margin-bottom:10px;">هامش الشحن شهريًا <span class="muted">(آخر 6 أشهر)</span></h3>
+              <div class="bar-chart" id="courierMonthlyChart" style="height:130px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="courierManifestCard" style="display:none;">
+        <div class="report-actions">
+          <button class="btn-copy" id="courierCopySelectedBtn">📋 نسخ المحدد (للواتساب)</button>
+          <button class="btn-print" id="courierManifestPrintBtn">🖨️ طباعة / حفظ PDF</button>
+          <button class="action-btn" id="courierSelectAllBtn" style="flex:0; padding:9px 16px;">تحديد/إلغاء الكل</button>
+          <button class="btn-cancel" id="courierManifestCloseBtn" style="flex:0; padding:9px 16px;">إغلاق</button>
+        </div>
+        <div style="text-align:center; margin-bottom:14px;">
+          <div style="font-weight:900; font-size:17px; color:var(--brown-deep);">كشف الشحن اليومي — 249Souq</div>
+          <div id="manifestCourierName" style="font-size:13.5px; color:var(--ink-muted); margin-top:3px;"></div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th></th><th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th><th>العنوان</th><th>المنتج</th><th>الكمية</th><th>الوزن التقريبي (غم)</th></tr></thead>
+            <tbody id="courierManifestTbody"></tbody>
           </table>
         </div>
       </div>
@@ -306,91 +585,38 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="reportOverlay">
-  <div class="modal-box report-modal-box">
-    <div class="report-actions">
-      <button class="btn-print" id="reportPrintBtn">🖨️ طباعة / حفظ PDF</button>
-      <button class="btn-cancel" id="reportCloseBtn" style="flex:0;padding:9px 16px;">إغلاق</button>
-    </div>
-    <div id="sellerReportPrintArea">
-      <div id="reportLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
-      <div id="reportContent" style="display:none;">
-        <div style="text-align:center; margin-bottom:18px;">
-          <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء البائع — 249Souq</div>
-          <div id="reportSellerName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
-          <div id="reportDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
-        </div>
-        <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
-          <div class="stat-tile green"><div class="label">الوحدات هذا الشهر</div><div class="value green" id="reportMonthUnits">-</div></div>
-          <div class="stat-tile green"><div class="label">مستحقاته هذا الشهر</div><div class="value green" id="reportMonthPayout">-</div></div>
-          <div class="stat-tile"><div class="label">إجمالي الوحدات</div><div class="value" id="reportTotalUnits">-</div></div>
-          <div class="stat-tile"><div class="label">إجمالي مستحقاته</div><div class="value" id="reportTotalPayout">-</div></div>
-          <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="reportOrderCount">-</div></div>
-        </div>
-        <div style="margin-top:18px;">
-          <h3 style="font-size:14px; margin-bottom:10px;">الوحدات شهريًا (آخر 6 أشهر)</h3>
-          <div class="bar-chart" id="reportMonthlyChart" style="height:130px;"></div>
-        </div>
-        <div style="margin-top:18px;">
-          <h3 style="font-size:14px; margin-bottom:10px;">آخر النشاط</h3>
-          <div class="table-scroll">
-            <table>
-              <thead><tr><th>التاريخ</th><th>الكمية</th><th>مستحقاته</th><th>حالة التوصيل</th></tr></thead>
-              <tbody id="reportActivityTbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="courierOverlay">
-  <div class="modal-box report-modal-box">
-    <div class="report-actions">
-      <button class="btn-print" id="courierPrintBtn">🖨️ طباعة / حفظ PDF</button>
-      <button class="btn-print" id="courierCopyBtn" style="background:var(--green-dark);">📋 نسخ كشف الشحن (للواتساب)</button>
-      <button class="btn-cancel" id="courierCloseBtn" style="flex:0;padding:9px 16px;">إغلاق</button>
-    </div>
-    <div id="courierReportPrintArea">
-      <div id="courierLoading" style="text-align:center; padding:30px; color:var(--ink-muted);">جاري التحميل...</div>
-      <div id="courierContent" style="display:none;">
-        <div style="text-align:center; margin-bottom:18px;">
-          <div style="font-weight:900; font-size:18px; color:var(--brown-deep);">تقرير أداء شركة التوصيل — 249Souq</div>
-          <div id="courierName" style="font-size:14px; color:var(--ink-muted); margin-top:4px;"></div>
-          <div id="courierDate" style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;"></div>
-        </div>
-        <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr);">
-          <div class="stat-tile"><div class="label">عدد الطلبات</div><div class="value" id="courierOrderCount">-</div></div>
-          <div class="stat-tile green"><div class="label">إجمالي هامش الشحن (درهم)</div><div class="value green" id="courierTotalMargin">-</div></div>
-          <div class="stat-tile"><div class="label">متوسط الهامش لكل طلب</div><div class="value" id="courierAvgMargin">-</div></div>
-          <div class="stat-tile"><div class="label">قيد التجهيز</div><div class="value" id="courierStatusPreparing">-</div></div>
-          <div class="stat-tile"><div class="label">تم الشحن</div><div class="value" id="courierStatusShipped">-</div></div>
-          <div class="stat-tile green"><div class="label">تم التوصيل</div><div class="value green" id="courierStatusDelivered">-</div></div>
-        </div>
-        <div style="margin-top:18px;">
-          <h3 style="font-size:14px; margin-bottom:10px;">هامش الشحن شهريًا <span class="muted">(آخر 6 أشهر)</span></h3>
-          <div class="bar-chart" id="courierMonthlyChart" style="height:130px;"></div>
-        </div>
-        <div style="margin-top:18px;">
-          <h3 style="font-size:14px; margin-bottom:10px;">كشف الشحن اليومي <span class="muted">(الطلبات قيد التجهيز — جاهزة للتسليم)</span></h3>
-          <div class="table-scroll">
-            <table>
-              <thead><tr><th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th><th>العنوان</th><th>المنتج</th><th>الكمية</th><th>الوزن التقريبي (غم)</th></tr></thead>
-              <tbody id="courierManifestTbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="printStage"></div>
 
 <script>
 const PAYMENT_LABELS = { cash_on_delivery: 'نقدًا عند الاستلام', card: 'بطاقة', bank_transfer: 'تحويل بنكي', online: 'دفع إلكتروني' };
 const STATUS_LABELS = { paid: 'مدفوع', pending: 'قيد الانتظار', preparing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التوصيل', cancelled: 'ملغى' };
 
 function fmt(n){ return Number(n||0).toLocaleString('en-US', {maximumFractionDigits:0}); }
+
+function printCurrent(el){
+  const stage = document.getElementById('printStage');
+  stage.innerHTML = el.innerHTML;
+  document.body.classList.add('printing');
+  window.print();
+}
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('printing');
+  document.getElementById('printStage').innerHTML = '';
+});
+
+/* ===================== TABS ===================== */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).classList.add('active');
+    if(btn.dataset.tab === 'newOrder') loadNewOrderTab();
+    if(btn.dataset.tab === 'clients' && !clientsLoaded) loadClients();
+    if(btn.dataset.tab === 'sellers' && !sellersLoaded) loadSellersTab();
+    if(btn.dataset.tab === 'couriers' && !couriersLoaded) loadCouriersTab();
+  });
+});
 
 async function checkSession(){
   try{
@@ -521,7 +747,7 @@ async function loadDashboard(){
       });
     }
 
-    document.querySelectorAll('.edit-btn').forEach(btn => {
+    document.querySelectorAll('.edit-btn[data-order-id]').forEach(btn => {
       btn.addEventListener('click', () => openEditModal(btn.dataset.orderId));
     });
 
@@ -640,20 +866,401 @@ document.getElementById('editSaveBtn').addEventListener('click', async () => {
   }
 });
 
-async function loadSellerReportOptions(){
+/* ===================== NEW ORDER TAB ===================== */
+async function loadNewOrderTab(){
   try{
     const r = await fetch('/api/sellers');
-    if(!r.ok) return;
     const d = await r.json();
-    const sel = document.getElementById('sellerReportSelect');
+    const sel = document.getElementById('noSellerSelect');
+    const prevValue = sel.value;
+    sel.innerHTML = '';
     (d.sellers || []).forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
       opt.textContent = s.name + ' — ' + s.product_name;
+      opt.dataset.payout = s.default_payout_price;
+      opt.dataset.product = s.product_name;
       sel.appendChild(opt);
+    });
+    if(prevValue) sel.value = prevValue;
+    applyNoSellerDefaults();
+  }catch(e){ /* non-critical */ }
+  loadNoCouriers();
+}
+
+function applyNoSellerDefaults(){
+  const sel = document.getElementById('noSellerSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if(!opt) return;
+  document.getElementById('noUnitPriceSeller').value = opt.dataset.payout || 0;
+  updateNoSummary();
+}
+document.getElementById('noSellerSelect').addEventListener('change', applyNoSellerDefaults);
+
+async function loadNoCouriers(){
+  try{
+    const r = await fetch('/api/couriers');
+    if(!r.ok) return;
+    const d = await r.json();
+    const list = document.getElementById('noCourierList');
+    list.innerHTML = '';
+    (d.couriers || []).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name;
+      list.appendChild(opt);
     });
   }catch(e){ /* non-critical */ }
 }
+
+document.getElementById('noEmirate').addEventListener('change', (e) => {
+  document.getElementById('noEmirateOther').style.display = e.target.value === 'أخرى' ? 'block' : 'none';
+});
+function getNoEmirateValue(){
+  const sel = document.getElementById('noEmirate');
+  if(sel.value === 'أخرى'){
+    const other = document.getElementById('noEmirateOther').value.trim();
+    return other || 'أخرى';
+  }
+  return sel.value;
+}
+
+function noNum(id){ return parseFloat(document.getElementById(id).value || '0') || 0; }
+function updateNoSummary(){
+  const qty = noNum('noQuantity');
+  const priceCustomer = noNum('noUnitPriceCustomer');
+  const priceSeller = noNum('noUnitPriceSeller');
+  const deliveryCharged = noNum('noDeliveryFeeCharged');
+  const deliveryCost = noNum('noDeliveryCostActual');
+  const customerTotal = qty*priceCustomer + deliveryCharged;
+  const sellerPayout = qty*priceSeller;
+  const productMargin = qty*(priceCustomer-priceSeller);
+  const logisticsMargin = deliveryCharged - deliveryCost;
+  document.getElementById('noSummaryBox').innerHTML =
+    `إجمالي العميل: <b>AED ${customerTotal.toFixed(2)}</b> &nbsp;—&nbsp; ` +
+    `مستحقات البائعة: <b>AED ${sellerPayout.toFixed(2)}</b> &nbsp;—&nbsp; ` +
+    `هامش المنتج: <b>AED ${productMargin.toFixed(2)}</b> &nbsp;—&nbsp; ` +
+    `هامش التوصيل: <b>AED ${logisticsMargin.toFixed(2)}</b>`;
+}
+['noQuantity','noUnitPriceCustomer','noUnitPriceSeller','noDeliveryFeeCharged','noDeliveryCostActual'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateNoSummary);
+});
+
+document.getElementById('noAddSellerBtn').addEventListener('click', () => {
+  document.querySelector('.tab-btn[data-tab="sellers"]').click();
+  openSellerEdit(null);
+});
+
+function friendlyOrderError(code){
+  const map = {
+    seller_id_required: 'الرجاء اختيار البائع قبل حفظ الطلب',
+    customer_phone_required: 'الرجاء إدخال رقم واتساب العميل',
+    product_name_required: 'تعذّر تحديد المنتج — تأكدي من اختيار البائع',
+    quantity_invalid: 'الرجاء إدخال كمية صحيحة (رقم أكبر من صفر)',
+    prices_required: 'الرجاء إدخال سعر البيع للعميل وسعر البائعة'
+  };
+  return map[code] || ('حدث خطأ: ' + (code || 'غير معروف'));
+}
+
+document.getElementById('noSubmitBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('noSubmitBtn');
+  const msgEl = document.getElementById('noSubmitMsg');
+  btn.disabled = true;
+
+  const sel = document.getElementById('noSellerSelect');
+  const sellerOpt = sel.options[sel.selectedIndex];
+
+  const payload = {
+    customer_name: document.getElementById('noCustomerName').value,
+    customer_phone: document.getElementById('noCustomerPhone').value,
+    emirate: getNoEmirateValue(),
+    source_channel: document.getElementById('noSourceChannel').value,
+    address: document.getElementById('noCustomerAddress').value,
+    seller_id: sel.value,
+    product_name: sellerOpt ? sellerOpt.dataset.product : '',
+    quantity: noNum('noQuantity'),
+    unit_price_customer: noNum('noUnitPriceCustomer'),
+    unit_price_seller: noNum('noUnitPriceSeller'),
+    promo_code: document.getElementById('noPromoCode').value,
+    delivery_fee_charged: noNum('noDeliveryFeeCharged'),
+    delivery_cost_actual: noNum('noDeliveryCostActual'),
+    courier_name: document.getElementById('noCourierName').value,
+    payment_method: document.getElementById('noPaymentMethod').value,
+    payment_status: document.getElementById('noPaymentStatus').value,
+    delivery_status: document.getElementById('noDeliveryStatus').value,
+    notes: document.getElementById('noNotes').value
+  };
+
+  try{
+    const r = await fetch('/api/log-order', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if(r.ok){
+      msgEl.textContent = 'تم حفظ الطلب بنجاح ✓'; msgEl.className = 'modal-msg ok';
+      document.getElementById('noCustomerName').value='';
+      document.getElementById('noCustomerPhone').value='';
+      document.getElementById('noCustomerAddress').value='';
+      document.getElementById('noPromoCode').value='';
+      document.getElementById('noNotes').value='';
+      document.getElementById('noQuantity').value='1';
+      loadNoCouriers();
+      updateNoSummary();
+      // Refresh other tabs' cached data so they reflect the new order next time they're opened
+      clientsLoaded = false;
+      loadDashboard();
+    } else {
+      msgEl.textContent = friendlyOrderError(d.error); msgEl.className = 'modal-msg err';
+    }
+  }catch(e){
+    msgEl.textContent = 'تعذّر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+  btn.disabled = false;
+});
+
+updateNoSummary();
+
+/* ===================== CLIENTS TAB ===================== */
+let clientsLoaded = false;
+let clientsCache = [];
+let currentEditClientId = null;
+
+async function loadClients(){
+  clientsLoaded = true;
+  const tbody = document.getElementById('clientsTbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="empty-note">جاري التحميل...</td></tr>';
+  try{
+    const r = await fetch('/api/customers');
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+    clientsCache = d.customers || [];
+    renderClientsTable(clientsCache);
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-note">تعذر تحميل العملاء.</td></tr>';
+  }
+}
+
+function renderClientsTable(list){
+  const tbody = document.getElementById('clientsTbody');
+  tbody.innerHTML = '';
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-note">لا يوجد عملاء بعد</td></tr>';
+    return;
+  }
+  list.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${c.name || '-'}</td>
+      <td dir="ltr">${c.phone || '-'}</td>
+      <td>${c.emirate || '-'}</td>
+      <td>${c.address || '-'}</td>
+      <td>${c.source_channel || '-'}</td>
+      <td><button class="edit-btn" data-client-id="${c.id}">تعديل</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('#clientsTbody .edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => openClientEdit(btn.dataset.clientId));
+  });
+}
+
+document.getElementById('clientSearchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){ renderClientsTable(clientsCache); return; }
+  renderClientsTable(clientsCache.filter(c =>
+    (c.name || '').toLowerCase().includes(q) || (c.phone || '').includes(q)
+  ));
+});
+
+function openClientEdit(id){
+  const c = clientsCache.find(x => String(x.id) === String(id));
+  if(!c) return;
+  currentEditClientId = id;
+  document.getElementById('cEditName').value = c.name || '';
+  document.getElementById('cEditPhone').value = c.phone || '';
+  document.getElementById('cEditEmirate').value = c.emirate || '';
+  document.getElementById('cEditAddress').value = c.address || '';
+  document.getElementById('cEditMsg').textContent = '';
+  document.getElementById('cEditMsg').className = 'modal-msg';
+  document.getElementById('clientEditCard').style.display = 'block';
+  document.getElementById('clientEditCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('cEditCancelBtn').addEventListener('click', () => {
+  document.getElementById('clientEditCard').style.display = 'none';
+  currentEditClientId = null;
+});
+
+document.getElementById('cEditSaveBtn').addEventListener('click', async () => {
+  if(!currentEditClientId) return;
+  const msgEl = document.getElementById('cEditMsg');
+  msgEl.textContent = ''; msgEl.className = 'modal-msg';
+  try{
+    const r = await fetch('/api/customers', {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        id: currentEditClientId,
+        name: document.getElementById('cEditName').value,
+        phone: document.getElementById('cEditPhone').value,
+        emirate: document.getElementById('cEditEmirate').value,
+        address: document.getElementById('cEditAddress').value
+      })
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
+    msgEl.textContent = 'تم الحفظ بنجاح'; msgEl.className = 'modal-msg ok';
+    setTimeout(() => {
+      document.getElementById('clientEditCard').style.display = 'none';
+      currentEditClientId = null;
+      loadClients();
+    }, 600);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+});
+
+/* ===================== SELLERS TAB ===================== */
+let sellersLoaded = false;
+let sellersCache = [];
+let currentEditSellerId = null;
+
+async function loadSellersTab(){
+  sellersLoaded = true;
+  const tbody = document.getElementById('sellersTbody');
+  tbody.innerHTML = '<tr><td colspan="7" class="empty-note">جاري التحميل...</td></tr>';
+  try{
+    const r = await fetch('/api/sellers');
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+    sellersCache = d.sellers || [];
+    renderSellersTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-note">تعذر تحميل البائعين.</td></tr>';
+  }
+}
+
+function renderSellersTable(){
+  const tbody = document.getElementById('sellersTbody');
+  tbody.innerHTML = '';
+  if(!sellersCache.length){
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-note">لا يوجد بائعون بعد</td></tr>';
+    return;
+  }
+  sellersCache.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.name || '-'}</td>
+      <td>${s.product_name || '-'}</td>
+      <td>${fmt(s.default_payout_price)}</td>
+      <td dir="ltr">${s.phone || '-'}</td>
+      <td>${s.default_weight_grams || '-'}</td>
+      <td>${s.dashboard_slug ? '/dashboard/' + s.dashboard_slug : '-'}</td>
+      <td>
+        <button class="edit-btn" data-seller-edit="${s.id}">تعديل</button>
+        <button class="action-btn primary" data-seller-report="${s.id}">📄 التقرير</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('[data-seller-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openSellerEdit(btn.dataset.sellerEdit));
+  });
+  document.querySelectorAll('[data-seller-report]').forEach(btn => {
+    btn.addEventListener('click', () => openSellerReport(btn.dataset.sellerReport));
+  });
+}
+
+function openSellerEdit(id){
+  document.getElementById('sellerReportCard').style.display = 'none';
+  const editCard = document.getElementById('sellerEditCard');
+  const slugField = document.getElementById('sEditSlugField');
+  const linkPreview = document.getElementById('sEditLinkPreview');
+
+  if(id){
+    const s = sellersCache.find(x => String(x.id) === String(id));
+    if(!s) return;
+    currentEditSellerId = id;
+    document.getElementById('sellerEditTitle').textContent = 'تعديل بيانات: ' + s.name;
+    document.getElementById('sEditName').value = s.name || '';
+    document.getElementById('sEditProduct').value = s.product_name || '';
+    document.getElementById('sEditPrice').value = s.default_payout_price || '';
+    document.getElementById('sEditPhone').value = s.phone || '';
+    document.getElementById('sEditWeight').value = s.default_weight_grams || '';
+    slugField.style.display = 'none'; // slug stays fixed once a seller has a live link
+    if(s.dashboard_slug){
+      linkPreview.style.display = 'block';
+      linkPreview.textContent = 'رابط لوحتها: 249souq.com/dashboard/' + s.dashboard_slug;
+    } else {
+      linkPreview.style.display = 'none';
+    }
+  } else {
+    currentEditSellerId = null;
+    document.getElementById('sellerEditTitle').textContent = 'إضافة بائع جديد';
+    document.getElementById('sEditName').value = '';
+    document.getElementById('sEditProduct').value = '';
+    document.getElementById('sEditPrice').value = '';
+    document.getElementById('sEditSlug').value = '';
+    document.getElementById('sEditPhone').value = '';
+    document.getElementById('sEditWeight').value = '';
+    slugField.style.display = 'block';
+    linkPreview.style.display = 'none';
+  }
+  document.getElementById('sEditMsg').textContent = '';
+  document.getElementById('sEditMsg').className = 'modal-msg';
+  editCard.style.display = 'block';
+  editCard.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('addSellerBtn').addEventListener('click', () => openSellerEdit(null));
+document.getElementById('sEditCancelBtn').addEventListener('click', () => {
+  document.getElementById('sellerEditCard').style.display = 'none';
+  currentEditSellerId = null;
+});
+
+document.getElementById('sEditSaveBtn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('sEditMsg');
+  msgEl.textContent = ''; msgEl.className = 'modal-msg';
+
+  const name = document.getElementById('sEditName').value.trim();
+  const product_name = document.getElementById('sEditProduct').value.trim();
+  const default_payout_price = parseFloat(document.getElementById('sEditPrice').value || '0') || 0;
+  const phone = document.getElementById('sEditPhone').value.trim();
+  const default_weight_grams = parseFloat(document.getElementById('sEditWeight').value || '0') || 0;
+
+  if(!name || !product_name){
+    msgEl.textContent = 'الاسم واسم المنتج مطلوبان'; msgEl.className = 'modal-msg err';
+    return;
+  }
+
+  try{
+    let r, d;
+    if(currentEditSellerId){
+      r = await fetch('/api/sellers', {
+        method: 'PUT', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ id: currentEditSellerId, name, product_name, default_payout_price, phone, default_weight_grams })
+      });
+    } else {
+      const dashboard_slug = document.getElementById('sEditSlug').value.trim();
+      if(!dashboard_slug){
+        msgEl.textContent = 'رابط لوحة البائع مطلوب عند الإضافة'; msgEl.className = 'modal-msg err';
+        return;
+      }
+      r = await fetch('/api/sellers', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ name, product_name, dashboard_slug, default_payout_price, phone, default_weight_grams })
+      });
+    }
+    d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
+    msgEl.textContent = 'تم الحفظ بنجاح'; msgEl.className = 'modal-msg ok';
+    setTimeout(() => {
+      document.getElementById('sellerEditCard').style.display = 'none';
+      currentEditSellerId = null;
+      loadSellersTab();
+    }, 600);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+});
 
 function renderReportMonthlyChart(series){
   const el = document.getElementById('reportMonthlyChart');
@@ -673,12 +1280,13 @@ function renderReportMonthlyChart(series){
   });
 }
 
-document.getElementById('sellerReportSelect').addEventListener('change', async (e) => {
-  const sellerId = e.target.value;
-  if(!sellerId) return;
-
-  document.getElementById('reportOverlay').classList.add('visible');
+async function openSellerReport(sellerId){
+  document.getElementById('sellerEditCard').style.display = 'none';
+  const card = document.getElementById('sellerReportCard');
+  card.style.display = 'block';
+  card.scrollIntoView({behavior:'smooth', block:'start'});
   document.getElementById('reportLoading').style.display = 'block';
+  document.getElementById('reportLoading').textContent = 'جاري التحميل...';
   document.getElementById('reportContent').style.display = 'none';
 
   try{
@@ -720,38 +1328,106 @@ document.getElementById('sellerReportSelect').addEventListener('change', async (
   }catch(e){
     document.getElementById('reportLoading').textContent = 'تعذر تحميل تقرير هذا البائع.';
   }
+}
+
+document.getElementById('sellerReportCloseBtn').addEventListener('click', () => {
+  document.getElementById('sellerReportCard').style.display = 'none';
+});
+document.getElementById('sellerReportPrintBtn').addEventListener('click', () => {
+  printCurrent(document.getElementById('sellerReportContent'));
 });
 
-document.getElementById('reportCloseBtn').addEventListener('click', () => {
-  document.getElementById('reportOverlay').classList.remove('visible');
-  document.getElementById('sellerReportSelect').value = '';
-});
-document.getElementById('reportOverlay').addEventListener('click', (e) => {
-  if(e.target.id === 'reportOverlay'){
-    document.getElementById('reportOverlay').classList.remove('visible');
-    document.getElementById('sellerReportSelect').value = '';
-  }
-});
-document.getElementById('reportPrintBtn').addEventListener('click', () => window.print());
+/* ===================== COURIERS TAB ===================== */
+let couriersLoaded = false;
+let couriersCache = [];
+let currentEditCourierId = null;
+let currentCourierData = null;
+let currentCourierId = null;
 
-async function loadCourierReportOptions(){
+async function loadCouriersTab(){
+  couriersLoaded = true;
+  const tbody = document.getElementById('couriersTbody');
+  tbody.innerHTML = '<tr><td colspan="2" class="empty-note">جاري التحميل...</td></tr>';
   try{
     const r = await fetch('/api/couriers');
-    if(!r.ok) return;
+    if(!r.ok) throw new Error('failed');
     const d = await r.json();
-    const sel = document.getElementById('courierReportSelect');
-    const allOpt = document.createElement('option');
-    allOpt.value = 'all';
-    allOpt.textContent = 'كل شركات التوصيل (إجمالي)';
-    sel.appendChild(allOpt);
-    (d.couriers || []).forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = c.name;
-      sel.appendChild(opt);
-    });
-  }catch(e){ /* non-critical */ }
+    couriersCache = d.couriers || [];
+    renderCouriersTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="2" class="empty-note">تعذر تحميل شركات التوصيل.</td></tr>';
+  }
 }
+
+function renderCouriersTable(){
+  const tbody = document.getElementById('couriersTbody');
+  tbody.innerHTML = '';
+  const rows = [{id: 'all', name: 'كل شركات التوصيل (إجمالي)', __all: true}, ...couriersCache];
+  if(!couriersCache.length){
+    tbody.innerHTML = '<tr><td colspan="2" class="empty-note">لا توجد شركات توصيل مسجّلة بعد — تُضاف تلقائيًا من نموذج تسجيل الطلب</td></tr>';
+    return;
+  }
+  rows.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${c.name}</td>
+      <td>
+        ${c.__all ? '' : `<button class="edit-btn" data-cour-edit="${c.id}">تعديل الاسم</button>`}
+        <button class="action-btn primary" data-cour-report="${c.id}">📊 التقرير الشهري</button>
+        <button class="action-btn" data-cour-manifest="${c.id}">📦 كشف الشحن اليومي</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('[data-cour-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openCourierEdit(btn.dataset.courEdit));
+  });
+  document.querySelectorAll('[data-cour-report]').forEach(btn => {
+    btn.addEventListener('click', () => openCourierView(btn.dataset.courReport, 'report'));
+  });
+  document.querySelectorAll('[data-cour-manifest]').forEach(btn => {
+    btn.addEventListener('click', () => openCourierView(btn.dataset.courManifest, 'manifest'));
+  });
+}
+
+function openCourierEdit(id){
+  const c = couriersCache.find(x => String(x.id) === String(id));
+  if(!c) return;
+  currentEditCourierId = id;
+  document.getElementById('courEditName').value = c.name || '';
+  document.getElementById('courEditMsg').textContent = '';
+  document.getElementById('courEditMsg').className = 'modal-msg';
+  document.getElementById('courierEditCard').style.display = 'block';
+  document.getElementById('courierReportCard').style.display = 'none';
+  document.getElementById('courierManifestCard').style.display = 'none';
+  document.getElementById('courierEditCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('courEditCancelBtn').addEventListener('click', () => {
+  document.getElementById('courierEditCard').style.display = 'none';
+});
+
+document.getElementById('courEditSaveBtn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('courEditMsg');
+  msgEl.textContent = ''; msgEl.className = 'modal-msg';
+  const name = document.getElementById('courEditName').value.trim();
+  if(!name){ msgEl.textContent = 'الاسم مطلوب'; msgEl.className = 'modal-msg err'; return; }
+  try{
+    const r = await fetch('/api/couriers', {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id: currentEditCourierId, name })
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
+    msgEl.textContent = 'تم الحفظ بنجاح'; msgEl.className = 'modal-msg ok';
+    setTimeout(() => {
+      document.getElementById('courierEditCard').style.display = 'none';
+      loadCouriersTab();
+    }, 600);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+});
 
 function renderCourierMonthlyChart(series){
   const el = document.getElementById('courierMonthlyChart');
@@ -771,84 +1447,124 @@ function renderCourierMonthlyChart(series){
   });
 }
 
-let currentCourierManifest = [];
+async function fetchCourierData(courierId){
+  if(currentCourierId === courierId && currentCourierData) return currentCourierData;
+  const r = await fetch('/api/courier-report?courier_id=' + encodeURIComponent(courierId));
+  if(!r.ok) throw new Error('failed');
+  const d = await r.json();
+  currentCourierId = courierId;
+  currentCourierData = d;
+  return d;
+}
 
-document.getElementById('courierReportSelect').addEventListener('change', async (e) => {
-  const courierId = e.target.value;
-  if(!courierId) return;
+async function openCourierView(courierId, mode){
+  document.getElementById('courierEditCard').style.display = 'none';
+  const reportCard = document.getElementById('courierReportCard');
+  const manifestCard = document.getElementById('courierManifestCard');
 
-  document.getElementById('courierOverlay').classList.add('visible');
-  document.getElementById('courierLoading').style.display = 'block';
-  document.getElementById('courierContent').style.display = 'none';
+  if(mode === 'report'){
+    reportCard.style.display = 'block';
+    manifestCard.style.display = 'none';
+    reportCard.scrollIntoView({behavior:'smooth', block:'start'});
+    document.getElementById('courierLoading').style.display = 'block';
+    document.getElementById('courierLoading').textContent = 'جاري التحميل...';
+    document.getElementById('courierContent').style.display = 'none';
+  } else {
+    manifestCard.style.display = 'block';
+    reportCard.style.display = 'none';
+    manifestCard.scrollIntoView({behavior:'smooth', block:'start'});
+    document.getElementById('courierManifestTbody').innerHTML = '<tr><td colspan="9" class="empty-note">جاري التحميل...</td></tr>';
+  }
 
   try{
-    const r = await fetch('/api/courier-report?courier_id=' + encodeURIComponent(courierId));
-    if(!r.ok) throw new Error('failed');
-    const d = await r.json();
+    const d = await fetchCourierData(courierId);
 
-    document.getElementById('courierName').textContent = d.courier_name;
-    document.getElementById('courierDate').textContent = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
-
-    document.getElementById('courierOrderCount').textContent = fmt(d.totals.orderCount);
-    document.getElementById('courierTotalMargin').textContent = fmt(d.totals.totalMargin);
-    document.getElementById('courierAvgMargin').textContent = fmt(Math.round(d.totals.avgMarginPerOrder));
-    document.getElementById('courierStatusPreparing').textContent = fmt(d.totals.statusBreakdown.preparing || 0);
-    document.getElementById('courierStatusShipped').textContent = fmt(d.totals.statusBreakdown.shipped || 0);
-    document.getElementById('courierStatusDelivered').textContent = fmt(d.totals.statusBreakdown.delivered || 0);
-
-    renderCourierMonthlyChart(d.monthlySeries);
-
-    currentCourierManifest = d.pendingManifest || [];
-    const tbody = document.getElementById('courierManifestTbody');
-    tbody.innerHTML = '';
-    if(!currentCourierManifest.length){
-      tbody.innerHTML = '<tr><td colspan="8" class="empty-note">لا توجد طلبات قيد التجهيز حاليًا</td></tr>';
+    if(mode === 'report'){
+      document.getElementById('courierName').textContent = d.courier_name;
+      document.getElementById('courierDate').textContent = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
+      document.getElementById('courierOrderCount').textContent = fmt(d.totals.orderCount);
+      document.getElementById('courierTotalMargin').textContent = fmt(d.totals.totalMargin);
+      document.getElementById('courierAvgMargin').textContent = fmt(Math.round(d.totals.avgMarginPerOrder));
+      document.getElementById('courierStatusPreparing').textContent = fmt(d.totals.statusBreakdown.preparing || 0);
+      document.getElementById('courierStatusShipped').textContent = fmt(d.totals.statusBreakdown.shipped || 0);
+      document.getElementById('courierStatusDelivered').textContent = fmt(d.totals.statusBreakdown.delivered || 0);
+      renderCourierMonthlyChart(d.monthlySeries);
+      document.getElementById('courierLoading').style.display = 'none';
+      document.getElementById('courierContent').style.display = 'block';
     } else {
-      currentCourierManifest.forEach(m => {
-        const tr = document.createElement('tr');
-        const dateStr = new Date(m.date).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
-        tr.innerHTML = `
-          <td>${dateStr}</td>
-          <td>${m.customer_name || '-'}</td>
-          <td dir="ltr">${m.customer_phone || '-'}</td>
-          <td>${m.emirate || '-'}</td>
-          <td>${m.address || '-'}</td>
-          <td>${m.product_name || '-'}</td>
-          <td>${m.quantity}</td>
-          <td>${m.weight_grams ? fmt(m.weight_grams) : '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      document.getElementById('manifestCourierName').textContent = d.courier_name;
+      renderCourierManifest(d.pendingManifest || []);
     }
-
-    document.getElementById('courierLoading').style.display = 'none';
-    document.getElementById('courierContent').style.display = 'block';
   }catch(e){
-    document.getElementById('courierLoading').textContent = 'تعذر تحميل تقرير شركة التوصيل.';
+    if(mode === 'report'){
+      document.getElementById('courierLoading').textContent = 'تعذر تحميل تقرير شركة التوصيل.';
+    } else {
+      document.getElementById('courierManifestTbody').innerHTML = '<tr><td colspan="9" class="empty-note">تعذر تحميل كشف الشحن.</td></tr>';
+    }
   }
+}
+
+function renderCourierManifest(manifest){
+  const tbody = document.getElementById('courierManifestTbody');
+  tbody.innerHTML = '';
+  if(!manifest.length){
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-note">لا توجد طلبات قيد التجهيز حاليًا</td></tr>';
+    return;
+  }
+  manifest.forEach((m, idx) => {
+    const tr = document.createElement('tr');
+    const dateStr = new Date(m.date).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
+    tr.innerHTML = `
+      <td><input type="checkbox" class="manifest-check" data-idx="${idx}" checked/></td>
+      <td>${dateStr}</td>
+      <td>${m.customer_name || '-'}</td>
+      <td dir="ltr">${m.customer_phone || '-'}</td>
+      <td>${m.emirate || '-'}</td>
+      <td>${m.address || '-'}</td>
+      <td>${m.product_name || '-'}</td>
+      <td>${m.quantity}</td>
+      <td>${m.weight_grams ? fmt(m.weight_grams) : '-'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('courierReportCloseBtn').addEventListener('click', () => {
+  document.getElementById('courierReportCard').style.display = 'none';
+});
+document.getElementById('courierReportPrintBtn').addEventListener('click', () => {
+  printCurrent(document.getElementById('courierReportContent'));
 });
 
-document.getElementById('courierCloseBtn').addEventListener('click', () => {
-  document.getElementById('courierOverlay').classList.remove('visible');
-  document.getElementById('courierReportSelect').value = '';
+document.getElementById('courierManifestCloseBtn').addEventListener('click', () => {
+  document.getElementById('courierManifestCard').style.display = 'none';
 });
-document.getElementById('courierOverlay').addEventListener('click', (e) => {
-  if(e.target.id === 'courierOverlay'){
-    document.getElementById('courierOverlay').classList.remove('visible');
-    document.getElementById('courierReportSelect').value = '';
-  }
+document.getElementById('courierManifestPrintBtn').addEventListener('click', () => {
+  printCurrent(document.getElementById('courierManifestCard'));
 });
-document.getElementById('courierPrintBtn').addEventListener('click', () => window.print());
+document.getElementById('courierSelectAllBtn').addEventListener('click', () => {
+  const boxes = document.querySelectorAll('.manifest-check');
+  const allChecked = Array.from(boxes).every(b => b.checked);
+  boxes.forEach(b => b.checked = !allChecked);
+});
 
-document.getElementById('courierCopyBtn').addEventListener('click', async () => {
-  if(!currentCourierManifest.length){
+document.getElementById('courierCopySelectedBtn').addEventListener('click', async () => {
+  if(!currentCourierData || !(currentCourierData.pendingManifest || []).length){
     alert('لا توجد طلبات قيد التجهيز لنسخها حاليًا.');
     return;
   }
-  const courierLabel = document.getElementById('courierName').textContent;
+  const selected = [];
+  document.querySelectorAll('.manifest-check').forEach(box => {
+    if(box.checked) selected.push(currentCourierData.pendingManifest[parseInt(box.dataset.idx, 10)]);
+  });
+  if(!selected.length){
+    alert('لم يتم تحديد أي طلب.');
+    return;
+  }
+  const courierLabel = document.getElementById('manifestCourierName').textContent;
   const dateLabel = new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
-  let text = `كشف الشحن اليومي — 249Souq\nشركة التوصيل: ${courierLabel}\nالتاريخ: ${dateLabel}\nعدد الطلبات: ${currentCourierManifest.length}\n\n`;
-  currentCourierManifest.forEach((m, i) => {
+  let text = `كشف الشحن اليومي — 249Souq\nشركة التوصيل: ${courierLabel}\nالتاريخ: ${dateLabel}\nعدد الطلبات: ${selected.length}\n\n`;
+  selected.forEach((m, i) => {
     text += `${i + 1}) ${m.customer_name || '-'}\n`;
     text += `   📞 ${m.customer_phone || '-'}\n`;
     text += `   📍 ${m.emirate || '-'}${m.address ? ' — ' + m.address : ''}\n`;
@@ -856,7 +1572,7 @@ document.getElementById('courierCopyBtn').addEventListener('click', async () => 
   });
   try{
     await navigator.clipboard.writeText(text);
-    const btn = document.getElementById('courierCopyBtn');
+    const btn = document.getElementById('courierCopySelectedBtn');
     const original = btn.textContent;
     btn.textContent = '✅ تم النسخ';
     setTimeout(() => { btn.textContent = original; }, 1800);
@@ -865,8 +1581,6 @@ document.getElementById('courierCopyBtn').addEventListener('click', async () => 
   }
 });
 
-loadSellerReportOptions();
-loadCourierReportOptions();
 checkSession();
 </script>
 </body>
