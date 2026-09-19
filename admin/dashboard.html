@@ -122,15 +122,14 @@
   #sellerReportPrintArea .stat-tile .value{font-size:19px;}
 
   @media print{
-    body *{visibility:hidden;}
-    #sellerReportPrintArea, #sellerReportPrintArea *{visibility:visible;}
-    /* The overlay/box are position:fixed for on-screen use, which makes browsers repeat
-       them on every printed page. Reset them to normal static flow for print so the
-       report prints once, not once per page. */
-    .modal-overlay{position:static !important; display:block !important; background:none !important; padding:0 !important; inset:auto !important;}
+    /* display:none removes these from layout entirely (unlike visibility:hidden, which
+       keeps their height and pushes the report onto later pages, leaving blank pages).
+       Hide everything except the report modal's content. */
+    #loginScreen, .topbar, #mainWrap, #editOverlay{display:none !important;}
+    #reportOverlay{display:block !important; position:static !important; background:none !important; padding:0 !important; inset:auto !important;}
     .modal-box{position:static !important; max-width:none !important; max-height:none !important; overflow:visible !important; box-shadow:none !important; padding:0 !important; margin:0 !important;}
     #sellerReportPrintArea{position:static !important; padding:20px;}
-    .report-actions, .modal-actions{display:none !important;}
+    .report-actions{display:none !important;}
   }
 </style>
 </head>
