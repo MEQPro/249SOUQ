@@ -142,6 +142,9 @@ a.logout{font-size:12px;color:var(--brown-mid);text-decoration:underline;cursor:
         <div class="field"><label>سعر البائع الافتراضي (للوحدة، AED)</label><input id="editSellerPrice"/></div>
         <div class="field" id="editSellerSlugField"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="editSellerSlug" placeholder="مثال: sara"/></div>
       </div>
+      <div class="row single" id="sellerLinkPreviewRow" style="margin-bottom:.6rem">
+        <div class="field"><label>رابط لوحة البائع الخاص بها (انسخيه وأرسليه لها)</label><input id="sellerLinkPreview" readonly style="background:#fff;color:var(--green-dark);font-weight:600" onclick="this.select()"/></div>
+      </div>
       <div style="display:flex;gap:.6rem">
         <button class="btn" id="saveSellerBtn" style="margin-top:.5rem;background:var(--gold-dark)">حفظ بيانات البائع (هذا لا يحفظ الطلب)</button>
         <button class="btn btn-ghost" id="cancelSellerBtn" style="margin-top:.5rem">إلغاء</button>
@@ -315,14 +318,21 @@ function openSellerPanel(mode){
     document.getElementById('editSellerProduct').value = opt.dataset.product || '';
     document.getElementById('editSellerPrice').value = opt.dataset.payout || '';
     editSellerSlugField.classList.add('hidden'); // slug stays fixed once a seller has a live link
+    document.getElementById('sellerLinkPreview').value = opt.dataset.slug ? (window.location.origin + '/dashboard/' + opt.dataset.slug) : '';
   } else {
     document.getElementById('editSellerName').value = '';
     document.getElementById('editSellerProduct').value = '';
     document.getElementById('editSellerPrice').value = '';
     document.getElementById('editSellerSlug').value = '';
     editSellerSlugField.classList.remove('hidden');
+    document.getElementById('sellerLinkPreview').value = '';
   }
 }
+
+document.getElementById('editSellerSlug').addEventListener('input', (e) => {
+  const slug = e.target.value.trim();
+  document.getElementById('sellerLinkPreview').value = slug ? (window.location.origin + '/dashboard/' + slug) : '';
+});
 
 document.getElementById('editSellerLink').addEventListener('click', () => openSellerPanel('edit'));
 document.getElementById('addSellerLink').addEventListener('click', () => openSellerPanel('add'));

@@ -7,5 +7,11 @@
       "destination": "/products.html?utm_source=qr&utm_medium=print&utm_campaign=bukhoor_launch",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/dashboard/:slug",
+      "destination": "/seller/dashboard.html"
+    }
   ]
 }
