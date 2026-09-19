@@ -1295,7 +1295,13 @@ async function openSellerReport(sellerId){
   document.getElementById('reportContent').style.display = 'none';
 
   try{
-    const r = await fetch('/api/admin-seller-report?seller_id=' + encodeURIComponent(sellerId));
+    const ctrl = new AbortController();
+    const timeoutId = setTimeout(() => ctrl.abort(), 15000);
+    const r = await fetch('/api/admin-seller-report?seller_id=' + encodeURIComponent(sellerId) + '&_=' + Date.now(), {
+      cache: 'no-store',
+      signal: ctrl.signal
+    });
+    clearTimeout(timeoutId);
     if(!r.ok) throw new Error('failed');
     const d = await r.json();
 
@@ -1464,7 +1470,13 @@ function renderCourierMonthlyChart(series){
 
 async function fetchCourierData(courierId){
   if(currentCourierId === courierId && currentCourierData) return currentCourierData;
-  const r = await fetch('/api/courier-report?courier_id=' + encodeURIComponent(courierId));
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 15000);
+  const r = await fetch('/api/courier-report?courier_id=' + encodeURIComponent(courierId) + '&_=' + Date.now(), {
+    cache: 'no-store',
+    signal: ctrl.signal
+  });
+  clearTimeout(timeoutId);
   if(!r.ok) throw new Error('failed');
   const d = await r.json();
   currentCourierId = courierId;

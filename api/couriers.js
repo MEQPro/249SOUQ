@@ -2,6 +2,7 @@ const { requireAuth } = require('./_auth');
 const { getServiceClient } = require('./_supabase');
 
 module.exports = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   if (!requireAuth(req, res)) return;
   const supabase = getServiceClient();
 

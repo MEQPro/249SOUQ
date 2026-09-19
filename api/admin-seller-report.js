@@ -11,6 +11,7 @@ function monthLabel(dateStr) {
 }
 
 module.exports = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   if (!requireAuth(req, res)) return;
   if (req.method !== 'GET') { res.status(405).json({ error: 'method_not_allowed' }); return; }
 
