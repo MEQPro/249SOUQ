@@ -88,6 +88,7 @@ module.exports = async (req, res) => {
   const byPayment = Object.values(paymentBuckets).sort((a, b) => b.orders - a.orders);
 
   const recentOrders = orders.slice(-15).reverse().map((o) => ({
+    id: o.id,
     date: o.created_at,
     customer_name: o.customers ? o.customers.name : null,
     customer_phone: o.customers ? o.customers.phone : null,

@@ -88,6 +88,28 @@
   .pill.preparing{background:var(--gold-pale); color:var(--gold-dark);}
   .empty-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:30px 0;}
   .loading-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:40px 0;}
+
+  .edit-btn{background:var(--gold-pale); color:var(--gold-dark); border:none; border-radius:7px; padding:5px 12px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;}
+  .edit-btn:hover{background:var(--gold-light);}
+
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(58,42,29,0.45); align-items:center; justify-content:center; z-index:100; padding:20px;}
+  .modal-overlay.visible{display:flex;}
+  .modal-box{background:var(--surface); border-radius:16px; padding:26px; max-width:520px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,0.25);}
+  .modal-box h3{margin-top:0;}
+  .modal-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+  .modal-row.single{grid-template-columns:1fr;}
+  .modal-field label{display:block; font-size:12px; color:var(--ink-muted); margin-bottom:5px; font-weight:700;}
+  .modal-field input, .modal-field select{width:100%; padding:9px 10px; border:1px solid var(--cream-dark); border-radius:8px; font-family:inherit; font-size:13.5px; color:var(--brown-deep); background:var(--cream);}
+  .modal-readonly{background:var(--cream-dark); border-radius:10px; padding:10px 14px; font-size:12.5px; color:var(--brown-mid); margin-bottom:16px;}
+  .modal-actions{display:flex; gap:10px; margin-top:18px;}
+  .modal-actions button{flex:1; padding:11px; border:none; border-radius:9px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;}
+  .btn-save{background:var(--green-dark); color:#fff;}
+  .btn-save:hover{background:var(--green);}
+  .btn-cancel{background:var(--cream-dark); color:var(--brown-mid);}
+  .btn-cancel:hover{background:#e8ddc4;}
+  .modal-msg{font-size:12.5px; margin-top:10px; min-height:16px;}
+  .modal-msg.err{color:var(--red);}
+  .modal-msg.ok{color:var(--green-dark);}
 </style>
 </head>
 <body>
@@ -156,13 +178,98 @@
                 <th>التاريخ</th><th>العميلة</th><th>الهاتف</th><th>الإمارة</th>
                 <th>المنتج</th><th>الكمية</th><th>إجمالي العميل</th><th>مستحق البائع</th>
                 <th>هامش المنتج</th><th>هامش الشحن</th><th>الدفع</th><th>حالة الدفع</th>
-                <th>حالة التوصيل</th><th>شركة التوصيل</th><th>البائع</th>
+                <th>حالة التوصيل</th><th>شركة التوصيل</th><th>البائع</th><th></th>
               </tr>
             </thead>
             <tbody id="ordersTbody"></tbody>
           </table>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editOverlay">
+  <div class="modal-box">
+    <h3>تعديل الطلب</h3>
+    <div class="modal-readonly" id="editReadonlyInfo">جاري التحميل...</div>
+    <div id="editFormFields" style="display:none;">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>الكمية</label>
+          <input type="number" id="editQuantity" min="1" step="1" />
+        </div>
+        <div class="modal-field">
+          <label>سعر البائعة (للوحدة)</label>
+          <input type="number" id="editPriceSeller" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>سعر العميل (للوحدة)</label>
+          <input type="number" id="editPriceCustomer" min="0" step="0.01" />
+        </div>
+        <div class="modal-field">
+          <label>كود الخصم (اختياري)</label>
+          <input type="text" id="editPromoCode" />
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>رسوم التوصيل المحصلة</label>
+          <input type="number" id="editDeliveryCharged" min="0" step="0.01" />
+        </div>
+        <div class="modal-field">
+          <label>تكلفة التوصيل الفعلية</label>
+          <input type="number" id="editDeliveryCost" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>شركة التوصيل</label>
+          <input type="text" id="editCourierName" list="editCourierList" />
+          <datalist id="editCourierList"></datalist>
+        </div>
+        <div class="modal-field">
+          <label>طريقة الدفع</label>
+          <select id="editPaymentMethod">
+            <option value="cash_on_delivery">نقدًا عند الاستلام (COD)</option>
+            <option value="card">بطاقة</option>
+            <option value="bank_transfer">تحويل بنكي</option>
+            <option value="online">دفع إلكتروني</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>حالة الدفع</label>
+          <select id="editPaymentStatus">
+            <option value="pending">قيد الانتظار</option>
+            <option value="paid">مدفوع</option>
+            <option value="cancelled">ملغى</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>حالة التوصيل</label>
+          <select id="editDeliveryStatus">
+            <option value="preparing">قيد التجهيز</option>
+            <option value="shipped">تم الشحن</option>
+            <option value="delivered">تم التوصيل</option>
+            <option value="cancelled">ملغى</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row single">
+        <div class="modal-field">
+          <label>ملاحظات (اختياري)</label>
+          <input type="text" id="editNotes" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-msg" id="editMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-save" id="editSaveBtn">حفظ التعديلات</button>
+      <button class="btn-cancel" id="editCancelBtn">إلغاء</button>
     </div>
   </div>
 </div>
@@ -275,7 +382,7 @@ async function loadDashboard(){
     const tbody = document.getElementById('ordersTbody');
     tbody.innerHTML = '';
     if(!d.recentOrders.length){
-      tbody.innerHTML = '<tr><td colspan="15" class="empty-note">لا توجد طلبات مسجلة بعد</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="16" class="empty-note">لا توجد طلبات مسجلة بعد</td></tr>';
     } else {
       d.recentOrders.forEach(o => {
         const tr = document.createElement('tr');
@@ -296,10 +403,15 @@ async function loadDashboard(){
           <td><span class="pill ${pillClass(o.delivery_status)}">${STATUS_LABELS[o.delivery_status] || o.delivery_status || '-'}</span></td>
           <td>${o.courier || '-'}</td>
           <td>${o.seller || '-'}</td>
+          <td><button class="edit-btn" data-order-id="${o.id}">تعديل</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => openEditModal(btn.dataset.orderId));
+    });
 
     document.getElementById('loadingNote').style.display = 'none';
     document.getElementById('dashboardContent').style.display = 'block';
@@ -307,6 +419,114 @@ async function loadDashboard(){
     document.getElementById('loadingNote').textContent = 'تعذر تحميل البيانات. حاولي تحديث الصفحة.';
   }
 }
+
+let currentEditOrderId = null;
+
+async function loadCourierOptions(){
+  try{
+    const r = await fetch('/api/couriers');
+    if(!r.ok) return;
+    const d = await r.json();
+    const list = document.getElementById('editCourierList');
+    list.innerHTML = '';
+    (d.couriers || []).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name;
+      list.appendChild(opt);
+    });
+  }catch(e){ /* non-critical */ }
+}
+
+async function openEditModal(orderId){
+  currentEditOrderId = orderId;
+  document.getElementById('editOverlay').classList.add('visible');
+  document.getElementById('editReadonlyInfo').textContent = 'جاري التحميل...';
+  document.getElementById('editReadonlyInfo').style.display = 'block';
+  document.getElementById('editFormFields').style.display = 'none';
+  document.getElementById('editMsg').textContent = '';
+  document.getElementById('editMsg').className = 'modal-msg';
+
+  loadCourierOptions();
+
+  try{
+    const r = await fetch('/api/order?id=' + encodeURIComponent(orderId));
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+    const o = d.order;
+
+    document.getElementById('editReadonlyInfo').innerHTML =
+      `<b>${o.customer_name || 'بدون اسم'}</b> — ${o.customer_phone || '-'} — ${o.emirate || '-'}<br>${o.product_name || ''} (البائع: ${o.seller_name || '-'})`;
+
+    document.getElementById('editQuantity').value = o.quantity;
+    document.getElementById('editPriceSeller').value = o.unit_price_seller;
+    document.getElementById('editPriceCustomer').value = o.unit_price_customer;
+    document.getElementById('editPromoCode').value = o.promo_code || '';
+    document.getElementById('editDeliveryCharged').value = o.delivery_fee_charged || 0;
+    document.getElementById('editDeliveryCost').value = o.delivery_cost_actual || 0;
+    document.getElementById('editCourierName').value = o.courier_name || '';
+    document.getElementById('editPaymentMethod').value = o.payment_method || 'cash_on_delivery';
+    document.getElementById('editPaymentStatus').value = o.payment_status || 'pending';
+    document.getElementById('editDeliveryStatus').value = o.delivery_status || 'preparing';
+    document.getElementById('editNotes').value = o.notes || '';
+
+    document.getElementById('editFormFields').style.display = 'block';
+  }catch(e){
+    document.getElementById('editReadonlyInfo').textContent = 'تعذر تحميل بيانات الطلب.';
+  }
+}
+
+function closeEditModal(){
+  document.getElementById('editOverlay').classList.remove('visible');
+  currentEditOrderId = null;
+}
+
+document.getElementById('editCancelBtn').addEventListener('click', closeEditModal);
+document.getElementById('editOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'editOverlay') closeEditModal();
+});
+
+document.getElementById('editSaveBtn').addEventListener('click', async () => {
+  if(!currentEditOrderId) return;
+  const msgEl = document.getElementById('editMsg');
+  msgEl.textContent = '';
+  msgEl.className = 'modal-msg';
+
+  const payload = {
+    id: currentEditOrderId,
+    quantity: document.getElementById('editQuantity').value,
+    unit_price_seller: document.getElementById('editPriceSeller').value,
+    unit_price_customer: document.getElementById('editPriceCustomer').value,
+    promo_code: document.getElementById('editPromoCode').value,
+    delivery_fee_charged: document.getElementById('editDeliveryCharged').value,
+    delivery_cost_actual: document.getElementById('editDeliveryCost').value,
+    courier_name: document.getElementById('editCourierName').value,
+    payment_method: document.getElementById('editPaymentMethod').value,
+    payment_status: document.getElementById('editPaymentStatus').value,
+    delivery_status: document.getElementById('editDeliveryStatus').value,
+    notes: document.getElementById('editNotes').value
+  };
+
+  try{
+    const r = await fetch('/api/order', {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if(!r.ok){
+      msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف');
+      msgEl.className = 'modal-msg err';
+      return;
+    }
+    msgEl.textContent = 'تم الحفظ بنجاح';
+    msgEl.className = 'modal-msg ok';
+    setTimeout(() => {
+      closeEditModal();
+      loadDashboard();
+    }, 600);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم';
+    msgEl.className = 'modal-msg err';
+  }
+});
 
 checkSession();
 </script>
