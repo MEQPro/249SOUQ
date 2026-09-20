@@ -135,6 +135,7 @@
   .report-actions{display:flex; gap:10px; margin-bottom:16px;}
   .report-actions button{padding:9px 16px; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;}
   .btn-print{background:var(--gold-dark); color:#fff;}
+  .btn-print:disabled{background:#c9c1b4; cursor:not-allowed;}
   .btn-print:hover{background:var(--brown-mid);}
   .btn-copy{background:var(--green-dark); color:#fff;}
   .btn-copy:hover{background:var(--green);}
@@ -1293,6 +1294,9 @@ async function openSellerReport(sellerId){
   document.getElementById('reportLoading').style.display = 'block';
   document.getElementById('reportLoading').textContent = 'جاري التحميل...';
   document.getElementById('reportContent').style.display = 'none';
+  const printBtn = document.getElementById('sellerReportPrintBtn');
+  printBtn.disabled = true;
+  printBtn.textContent = 'جاري التحميل...';
 
   try{
     const ctrl = new AbortController();
@@ -1336,8 +1340,12 @@ async function openSellerReport(sellerId){
 
     document.getElementById('reportLoading').style.display = 'none';
     document.getElementById('reportContent').style.display = 'block';
+    printBtn.disabled = false;
+    printBtn.textContent = '🖨️ طباعة / حفظ PDF';
   }catch(e){
     document.getElementById('reportLoading').textContent = 'تعذر تحميل تقرير هذا البائع.';
+    printBtn.disabled = true;
+    printBtn.textContent = '🖨️ طباعة / حفظ PDF';
   }
 }
 
@@ -1488,6 +1496,8 @@ async function openCourierView(courierId, mode){
   document.getElementById('courierEditCard').style.display = 'none';
   const reportCard = document.getElementById('courierReportCard');
   const manifestCard = document.getElementById('courierManifestCard');
+  const reportPrintBtn = document.getElementById('courierReportPrintBtn');
+  const manifestPrintBtn = document.getElementById('courierManifestPrintBtn');
 
   if(mode === 'report'){
     reportCard.style.display = 'block';
@@ -1496,11 +1506,13 @@ async function openCourierView(courierId, mode){
     document.getElementById('courierLoading').style.display = 'block';
     document.getElementById('courierLoading').textContent = 'جاري التحميل...';
     document.getElementById('courierContent').style.display = 'none';
+    reportPrintBtn.disabled = true;
   } else {
     manifestCard.style.display = 'block';
     reportCard.style.display = 'none';
     manifestCard.scrollIntoView({behavior:'smooth', block:'start'});
     document.getElementById('courierManifestTbody').innerHTML = '<tr><td colspan="9" class="empty-note">جاري التحميل...</td></tr>';
+    manifestPrintBtn.disabled = true;
   }
 
   try{
@@ -1518,9 +1530,11 @@ async function openCourierView(courierId, mode){
       renderCourierMonthlyChart(d.monthlySeries);
       document.getElementById('courierLoading').style.display = 'none';
       document.getElementById('courierContent').style.display = 'block';
+      reportPrintBtn.disabled = false;
     } else {
       document.getElementById('manifestCourierName').textContent = d.courier_name;
       renderCourierManifest(d.pendingManifest || []);
+      manifestPrintBtn.disabled = false;
     }
   }catch(e){
     if(mode === 'report'){
