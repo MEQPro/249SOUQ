@@ -710,7 +710,7 @@ document.getElementById('passwordInput').addEventListener('keydown', (e) => {
 });
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   e.preventDefault();
-  await fetch('/api/admin-logout', {method:'POST'});
+  await fetch('/api/admin-login?logout=1', {method:'POST'});
   checkSession();
 });
 
