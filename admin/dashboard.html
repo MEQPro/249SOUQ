@@ -99,6 +99,11 @@
   .pill.shipped{background:#E4EEFA; color:#2C5A7A;}
   .pill.delivered{background:#DFF0E7; color:var(--green-dark);}
   .pill.preparing{background:var(--gold-pale); color:var(--gold-dark);}
+  .pill.approved{background:#DFF0E7; color:var(--green-dark);}
+  .pill.rejected{background:#F5DCD8; color:var(--red);}
+  .app-detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:6px 18px; font-size:12.5px; margin-bottom:16px;}
+  .app-detail-grid div b{color:var(--brown-mid); font-weight:700;}
+  .app-badge{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; background:var(--cream-dark); color:var(--brown-mid); margin-inline-start:6px;}
   .empty-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:30px 0;}
   .loading-note{color:var(--ink-muted); font-size:13px; text-align:center; padding:40px 0;}
 
@@ -180,6 +185,7 @@
     <button class="tab-btn" data-tab="clients">👥 العملاء</button>
     <button class="tab-btn" data-tab="sellers">🏷️ البائعين</button>
     <button class="tab-btn" data-tab="couriers">🚚 شركات التوصيل</button>
+    <button class="tab-btn" data-tab="applications">🆕 طلبات الانضمام</button>
   </div>
 
   <div class="wrap" id="mainWrap">
@@ -503,6 +509,51 @@
         </div>
       </div>
     </div>
+
+    <!-- ===================== APPLICATIONS TAB ===================== -->
+    <div class="tab-panel" id="panelApplications">
+      <div class="card">
+        <h3>طلبات الانضمام <span class="muted">(مراجعة وقبول/رفض طلبات البائعين الجدد)</span></h3>
+        <div class="table-scroll">
+          <table id="applicationsTable">
+            <thead><tr><th>التاريخ</th><th>الاسم</th><th>النشاط التجاري</th><th>المنتج</th><th>المدينة</th><th>السعر بالجملة</th><th>الحالة</th><th></th></tr></thead>
+            <tbody id="applicationsTbody"><tr><td colspan="8" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="applicationReviewCard" style="display:none;">
+        <h3>مراجعة الطلب</h3>
+        <div class="app-detail-grid" id="appDetailGrid"></div>
+
+        <div id="appApproveFields">
+          <div class="modal-row">
+            <div class="modal-field"><label>اسم البائع (كما سيظهر في لوحة البائعين)</label><input id="appSellerName"/></div>
+            <div class="modal-field"><label>اسم المنتج</label><input id="appProductName"/></div>
+          </div>
+          <div class="modal-row">
+            <div class="modal-field"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="appSlug" placeholder="مثال: ruaa"/></div>
+            <div class="modal-field"><label>نسبة العمولة</label>
+              <select id="appCommission"><option value="20">20%</option><option value="25" selected>25%</option></select>
+            </div>
+          </div>
+          <div class="modal-row">
+            <div class="modal-field"><label>السعر بالجملة (AED)</label><input id="appWholesale" type="number" min="0" step="0.01"/></div>
+            <div class="modal-field"><label>السعر المقترح للبيع / صافي مستحقاتها (محسوبة تلقائيًا)</label><div class="modal-readonly" id="appCalcPreview" style="margin-bottom:0;">-</div></div>
+          </div>
+        </div>
+
+        <div class="modal-row single">
+          <div class="modal-field"><label>ملاحظات المراجعة (اختياري)</label><input id="appReviewNotes"/></div>
+        </div>
+        <div class="modal-msg" id="appReviewMsg"></div>
+        <div class="modal-actions">
+          <button class="btn-save" id="appApproveBtn">✓ قبول الطلب</button>
+          <button class="action-btn" id="appRejectBtn" style="flex:1; background:#F5DCD8; color:var(--red);">✗ رفض الطلب</button>
+          <button class="btn-cancel" id="appCancelBtn">إغلاق</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -621,6 +672,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if(btn.dataset.tab === 'clients' && !clientsLoaded) loadClients();
     if(btn.dataset.tab === 'sellers' && !sellersLoaded) loadSellersTab();
     if(btn.dataset.tab === 'couriers' && !couriersLoaded) loadCouriersTab();
+    if(btn.dataset.tab === 'applications' && !applicationsLoaded) loadApplicationsTab();
   });
 });
 
@@ -1620,6 +1672,178 @@ document.getElementById('courierCopySelectedBtn').addEventListener('click', asyn
   }catch(e){
     alert('تعذر النسخ التلقائي، حاول مرة أخرى.');
   }
+});
+
+/* ===================== APPLICATIONS TAB ===================== */
+let applicationsLoaded = false;
+let applicationsCache = [];
+let currentReviewAppId = null;
+
+const APP_STATUS_LABELS = { pending: 'قيد المراجعة', approved: 'مقبول', rejected: 'مرفوض' };
+
+async function loadApplicationsTab(){
+  applicationsLoaded = true;
+  const tbody = document.getElementById('applicationsTbody');
+  tbody.innerHTML = '<tr><td colspan="8" class="empty-note">جاري التحميل...</td></tr>';
+  try{
+    const r = await fetch('/api/seller-applications');
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+    applicationsCache = d.applications || [];
+    renderApplicationsTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-note">تعذر تحميل طلبات الانضمام.</td></tr>';
+  }
+}
+
+function renderApplicationsTable(){
+  const tbody = document.getElementById('applicationsTbody');
+  tbody.innerHTML = '';
+  if(!applicationsCache.length){
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-note">لا توجد طلبات انضمام بعد</td></tr>';
+    return;
+  }
+  applicationsCache.forEach(a => {
+    const tr = document.createElement('tr');
+    const dateStr = new Date(a.submitted_at).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
+    tr.innerHTML = `
+      <td>${dateStr}</td>
+      <td>${a.full_name || '-'}</td>
+      <td>${a.business_name || '-'}</td>
+      <td>${a.product_name || '-'}</td>
+      <td>${a.country_city || '-'}</td>
+      <td>${a.wholesale_price_offered != null ? fmt(a.wholesale_price_offered) : '-'}</td>
+      <td><span class="pill ${a.status}">${APP_STATUS_LABELS[a.status] || a.status}</span></td>
+      <td><button class="edit-btn" data-app-review="${a.id}">${a.status === 'pending' ? 'مراجعة' : 'عرض'}</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('[data-app-review]').forEach(btn => {
+    btn.addEventListener('click', () => openApplicationReview(btn.dataset.appReview));
+  });
+}
+
+function skuPrefixPreview(name){
+  const firstWord = (name || '').trim().split(/\s+/)[0] || '';
+  const letters = firstWord.replace(/[^A-Za-z]/g, '').toUpperCase();
+  return (letters || 'SELLER').slice(0, 8);
+}
+
+function updateAppCalcPreview(){
+  const wholesale = parseFloat(document.getElementById('appWholesale').value || '0') || 0;
+  const commission = parseFloat(document.getElementById('appCommission').value || '0') / 100;
+  const preview = document.getElementById('appCalcPreview');
+  if(!wholesale || !commission){ preview.textContent = '-'; return; }
+  const retail = wholesale / (1 - commission);
+  const payout = retail * (1 - commission);
+  preview.innerHTML = `السعر المقترح: <b>AED ${retail.toFixed(2)}</b> &nbsp;—&nbsp; صافي مستحقاتها: <b>AED ${payout.toFixed(2)}</b>`;
+}
+document.getElementById('appWholesale').addEventListener('input', updateAppCalcPreview);
+document.getElementById('appCommission').addEventListener('change', updateAppCalcPreview);
+
+function openApplicationReview(id){
+  const a = applicationsCache.find(x => String(x.id) === String(id));
+  if(!a) return;
+  currentReviewAppId = id;
+
+  const grid = document.getElementById('appDetailGrid');
+  grid.innerHTML = `
+    <div><b>الاسم:</b> ${a.full_name || '-'}</div>
+    <div><b>النشاط التجاري:</b> ${a.business_name || '-'}</div>
+    <div><b>الهاتف:</b> ${a.phone || '-'}</div>
+    <div><b>المدينة/الدولة:</b> ${a.country_city || '-'}</div>
+    <div><b>حساب التواصل:</b> ${a.social_handle || '-'}</div>
+    <div><b>نوع المنتج:</b> ${a.category || '-'}</div>
+    <div><b>اسم المنتج:</b> ${a.product_name || '-'}</div>
+    <div><b>رابط الصور:</b> ${a.product_photos || '-'}</div>
+    <div><b>مصنوع يدويًا؟:</b> ${a.is_handmade || '-'}</div>
+    <div><b>طريقة التصنيع/المصدر:</b> ${a.sourcing_method || '-'}</div>
+    <div><b>مبيعات شهرية حالية:</b> ${a.current_monthly_sales || '-'}</div>
+    <div><b>السعر الحالي:</b> ${a.current_price || '-'}</div>
+    <div><b>السعر بالجملة المعروض:</b> ${a.wholesale_price_offered != null ? fmt(a.wholesale_price_offered) : '-'}</div>
+    <div><b>جاهز للشحن؟:</b> ${a.ready_to_ship || '-'}</div>
+    <div><b>وقت التجهيز:</b> ${a.prep_time || '-'}</div>
+    <div><b>الطاقة الشهرية:</b> ${a.monthly_capacity || '-'}</div>
+    <div><b>موافقة على العمولة:</b> ${a.agrees_to_commission ? 'نعم ✓' : 'لا ✗'}</div>
+    <div><b>موافقة على مدة الدفع:</b> ${a.agrees_to_payout_terms ? 'نعم ✓' : 'لا ✗'}</div>
+    <div style="grid-column:1/-1"><b>أكبر تحدٍ:</b> ${a.biggest_challenge || '-'}</div>
+    <div style="grid-column:1/-1"><b>لماذا تريد الانضمام:</b> ${a.why_join || '-'}</div>
+  `;
+
+  const approveFields = document.getElementById('appApproveFields');
+  const approveBtn = document.getElementById('appApproveBtn');
+  const rejectBtn = document.getElementById('appRejectBtn');
+
+  if(a.status === 'pending'){
+    approveFields.style.display = 'block';
+    approveBtn.style.display = 'inline-block';
+    rejectBtn.style.display = 'inline-block';
+    document.getElementById('appSellerName').value = a.full_name || '';
+    document.getElementById('appProductName').value = a.product_name || '';
+    document.getElementById('appSlug').value = skuPrefixPreview(a.full_name).toLowerCase();
+    document.getElementById('appCommission').value = '25';
+    document.getElementById('appWholesale').value = a.wholesale_price_offered || '';
+    updateAppCalcPreview();
+  } else {
+    approveFields.style.display = 'none';
+    approveBtn.style.display = 'none';
+    rejectBtn.style.display = 'none';
+  }
+
+  document.getElementById('appReviewNotes').value = a.reviewer_notes || '';
+  document.getElementById('appReviewMsg').textContent = '';
+  document.getElementById('appReviewMsg').className = 'modal-msg';
+  document.getElementById('applicationReviewCard').style.display = 'block';
+  document.getElementById('applicationReviewCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('appCancelBtn').addEventListener('click', () => {
+  document.getElementById('applicationReviewCard').style.display = 'none';
+  currentReviewAppId = null;
+});
+
+async function submitApplicationReview(action){
+  if(!currentReviewAppId) return;
+  const msgEl = document.getElementById('appReviewMsg');
+  msgEl.textContent = ''; msgEl.className = 'modal-msg';
+
+  const payload = {
+    id: currentReviewAppId,
+    action,
+    reviewer_notes: document.getElementById('appReviewNotes').value.trim()
+  };
+  if(action === 'approve'){
+    payload.seller_name = document.getElementById('appSellerName').value.trim();
+    payload.product_name = document.getElementById('appProductName').value.trim();
+    payload.dashboard_slug = document.getElementById('appSlug').value.trim();
+    payload.commission_percent = document.getElementById('appCommission').value;
+    payload.wholesale_price = document.getElementById('appWholesale').value;
+    if(!payload.seller_name || !payload.product_name || !payload.dashboard_slug || !payload.wholesale_price){
+      msgEl.textContent = 'الرجاء تعبئة كل الحقول قبل القبول'; msgEl.className = 'modal-msg err';
+      return;
+    }
+  }
+
+  try{
+    const r = await fetch('/api/seller-applications', {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
+    msgEl.textContent = action === 'approve' ? 'تم القبول — البائع مضاف الآن في تبويب البائعين' : 'تم رفض الطلب'; msgEl.className = 'modal-msg ok';
+    setTimeout(() => {
+      document.getElementById('applicationReviewCard').style.display = 'none';
+      currentReviewAppId = null;
+      sellersLoaded = false;
+      loadApplicationsTab();
+    }, 900);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+}
+document.getElementById('appApproveBtn').addEventListener('click', () => submitApplicationReview('approve'));
+document.getElementById('appRejectBtn').addEventListener('click', () => {
+  if(confirm('هل أنتِ متأكدة من رفض هذا الطلب؟')) submitApplicationReview('reject');
 });
 
 checkSession();

@@ -32,6 +32,12 @@
 .form-group select option{background:#fff}
 .form-group textarea{resize:vertical;min-height:80px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-section-title{font-size:13px;font-weight:800;color:var(--gold-dark);margin:1.5rem 0 .75rem;padding-bottom:.4rem;border-bottom:1px solid var(--cream-dark)}
+.form-section-title:first-of-type{margin-top:0}
+.form-terms{background:var(--cream);border-radius:10px;padding:1rem 1.1rem;margin:1.25rem 0}
+.term-check{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--brown-mid);line-height:1.6;margin-bottom:.6rem;cursor:pointer}
+.term-check:last-child{margin-bottom:0}
+.term-check input{margin-top:3px;flex-shrink:0}
 .btn-submit{background:var(--gold);color:var(--brown-deep);border:none;padding:16px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:900;cursor:pointer;width:100%;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
 .btn-submit:hover{background:var(--gold-light)}
 .err-msg{display:none;font-size:13px;color:#a32d2d;margin-bottom:.75rem}
@@ -156,13 +162,21 @@
     </p>
 
     <div class="form-card" id="the-form">
-      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول المطلوبة</div>
+      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول المطلوبة، والموافقة على الشروط في الأسفل</div>
+
+      <div class="form-section-title">معلومات عنك</div>
       <div class="form-row">
         <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="f-name" placeholder="اسمك الكامل"/></div>
         <div class="form-group"><label>رقم الواتساب *</label><input type="tel" id="f-phone" placeholder="+971 5X XXX XXXX"/></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label>اسم النشاط التجاري (إن وجد)</label><input type="text" id="f-business" placeholder="مثال: Oya Aromata"/></div>
         <div class="form-group"><label>المدينة / الدولة *</label><input type="text" id="f-city" placeholder="مثال: دبي، الإمارات"/></div>
+      </div>
+      <div class="form-group"><label>حساب انستغرام / تيك توك (إن وجد)</label><input type="text" id="f-social" placeholder="@اسم_الحساب"/></div>
+
+      <div class="form-section-title">عن منتجك</div>
+      <div class="form-row">
         <div class="form-group">
           <label>نوع المنتج *</label>
           <select id="f-cat">
@@ -174,10 +188,43 @@
             <option>أخرى</option>
           </select>
         </div>
+        <div class="form-group"><label>اسم/نوع المنتج *</label><input type="text" id="f-product" placeholder="مثال: بخور صندل يدوي"/></div>
       </div>
-      <div class="form-group"><label>اوصف منتجك باختصار *</label><textarea id="f-desc" placeholder="مثال: أبيع بخور صندل يدوي بتغليف فاخر، عندي مبيعات حالية عبر واتساب..."></textarea></div>
+      <div class="form-group"><label>رابط لصور المنتج (2-3 صور — انستغرام/واتساب/درايف)</label><input type="text" id="f-photos" placeholder="الصق رابط الصور هنا"/></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>هل المنتج مصنوع يدويًا؟</label>
+          <select id="f-handmade"><option value="">اختر...</option><option value="نعم">نعم</option><option value="لا">لا</option><option value="جزئيًا">جزئيًا</option></select>
+        </div>
+        <div class="form-group"><label>كيف تحصلين على المنتج أو تصنعينه؟</label><input type="text" id="f-sourcing" placeholder="مثال: أصنعه بنفسي في المنزل"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>متوسط مبيعاتك الشهرية حاليًا (اكتبي صفر إذا منتج جديد)</label><input type="text" id="f-sales" placeholder="مثال: صفر، أو 10 قطع"/></div>
+        <div class="form-group"><label>سعر البيع الحالي (إن وجد)</label><input type="text" id="f-price" placeholder="مثال: 60 درهم"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>السعر بالجملة الذي تعرضينه لـ 249Souq (بالدرهم) *</label><input type="number" id="f-wholesale" placeholder="مثال: 40" min="0" step="0.01"/></div>
+        <div class="form-group">
+          <label>هل المنتج جاهز للشحن أم يُصنع عند الطلب؟</label>
+          <select id="f-ready"><option value="">اختر...</option><option value="جاهز">جاهز للشحن</option><option value="عند الطلب">يُصنع عند الطلب</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>كم تحتاجين من وقت لتجهيز الطلب؟</label><input type="text" id="f-preptime" placeholder="مثال: يوم واحد"/></div>
+        <div class="form-group"><label>كم عدد الطلبات شهريًا يمكنك تلبيتها؟</label><input type="text" id="f-capacity" placeholder="مثال: 30 طلب"/></div>
+      </div>
+
+      <div class="form-section-title">عن انضمامك لـ 249Souq</div>
+      <div class="form-group"><label>ما هو أكبر تحدٍ يواجهك حاليًا في بيع منتجك؟</label><textarea id="f-challenge"></textarea></div>
+      <div class="form-group"><label>لماذا تريدين الانضمام لـ 249Souq تحديدًا؟</label><textarea id="f-why"></textarea></div>
+
+      <div class="form-terms">
+        <label class="term-check"><input type="checkbox" id="f-commission"/> أوافق على منح 249Souq عمولة 20%-25% من قيمة كل عملية بيع *</label>
+        <label class="term-check"><input type="checkbox" id="f-payout"/> أوافق على استلام مستحقاتي خلال 5-7 أيام عمل بعد استلام 249Souq للدفعة *</label>
+      </div>
+
       <button class="btn-submit" onclick="submitForm()">أرسل طلب الانضمام</button>
-      <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث</p>
+      <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث ✦ سنراجع طلبك ونعود إليك على واتساب</p>
     </div>
 
     <div class="success-box" id="success-box">
@@ -238,24 +285,52 @@
 function toggleMenu(){var m=document.getElementById("nav-mobile");m.style.display=m.style.display==="flex"?"none":"flex"}
 function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.closest(".nav-dropdown");var open=li.classList.contains("open");document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")});if(!open)li.classList.add("open")}
 document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});
-function submitForm(){
+async function submitForm(){
   var n=document.getElementById('f-name').value.trim();
   var p=document.getElementById('f-phone').value.trim();
-  var c=document.getElementById('f-city').value.trim();
+  var city=document.getElementById('f-city').value.trim();
   var cat=document.getElementById('f-cat').value;
-  var d=document.getElementById('f-desc').value.trim();
+  var product=document.getElementById('f-product').value.trim();
+  var wholesale=document.getElementById('f-wholesale').value;
+  var agreesCommission=document.getElementById('f-commission').checked;
+  var agreesPayout=document.getElementById('f-payout').checked;
   var err=document.getElementById('err-msg');
-  if(!n||!p||!c||!cat||!d){err.style.display='block';return}
+  if(!n||!p||!city||!cat||!product||!wholesale||!agreesCommission||!agreesPayout){err.style.display='block';err.scrollIntoView({behavior:'smooth',block:'center'});return}
   err.style.display='none';
-  document.getElementById('the-form').style.display='none';
-  document.getElementById('success-box').style.display='block';
-  var msg="طلب انضمام كبائع - 249Souq%0A"
-    +"الاسم: "+n+"%0A"
-    +"واتساب: "+p+"%0A"
-    +"المدينة: "+c+"%0A"
-    +"نوع المنتج: "+cat+"%0A"
-    +"الوصف: "+d;
-  window.open('https://wa.me/971508810475?text='+msg,'_blank');
+
+  var btn=document.querySelector('.btn-submit');
+  btn.disabled=true; btn.textContent='جاري الإرسال...';
+
+  var payload={
+    full_name:n, phone:p, country_city:city, category:cat, product_name:product,
+    business_name:document.getElementById('f-business').value.trim(),
+    social_handle:document.getElementById('f-social').value.trim(),
+    product_photos:document.getElementById('f-photos').value.trim(),
+    is_handmade:document.getElementById('f-handmade').value,
+    sourcing_method:document.getElementById('f-sourcing').value.trim(),
+    current_monthly_sales:document.getElementById('f-sales').value.trim(),
+    current_price:document.getElementById('f-price').value.trim(),
+    wholesale_price_offered:wholesale,
+    ready_to_ship:document.getElementById('f-ready').value,
+    prep_time:document.getElementById('f-preptime').value.trim(),
+    monthly_capacity:document.getElementById('f-capacity').value.trim(),
+    biggest_challenge:document.getElementById('f-challenge').value.trim(),
+    why_join:document.getElementById('f-why').value.trim(),
+    agrees_to_commission:agreesCommission,
+    agrees_to_payout_terms:agreesPayout
+  };
+
+  try{
+    var r=await fetch('/api/seller-apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!r.ok){ throw new Error('failed'); }
+    document.getElementById('the-form').style.display='none';
+    document.getElementById('success-box').style.display='block';
+    document.getElementById('success-box').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    btn.disabled=false; btn.textContent='أرسل طلب الانضمام';
+    err.textContent='تعذر إرسال الطلب، حاولي مرة أخرى أو تواصلي معنا عبر واتساب';
+    err.style.display='block';
+  }
 }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
