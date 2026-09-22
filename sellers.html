@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="انضم كبائع على 249Souq — وسّع مبيعاتك وصل لآلاف المشترين السودانيين حول العالم."/>
+<meta name="description" content="انضم كبائع على 249Souq — وسّع مبيعاتك وصل لعملاء جدد في الإمارات."/>
 <title>انضم كبائع — 249Souq</title>
 <link rel="icon" href="favicon.ico" sizes="any"/>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
@@ -128,14 +128,14 @@
 
 <section class="sellers-hero">
   <div class="sellers-hero-inner">
-    <div class="section-tag">للبائعين السودانيين</div>
+    <div class="section-tag">للبائعين</div>
     <h1 class="section-title section-title-light" style="font-family:'Tajawal',sans-serif;font-weight:700">وسّع مبيعاتك مع 249Souq</h1>
     <p class="section-desc section-desc-light" style="margin-bottom:0">
-      هل عندك منتج سوداني وعندك مبيعات حالياً، ولكن تريد التوسع لأسواق أخرى؟<br>
-      وسّع وصولك لآلاف المشترين حول العالم، ونحن نتكفل بالشحن والدفع.
+      عندك منتج وتحب توصله لعملاء جدد في الإمارات؟<br>
+      سجّل معنا ونحن نتكفل بالشحن والدفع.
     </p>
     <div class="perks">
-      <div class="perk"><div class="perk-icon">🌍</div><div class="perk-title">وصول عالمي</div><div class="perk-text">الإمارات، الخليج، أوروبا وأكثر</div></div>
+      <div class="perk"><div class="perk-icon">🇦🇪</div><div class="perk-title">عملاء في الإمارات</div><div class="perk-text">وصول لعملاء جدد يبحثون عن منتجك</div></div>
       <div class="perk"><div class="perk-icon">🚚</div><div class="perk-title">شحن مُدار بالكامل</div><div class="perk-text">نتكفل بالشحن بأسعار منافسة</div></div>
       <div class="perk"><div class="perk-icon">💳</div><div class="perk-title">مدفوعات آمنة</div><div class="perk-text">نستلم ونحوّل لك بدون تعقيد</div></div>
       <div class="perk"><div class="perk-icon">🤝</div><div class="perk-title">دعم مستمر</div><div class="perk-text">معك من أول طلب لآخر توصيل</div></div>
@@ -162,7 +162,7 @@
     </p>
 
     <div class="form-card" id="the-form">
-      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول المطلوبة، والموافقة على الشروط في الأسفل</div>
+      <div class="err-msg" id="err-msg">يرجى تعبئة جميع الحقول المطلوبة</div>
 
       <div class="form-section-title">معلومات عنك</div>
       <div class="form-row">
@@ -191,11 +191,6 @@
         <div class="form-group"><label>اسم/نوع المنتج *</label><input type="text" id="f-product" placeholder="مثال: بخور صندل يدوي"/></div>
       </div>
       <div class="form-group"><label>لماذا تريدين الانضمام لـ 249Souq؟ (اختياري)</label><textarea id="f-why" placeholder="سطر أو سطرين تكفي"></textarea></div>
-
-      <div class="form-terms">
-        <label class="term-check"><input type="checkbox" id="f-commission"/> أوافق على منح 249Souq عمولة 20%-25% من قيمة كل عملية بيع *</label>
-        <label class="term-check"><input type="checkbox" id="f-payout"/> أوافق على استلام مستحقاتي خلال 5-7 أيام عمل بعد استلام 249Souq للدفعة *</label>
-      </div>
 
       <button class="btn-submit" onclick="submitForm()">أرسل طلب الانضمام</button>
       <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث ✦ بعد القبول، سترسلين تفاصيل منتجك وسعره من لوحتك الخاصة</p>
@@ -265,10 +260,8 @@ async function submitForm(){
   var city=document.getElementById('f-city').value.trim();
   var cat=document.getElementById('f-cat').value;
   var product=document.getElementById('f-product').value.trim();
-  var agreesCommission=document.getElementById('f-commission').checked;
-  var agreesPayout=document.getElementById('f-payout').checked;
   var err=document.getElementById('err-msg');
-  if(!n||!p||!city||!cat||!product||!agreesCommission||!agreesPayout){err.style.display='block';err.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!n||!p||!city||!cat||!product){err.style.display='block';err.scrollIntoView({behavior:'smooth',block:'center'});return}
   err.style.display='none';
 
   var btn=document.querySelector('.btn-submit');
@@ -278,9 +271,7 @@ async function submitForm(){
     full_name:n, phone:p, country_city:city, category:cat, product_name:product,
     business_name:document.getElementById('f-business').value.trim(),
     social_handle:document.getElementById('f-social').value.trim(),
-    why_join:document.getElementById('f-why').value.trim(),
-    agrees_to_commission:agreesCommission,
-    agrees_to_payout_terms:agreesPayout
+    why_join:document.getElementById('f-why').value.trim()
   };
 
   try{

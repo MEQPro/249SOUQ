@@ -119,6 +119,20 @@
   <div id="dashboardContent" style="display:none;">
     <div class="privacy-note">هذا الرابط خاص بك — لا تشاركيه مع أحد</div>
 
+    <div class="card" id="termsGateCard" style="display:none;">
+      <h3>قبل ما نبدأ</h3>
+      <p style="font-size:13.5px; color:var(--ink-muted); line-height:1.8; margin-bottom:14px;">
+        هذه شروط عملك مع 249Souq — خاصة بيكِ وما بتتشارك مع حد. لازم توافقي عليها قبل ما ترسلي أول منتج.
+      </p>
+      <div class="listing-notes" style="margin-bottom:14px;">
+        <div style="margin-bottom:6px;">• عمولة 249Souq من كل عملية بيع: <b id="termsCommissionValue">-</b></div>
+        <div>• بتستلمي مستحقاتك خلال 5-7 أيام عمل بعد استلام 249Souq للدفعة</div>
+      </div>
+      <button class="pform-submit" id="agreeTermsBtn">أوافق، وأبدأ</button>
+      <div class="pform-msg" id="termsMsg"></div>
+    </div>
+
+    <div id="dashboardMain" style="display:none;">
     <div class="card">
       <h3>منتجاتي</h3>
       <div id="productsList"></div>
@@ -180,6 +194,7 @@
           <tbody id="activityTbody"></tbody>
         </table>
       </div>
+    </div>
     </div>
   </div>
 </div>
@@ -263,6 +278,26 @@ function renderProductsList(products, commissionPercent){
     });
   });
 }
+
+document.getElementById('agreeTermsBtn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('termsMsg');
+  msgEl.textContent = ''; msgEl.className = 'pform-msg';
+  const slug = getSlugFromUrl();
+  const btn = document.getElementById('agreeTermsBtn');
+  btn.disabled = true;
+  try{
+    const r = await fetch('/api/seller-dashboard', {
+      method: 'PATCH', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ slug, phone: currentPhone, agree_terms: true })
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'تعذر الحفظ: ' + (d.error || ''); msgEl.className = 'pform-msg err'; btn.disabled = false; return; }
+    loadSellerDashboard(currentPhone);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'pform-msg err';
+    btn.disabled = false;
+  }
+});
 
 document.getElementById('showAddProductBtn').addEventListener('click', () => {
   const card = document.getElementById('addProductCard');
@@ -375,9 +410,18 @@ async function loadSellerDashboard(phone){
     document.getElementById('sellerHeading').textContent = 'أهلًا ' + d.seller_name;
     document.getElementById('sellerSub').textContent = (d.product_name || '249Souq') + ' — 249Souq';
 
-    renderProductsList(d.products, d.commission_percent);
-    document.getElementById('showAddProductBtn').style.display = (d.products && d.products.length) ? 'block' : 'none';
-    if(!d.products || !d.products.length){ document.getElementById('addProductCard').style.display = 'block'; }
+    if(!d.agreed_to_commission || !d.agreed_to_payout_terms){
+      document.getElementById('termsGateCard').style.display = 'block';
+      document.getElementById('dashboardMain').style.display = 'none';
+      const commissionPct = d.commission_percent ? Math.round(Number(d.commission_percent) * 100) + '%' : '-';
+      document.getElementById('termsCommissionValue').textContent = commissionPct;
+    } else {
+      document.getElementById('termsGateCard').style.display = 'none';
+      document.getElementById('dashboardMain').style.display = 'block';
+      renderProductsList(d.products, d.commission_percent);
+      document.getElementById('showAddProductBtn').style.display = (d.products && d.products.length) ? 'block' : 'none';
+      if(!d.products || !d.products.length){ document.getElementById('addProductCard').style.display = 'block'; }
+    }
 
     document.getElementById('statMonthUnits').textContent = fmt(d.currentMonth.units);
     document.getElementById('statMonthPayout').textContent = fmt(d.currentMonth.payout);

@@ -33,20 +33,16 @@ module.exports = async (req, res) => {
 
     const {
       full_name, business_name, phone, country_city, social_handle,
-      category, product_name, product_photos, is_handmade, sourcing_method,
-      current_monthly_sales, current_price, wholesale_price_offered,
-      ready_to_ship, prep_time, agrees_to_commission, monthly_capacity,
-      biggest_challenge, why_join, agrees_to_payout_terms
+      category, product_name, why_join
     } = body || {};
 
     if (!full_name || !phone || !product_name) {
       res.status(400).json({ error: 'missing_required_fields' });
       return;
     }
-    if (agrees_to_commission !== true || agrees_to_payout_terms !== true) {
-      res.status(400).json({ error: 'terms_not_accepted' });
-      return;
-    }
+    // Commission % and payout-timing consent are no longer collected on the
+    // public form — they're shown (and agreed to) privately in the seller's
+    // own dashboard after Gate 1 approval, once they know their actual terms.
 
     const { data, error } = await supabase
       .from('seller_applications')
@@ -58,19 +54,7 @@ module.exports = async (req, res) => {
         social_handle: social_handle || null,
         category: category || null,
         product_name,
-        product_photos: product_photos || null,
-        is_handmade: is_handmade || null,
-        sourcing_method: sourcing_method || null,
-        current_monthly_sales: current_monthly_sales || null,
-        current_price: current_price || null,
-        wholesale_price_offered: wholesale_price_offered || null,
-        ready_to_ship: ready_to_ship || null,
-        prep_time: prep_time || null,
-        agrees_to_commission: true,
-        monthly_capacity: monthly_capacity || null,
-        biggest_challenge: biggest_challenge || null,
         why_join: why_join || null,
-        agrees_to_payout_terms: true,
         status: 'pending'
       })
       .select()

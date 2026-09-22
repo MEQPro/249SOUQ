@@ -17,7 +17,7 @@ async function authenticateSeller(supabase, slug, phoneInput) {
 
   const { data: seller, error: sellerErr } = await supabase
     .from('sellers')
-    .select('id, name, product_name, phone, commission_percent')
+    .select('id, name, product_name, phone, commission_percent, agreed_to_commission, agreed_to_payout_terms')
     .eq('dashboard_slug', slug)
     .maybeSingle();
 
@@ -94,6 +94,8 @@ module.exports = async (req, res) => {
       seller_name: seller.name,
       product_name: seller.product_name,
       commission_percent: seller.commission_percent,
+      agreed_to_commission: !!seller.agreed_to_commission,
+      agreed_to_payout_terms: !!seller.agreed_to_payout_terms,
       products,
       totals: { orderCount: orders.length, totalUnits, totalPayout },
       currentMonth: { units: currentMonthUnits, payout: currentMonthPayout, orders: currentMonthOrders },
@@ -113,6 +115,11 @@ module.exports = async (req, res) => {
     const auth = await authenticateSeller(supabase, slug, phone);
     if (auth.error) { res.status(auth.status).json({ error: auth.error }); return; }
     const seller = auth.seller;
+
+    if (!seller.agreed_to_commission || !seller.agreed_to_payout_terms) {
+      res.status(403).json({ error: 'terms_not_agreed' });
+      return;
+    }
 
     const {
       name_en, name_ar, description, packaging, photos,
@@ -149,16 +156,30 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // ---------- PATCH: seller edits price/stock on their own approved (live) listing ----------
+  // ---------- PATCH: seller agrees to terms, or edits price/stock on a live listing ----------
   if (req.method === 'PATCH') {
     let body = req.body;
     if (!body || typeof body === 'string') {
       try { body = JSON.parse(body || '{}'); } catch (e) { body = {}; }
     }
-    const { slug, phone, product_id, wholesale_price, stock_status } = body || {};
+    const { slug, phone, product_id, wholesale_price, stock_status, agree_terms } = body || {};
     const auth = await authenticateSeller(supabase, slug, phone);
     if (auth.error) { res.status(auth.status).json({ error: auth.error }); return; }
     const seller = auth.seller;
+
+    // Recording consent to the commission % and payout timing — shown privately
+    // in the dashboard, once, before the seller can submit their first listing.
+    if (agree_terms === true) {
+      const { data, error } = await supabase
+        .from('sellers')
+        .update({ agreed_to_commission: true, agreed_to_payout_terms: true, terms_agreed_at: new Date().toISOString() })
+        .eq('id', seller.id)
+        .select('agreed_to_commission, agreed_to_payout_terms')
+        .single();
+      if (error) { res.status(500).json({ error: error.message }); return; }
+      res.status(200).json(data);
+      return;
+    }
 
     if (!product_id) { res.status(400).json({ error: 'product_id_required' }); return; }
 

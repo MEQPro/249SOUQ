@@ -1866,8 +1866,7 @@ async function submitApplicationReview(action){
       const link = 'https://249souq.com/dashboard/' + payload.dashboard_slug;
       const waText = 'أهلًا ' + payload.seller_name + '! تم قبول طلب انضمامك لـ 249Souq 🎉\n' +
         'لوحتك الخاصة: ' + link + '\n' +
-        'سجّلي دخولك برقم هاتفك المسجل، وأرسلي تفاصيل منتجك (الاسم، الوصف، الصور، السعر بالجملة) من هناك — سنراجعها ونعتمدها قبل نشرها.\n' +
-        'العمولة المتفق عليها: ' + payload.commission_percent + '%، والتحويل خلال ٥-٧ أيام عمل بعد استلامنا للدفعة.';
+        'سجّلي دخولك برقم هاتفك المسجل — أول مرة رح تشوفي فيها تفاصيل العمولة وموعد التحويل وتوافقي عليها، وبعدها ترسلي تفاصيل منتجك (الاسم، الوصف، الصور، السعر بالجملة) من هناك، وسنراجعها ونعتمدها قبل نشرها.';
       const box = document.getElementById('appApprovedLinkBox');
       box.innerHTML = 'تم القبول — رابط لوحتها: <b>' + link + '</b><br>' +
         (app && app.phone ? '<a class="wa-notify-btn" target="_blank" href="' + waLink(app.phone, waText) + '">📲 إرسال رسالة الترحيب عبر واتساب</a>' : '');
