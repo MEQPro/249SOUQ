@@ -66,6 +66,36 @@
   #lockScreen input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--cream-dark); font-family:inherit; font-size:15px; margin-bottom:12px; text-align:center; direction:ltr;}
   #lockScreen button{width:100%; padding:12px; border:none; border-radius:10px; background:var(--gold-dark); color:#fff; font-family:inherit; font-weight:700; font-size:15px; cursor:pointer;}
   #lockScreen button:hover{background:var(--brown-mid);}
+
+  .listing-item{border:1px solid var(--cream-dark); border-radius:12px; padding:14px; margin-bottom:12px;}
+  .listing-item:last-child{margin-bottom:0;}
+  .listing-top{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .listing-name{font-weight:700; font-size:14px; color:var(--brown-deep);}
+  .listing-sub{font-size:12px; color:var(--ink-muted); margin-top:2px;}
+  .listing-notes{background:var(--gold-pale); color:var(--gold-dark); font-size:12px; border-radius:8px; padding:8px 10px; margin-top:8px;}
+  .listing-edit-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;}
+  .listing-edit-row label{font-size:11.5px; color:var(--ink-muted); font-weight:700; display:block; margin-bottom:4px;}
+  .listing-edit-row input, .listing-edit-row select{padding:8px 10px; border-radius:8px; border:1px solid var(--cream-dark); font-family:inherit; font-size:13px; width:140px;}
+  .listing-save-btn{padding:8px 14px; border:none; border-radius:8px; background:var(--green-dark); color:#fff; font-family:inherit; font-weight:700; font-size:12.5px; cursor:pointer; align-self:flex-end;}
+  .listing-save-btn:hover{background:var(--green);}
+  .listing-msg{font-size:12px; margin-top:6px; min-height:14px;}
+  .listing-msg.ok{color:var(--green-dark);}
+  .listing-msg.err{color:var(--red);}
+
+  .add-product-btn{width:100%; padding:12px; border:1.5px dashed var(--gold-dark); border-radius:12px; background:transparent; color:var(--gold-dark); font-family:inherit; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:6px;}
+  .add-product-btn:hover{background:var(--gold-pale);}
+
+  .pform-group{margin-bottom:12px;}
+  .pform-group label{display:block; font-size:12.5px; color:var(--brown-mid); font-weight:700; margin-bottom:5px;}
+  .pform-group input, .pform-group select, .pform-group textarea{width:100%; background:var(--cream); border:1px solid var(--cream-dark); border-radius:8px; padding:10px 12px; font-family:inherit; font-size:14px; color:var(--brown-deep); outline:none;}
+  .pform-group textarea{resize:vertical; min-height:70px;}
+  .pform-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:480px){ .pform-row{grid-template-columns:1fr;} }
+  .pform-submit{width:100%; padding:13px; border:none; border-radius:10px; background:var(--gold-dark); color:#fff; font-family:inherit; font-weight:700; font-size:14.5px; cursor:pointer; margin-top:4px;}
+  .pform-submit:hover{background:var(--brown-mid);}
+  .pform-msg{font-size:12.5px; margin-top:8px; text-align:center; min-height:14px;}
+  .pform-msg.ok{color:var(--green-dark);}
+  .pform-msg.err{color:var(--red);}
 </style>
 </head>
 <body>
@@ -88,6 +118,44 @@
 
   <div id="dashboardContent" style="display:none;">
     <div class="privacy-note">هذا الرابط خاص بك — لا تشاركيه مع أحد</div>
+
+    <div class="card">
+      <h3>منتجاتي</h3>
+      <div id="productsList"></div>
+      <button class="add-product-btn" id="showAddProductBtn">+ أضف منتج جديد</button>
+    </div>
+
+    <div class="card" id="addProductCard" style="display:none;">
+      <h3>إرسال منتج للمراجعة</h3>
+      <div class="pform-group"><label>اسم المنتج (بالإنجليزية) *</label><input id="pfName"/></div>
+      <div class="pform-group"><label>اسم المنتج (بالعربية)</label><input id="pfNameAr"/></div>
+      <div class="pform-row">
+        <div class="pform-group">
+          <label>نوع المنتج</label>
+          <select id="pfCategory">
+            <option value="">اختر...</option>
+            <option>بخور وعطور</option>
+            <option>ملابس تقليدية</option>
+            <option>أكل سوداني</option>
+            <option>مشغولات يدوية</option>
+            <option>أخرى</option>
+          </select>
+        </div>
+        <div class="pform-group"><label>التغليف</label><input id="pfPackaging" placeholder="مثال: برطمان بغطاء ذهبي"/></div>
+      </div>
+      <div class="pform-group"><label>الوصف</label><textarea id="pfDescription"></textarea></div>
+      <div class="pform-group"><label>رابط الصور (2-3 صور)</label><input id="pfPhotos" placeholder="الصق رابط الصور هنا"/></div>
+      <div class="pform-row">
+        <div class="pform-group"><label>السعر بالجملة (AED) *</label><input id="pfWholesale" type="number" min="0" step="0.01"/></div>
+        <div class="pform-group">
+          <label>جاهز للشحن؟</label>
+          <select id="pfStock"><option value="">اختر...</option><option value="جاهز">جاهز للشحن</option><option value="عند الطلب">يُصنع عند الطلب</option></select>
+        </div>
+      </div>
+      <div class="pform-group"><label>وقت التجهيز</label><input id="pfPrepTime" placeholder="مثال: يوم واحد"/></div>
+      <button class="pform-submit" id="submitProductBtn">إرسال للمراجعة</button>
+      <div class="pform-msg" id="pfMsg"></div>
+    </div>
 
     <div class="stat-grid">
       <div class="stat-tile green"><div class="label">الوحدات المباعة هذا الشهر</div><div class="value green" id="statMonthUnits">-</div></div>
@@ -118,9 +186,128 @@
 
 <script>
 const STATUS_LABELS = { preparing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التوصيل', cancelled: 'ملغى' };
+const LISTING_STATUS_LABELS = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض' };
+
+let currentPhone = null;
 
 function fmt(n){ return Number(n||0).toLocaleString('en-US', {maximumFractionDigits:0}); }
 function pillClass(status){ return (status || '').toLowerCase(); }
+
+function renderProductsList(products, commissionPercent){
+  const el = document.getElementById('productsList');
+  if(!products || !products.length){
+    el.innerHTML = '<div class="empty-note">لم تُرسلي أي منتج بعد — استخدمي الزر بالأسفل لإرسال أول منتج للمراجعة</div>';
+    return;
+  }
+  el.innerHTML = '';
+  products.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'listing-item';
+    let body = `
+      <div class="listing-top">
+        <div>
+          <div class="listing-name">${p.name_ar || p.name_en}</div>
+          <div class="listing-sub">${p.sku ? p.sku + ' — ' : ''}${p.category || ''}</div>
+        </div>
+        <span class="pill ${p.status}">${LISTING_STATUS_LABELS[p.status] || p.status}</span>
+      </div>
+    `;
+    if(p.status === 'rejected' && p.reviewer_notes){
+      body += `<div class="listing-notes">ملاحظات المراجعة: ${p.reviewer_notes}</div>`;
+    }
+    if(p.status === 'pending'){
+      body += `<div class="listing-sub">السعر بالجملة المُرسل: AED ${fmt(p.wholesale_price)} — بانتظار المراجعة</div>`;
+    }
+    if(p.status === 'approved'){
+      body += `
+        <div class="listing-sub">السعر الحالي: AED ${fmt(p.retail_price)} — مستحقاتك: AED ${fmt(p.payout_price)}</div>
+        <div class="listing-edit-row">
+          <div><label>السعر بالجملة (AED)</label><input type="number" min="0" step="0.01" class="edit-wholesale" value="${p.wholesale_price}"/></div>
+          <div><label>حالة التوفر</label>
+            <select class="edit-stock">
+              <option value="جاهز" ${p.stock_status==='جاهز'?'selected':''}>جاهز للشحن</option>
+              <option value="عند الطلب" ${p.stock_status==='عند الطلب'?'selected':''}>يُصنع عند الطلب</option>
+              <option value="نفذ من المخزون" ${p.stock_status==='نفذ من المخزون'?'selected':''}>نفذ من المخزون</option>
+            </select>
+          </div>
+          <button class="listing-save-btn" data-save-product="${p.id}">حفظ</button>
+        </div>
+        <div class="listing-msg" id="listingMsg_${p.id}"></div>
+      `;
+    }
+    div.innerHTML = body;
+    el.appendChild(div);
+  });
+
+  document.querySelectorAll('[data-save-product]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.saveProduct;
+      const item = btn.closest('.listing-item');
+      const wholesale = item.querySelector('.edit-wholesale').value;
+      const stock = item.querySelector('.edit-stock').value;
+      const msgEl = document.getElementById('listingMsg_' + id);
+      msgEl.textContent = ''; msgEl.className = 'listing-msg';
+      const slug = getSlugFromUrl();
+      try{
+        const r = await fetch('/api/seller-dashboard', {
+          method: 'PATCH', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ slug, phone: currentPhone, product_id: id, wholesale_price: wholesale, stock_status: stock })
+        });
+        const d = await r.json();
+        if(!r.ok){ msgEl.textContent = 'تعذر الحفظ: ' + (d.error || ''); msgEl.className = 'listing-msg err'; return; }
+        msgEl.textContent = 'تم الحفظ ✓'; msgEl.className = 'listing-msg ok';
+        loadSellerDashboard(currentPhone);
+      }catch(e){
+        msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'listing-msg err';
+      }
+    });
+  });
+}
+
+document.getElementById('showAddProductBtn').addEventListener('click', () => {
+  const card = document.getElementById('addProductCard');
+  card.style.display = card.style.display === 'none' ? 'block' : 'none';
+  if(card.style.display === 'block') card.scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+document.getElementById('submitProductBtn').addEventListener('click', async () => {
+  const msgEl = document.getElementById('pfMsg');
+  msgEl.textContent = ''; msgEl.className = 'pform-msg';
+  const name_en = document.getElementById('pfName').value.trim();
+  const wholesale_price = document.getElementById('pfWholesale').value;
+  if(!name_en || !wholesale_price || Number(wholesale_price) <= 0){
+    msgEl.textContent = 'الرجاء تعبئة اسم المنتج والسعر بالجملة على الأقل'; msgEl.className = 'pform-msg err';
+    return;
+  }
+  const slug = getSlugFromUrl();
+  const payload = {
+    slug, phone: currentPhone,
+    name_en,
+    name_ar: document.getElementById('pfNameAr').value.trim(),
+    category: document.getElementById('pfCategory').value,
+    packaging: document.getElementById('pfPackaging').value.trim(),
+    description: document.getElementById('pfDescription').value.trim(),
+    photos: document.getElementById('pfPhotos').value.trim(),
+    wholesale_price,
+    stock_status: document.getElementById('pfStock').value,
+    prep_time: document.getElementById('pfPrepTime').value.trim()
+  };
+  try{
+    const r = await fetch('/api/seller-dashboard', {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'pform-msg err'; return; }
+    msgEl.textContent = 'تم الإرسال — بانتظار مراجعة 249Souq ✓'; msgEl.className = 'pform-msg ok';
+    ['pfName','pfNameAr','pfPackaging','pfDescription','pfPhotos','pfWholesale','pfPrepTime'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pfCategory').value = '';
+    document.getElementById('pfStock').value = '';
+    loadSellerDashboard(currentPhone);
+    setTimeout(() => { document.getElementById('addProductCard').style.display = 'none'; }, 1200);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'pform-msg err';
+  }
+});
 
 function getSlugFromUrl(){
   // Supports both /dashboard/<slug> (via vercel.json rewrite) and ?s=<slug>
@@ -177,6 +364,7 @@ async function loadSellerDashboard(phone){
       return;
     }
     const d = await r.json();
+    currentPhone = phone;
 
     // Convenience only for this tab session — the server re-checks the phone on every load.
     try{ sessionStorage.setItem('seller_phone_' + slug, phone); }catch(e){}
@@ -185,7 +373,11 @@ async function loadSellerDashboard(phone){
     document.getElementById('loadingNote').style.display = 'none';
 
     document.getElementById('sellerHeading').textContent = 'أهلًا ' + d.seller_name;
-    document.getElementById('sellerSub').textContent = d.product_name + ' — 249Souq';
+    document.getElementById('sellerSub').textContent = (d.product_name || '249Souq') + ' — 249Souq';
+
+    renderProductsList(d.products, d.commission_percent);
+    document.getElementById('showAddProductBtn').style.display = (d.products && d.products.length) ? 'block' : 'none';
+    if(!d.products || !d.products.length){ document.getElementById('addProductCard').style.display = 'block'; }
 
     document.getElementById('statMonthUnits').textContent = fmt(d.currentMonth.units);
     document.getElementById('statMonthPayout').textContent = fmt(d.currentMonth.payout);

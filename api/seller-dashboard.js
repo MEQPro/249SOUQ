@@ -10,94 +10,194 @@ function monthLabel(dateStr) {
   return d.toLocaleDateString('ar-EG', { month: 'short', year: 'numeric' });
 }
 
-module.exports = async (req, res) => {
-  if (req.method !== 'GET') { res.status(405).json({ error: 'method_not_allowed' }); return; }
+// Shared second-factor check: private dashboard slug + the seller's own
+// registered phone number, same idea as a bank-statement PDF password.
+async function authenticateSeller(supabase, slug, phoneInput) {
+  if (!slug || !phoneInput) return { error: 'missing_credentials', status: 400 };
 
-  const slug = req.query && req.query.slug;
-  const phoneInput = req.query && req.query.phone;
-  if (!slug) { res.status(400).json({ error: 'slug_required' }); return; }
-  if (!phoneInput) { res.status(400).json({ error: 'phone_required' }); return; }
-
-  const supabase = getServiceClient();
-
-  // Look up the seller by their private slug. Never expose the seller list itself,
-  // and never accept an id here — only a slug, so this stays a private-link lookup.
   const { data: seller, error: sellerErr } = await supabase
     .from('sellers')
-    .select('id, name, product_name, phone')
+    .select('id, name, product_name, phone, commission_percent')
     .eq('dashboard_slug', slug)
     .maybeSingle();
 
-  if (sellerErr) { res.status(500).json({ error: sellerErr.message }); return; }
-  if (!seller) { res.status(404).json({ error: 'seller_not_found' }); return; }
+  if (sellerErr) return { error: sellerErr.message, status: 500 };
+  if (!seller) return { error: 'seller_not_found', status: 404 };
+  if (!seller.phone) return { error: 'phone_not_set', status: 403 };
 
-  // Second factor: the seller's own registered phone number, same idea as a
-  // bank-statement PDF password. The private slug alone is not enough.
-  if (!seller.phone) { res.status(403).json({ error: 'phone_not_set' }); return; }
   const normalizedInput = normalizePhone(phoneInput);
   if (!normalizedInput || normalizedInput !== seller.phone) {
-    res.status(403).json({ error: 'phone_mismatch' });
+    return { error: 'phone_mismatch', status: 403 };
+  }
+  return { seller };
+}
+
+module.exports = async (req, res) => {
+  const supabase = getServiceClient();
+
+  // ---------- GET: dashboard data (sales report + this seller's own listings) ----------
+  if (req.method === 'GET') {
+    const slug = req.query && req.query.slug;
+    const phoneInput = req.query && req.query.phone;
+    const auth = await authenticateSeller(supabase, slug, phoneInput);
+    if (auth.error) { res.status(auth.status).json({ error: auth.error }); return; }
+    const seller = auth.seller;
+
+    const { data: orders, error: ordersErr } = await supabase
+      .from('orders')
+      .select('created_at, quantity, unit_price_seller, delivery_status')
+      .eq('seller_id', seller.id)
+      .order('created_at', { ascending: true });
+    if (ordersErr) { res.status(500).json({ error: ordersErr.message }); return; }
+
+    const { data: products, error: productsErr } = await supabase
+      .from('products')
+      .select('id, sku, name_en, name_ar, description, packaging, photos, category, wholesale_price, retail_price, payout_price, stock_status, prep_time, status, reviewer_notes, created_at')
+      .eq('seller_id', seller.id)
+      .order('created_at', { ascending: false });
+    if (productsErr) { res.status(500).json({ error: productsErr.message }); return; }
+
+    let totalUnits = 0, totalPayout = 0;
+    const monthBuckets = {};
+    const now = new Date();
+    const currentMonthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+    let currentMonthUnits = 0, currentMonthPayout = 0, currentMonthOrders = 0;
+
+    for (const o of orders) {
+      const qty = Number(o.quantity) || 0;
+      const payout = qty * (Number(o.unit_price_seller) || 0);
+      totalUnits += qty;
+      totalPayout += payout;
+
+      const mk = monthKey(o.created_at);
+      if (!monthBuckets[mk]) monthBuckets[mk] = { key: mk, label: monthLabel(o.created_at), units: 0, payout: 0 };
+      monthBuckets[mk].units += qty;
+      monthBuckets[mk].payout += payout;
+
+      if (mk === currentMonthKey) {
+        currentMonthUnits += qty;
+        currentMonthPayout += payout;
+        currentMonthOrders += 1;
+      }
+    }
+
+    const monthlySeries = Object.values(monthBuckets).sort((a, b) => a.key.localeCompare(b.key)).slice(-6);
+
+    const recentActivity = orders.slice(-10).reverse().map((o) => ({
+      date: o.created_at,
+      quantity: o.quantity,
+      payout: Number(o.quantity) * Number(o.unit_price_seller),
+      delivery_status: o.delivery_status
+    }));
+
+    res.status(200).json({
+      seller_name: seller.name,
+      product_name: seller.product_name,
+      commission_percent: seller.commission_percent,
+      products,
+      totals: { orderCount: orders.length, totalUnits, totalPayout },
+      currentMonth: { units: currentMonthUnits, payout: currentMonthPayout, orders: currentMonthOrders },
+      monthlySeries,
+      recentActivity
+    });
     return;
   }
 
-  // Only the fields this seller is allowed to see about their own orders:
-  // quantity and THEIR payout price — never the customer's price, name, phone, or address.
-  const { data: orders, error: ordersErr } = await supabase
-    .from('orders')
-    .select('created_at, quantity, unit_price_seller, delivery_status')
-    .eq('seller_id', seller.id)
-    .order('created_at', { ascending: true });
-
-  if (ordersErr) { res.status(500).json({ error: ordersErr.message }); return; }
-
-  let totalUnits = 0, totalPayout = 0;
-  const monthBuckets = {};
-  const now = new Date();
-  const currentMonthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
-  let currentMonthUnits = 0, currentMonthPayout = 0, currentMonthOrders = 0;
-
-  for (const o of orders) {
-    const qty = Number(o.quantity) || 0;
-    const payout = qty * (Number(o.unit_price_seller) || 0);
-    totalUnits += qty;
-    totalPayout += payout;
-
-    const mk = monthKey(o.created_at);
-    if (!monthBuckets[mk]) monthBuckets[mk] = { key: mk, label: monthLabel(o.created_at), units: 0, payout: 0 };
-    monthBuckets[mk].units += qty;
-    monthBuckets[mk].payout += payout;
-
-    if (mk === currentMonthKey) {
-      currentMonthUnits += qty;
-      currentMonthPayout += payout;
-      currentMonthOrders += 1;
+  // ---------- POST: submit a new product listing (goes to Gate 2 review) ----------
+  if (req.method === 'POST') {
+    let body = req.body;
+    if (!body || typeof body === 'string') {
+      try { body = JSON.parse(body || '{}'); } catch (e) { body = {}; }
     }
+    const { slug, phone } = body || {};
+    const auth = await authenticateSeller(supabase, slug, phone);
+    if (auth.error) { res.status(auth.status).json({ error: auth.error }); return; }
+    const seller = auth.seller;
+
+    const {
+      name_en, name_ar, description, packaging, photos,
+      category, wholesale_price, stock_status, prep_time
+    } = body || {};
+
+    if (!name_en || !wholesale_price || Number(wholesale_price) <= 0) {
+      res.status(400).json({ error: 'missing_required_fields' });
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('products')
+      .insert({
+        seller_id: seller.id,
+        sku: null,
+        name_en,
+        name_ar: name_ar || null,
+        description: description || null,
+        packaging: packaging || null,
+        photos: photos || null,
+        category: category || null,
+        wholesale_price: Number(wholesale_price),
+        retail_price: 0,
+        payout_price: 0,
+        stock_status: stock_status || null,
+        prep_time: prep_time || null,
+        status: 'pending'
+      })
+      .select()
+      .single();
+    if (error) { res.status(500).json({ error: error.message }); return; }
+    res.status(200).json({ product: data });
+    return;
   }
 
-  const monthlySeries = Object.values(monthBuckets).sort((a, b) => a.key.localeCompare(b.key)).slice(-6);
+  // ---------- PATCH: seller edits price/stock on their own approved (live) listing ----------
+  if (req.method === 'PATCH') {
+    let body = req.body;
+    if (!body || typeof body === 'string') {
+      try { body = JSON.parse(body || '{}'); } catch (e) { body = {}; }
+    }
+    const { slug, phone, product_id, wholesale_price, stock_status } = body || {};
+    const auth = await authenticateSeller(supabase, slug, phone);
+    if (auth.error) { res.status(auth.status).json({ error: auth.error }); return; }
+    const seller = auth.seller;
 
-  // Recent activity: dates, quantities and payout only — no customer data at all.
-  const recentActivity = orders.slice(-10).reverse().map((o) => ({
-    date: o.created_at,
-    quantity: o.quantity,
-    payout: Number(o.quantity) * Number(o.unit_price_seller),
-    delivery_status: o.delivery_status
-  }));
+    if (!product_id) { res.status(400).json({ error: 'product_id_required' }); return; }
 
-  res.status(200).json({
-    seller_name: seller.name,
-    product_name: seller.product_name,
-    totals: {
-      orderCount: orders.length,
-      totalUnits,
-      totalPayout
-    },
-    currentMonth: {
-      units: currentMonthUnits,
-      payout: currentMonthPayout,
-      orders: currentMonthOrders
-    },
-    monthlySeries,
-    recentActivity
-  });
+    const { data: product, error: prodErr } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', product_id)
+      .eq('seller_id', seller.id)
+      .maybeSingle();
+    if (prodErr) { res.status(500).json({ error: prodErr.message }); return; }
+    if (!product) { res.status(404).json({ error: 'product_not_found' }); return; }
+    if (product.status !== 'approved') { res.status(400).json({ error: 'only_live_listings_are_editable' }); return; }
+
+    const update = {};
+    if (wholesale_price !== undefined && wholesale_price !== null && wholesale_price !== '') {
+      const wholesale = Number(wholesale_price);
+      const commission = Number(seller.commission_percent) || 0;
+      if (!wholesale || wholesale <= 0 || !commission) { res.status(400).json({ error: 'invalid_price' }); return; }
+      const retail = wholesale / (1 - commission);
+      const payout = retail * (1 - commission);
+      update.wholesale_price = wholesale;
+      update.retail_price = retail;
+      update.payout_price = payout;
+    }
+    if (stock_status !== undefined && stock_status !== null && stock_status !== '') {
+      update.stock_status = stock_status;
+    }
+    if (!Object.keys(update).length) { res.status(400).json({ error: 'nothing_to_update' }); return; }
+
+    const { data, error } = await supabase
+      .from('products')
+      .update(update)
+      .eq('id', product_id)
+      .select()
+      .single();
+    if (error) { res.status(500).json({ error: error.message }); return; }
+    res.status(200).json({ product: data });
+    return;
+  }
+
+  res.status(405).json({ error: 'method_not_allowed' });
 };

@@ -127,6 +127,10 @@
   .modal-field label{display:block; font-size:12px; color:var(--ink-muted); margin-bottom:5px; font-weight:700;}
   .modal-field input, .modal-field select{width:100%; padding:9px 10px; border:1px solid var(--cream-dark); border-radius:8px; font-family:inherit; font-size:13.5px; color:var(--brown-deep); background:var(--cream);}
   .modal-readonly{background:var(--cream-dark); border-radius:10px; padding:10px 14px; font-size:12.5px; color:var(--brown-mid); margin-bottom:16px;}
+  .modal-note{background:var(--cream-dark); border-radius:10px; padding:10px 14px; font-size:12px; color:var(--brown-mid); margin-bottom:14px; line-height:1.7;}
+  .modal-note.ok{background:#DFF0E7; color:var(--green-dark); font-weight:700;}
+  .wa-notify-btn{display:inline-flex; align-items:center; gap:6px; background:#1FA855; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; text-decoration:none; margin-top:8px;}
+  .wa-notify-btn:hover{background:#178c46;}
   .modal-actions{display:flex; gap:10px; margin-top:18px;}
   .modal-actions button{flex:1; padding:11px; border:none; border-radius:9px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;}
   .btn-save{background:var(--green-dark); color:#fff;}
@@ -529,7 +533,7 @@
         <div id="appApproveFields">
           <div class="modal-row">
             <div class="modal-field"><label>اسم البائع (كما سيظهر في لوحة البائعين)</label><input id="appSellerName"/></div>
-            <div class="modal-field"><label>اسم المنتج</label><input id="appProductName"/></div>
+            <div class="modal-field"><label>اسم المنتج (عنوان مبدئي)</label><input id="appProductName"/></div>
           </div>
           <div class="modal-row">
             <div class="modal-field"><label>رابط لوحة البائع (بالإنجليزية، بدون مسافات)</label><input id="appSlug" placeholder="مثال: ruaa"/></div>
@@ -537,11 +541,9 @@
               <select id="appCommission"><option value="20">20%</option><option value="25" selected>25%</option></select>
             </div>
           </div>
-          <div class="modal-row">
-            <div class="modal-field"><label>السعر بالجملة (AED)</label><input id="appWholesale" type="number" min="0" step="0.01"/></div>
-            <div class="modal-field"><label>السعر المقترح للبيع / صافي مستحقاتها (محسوبة تلقائيًا)</label><div class="modal-readonly" id="appCalcPreview" style="margin-bottom:0;">-</div></div>
-          </div>
+          <div class="modal-note">هذا القبول يوثّق البائع وينشئ حساب دخولها فقط — السعر وتفاصيل المنتج تُرسل من البائعة نفسها لاحقًا من لوحتها، وتتم مراجعتها في تبويب "قوائم المنتجات" بالأسفل.</div>
         </div>
+        <div id="appApprovedLinkBox" class="modal-note ok" style="display:none;"></div>
 
         <div class="modal-row single">
           <div class="modal-field"><label>ملاحظات المراجعة (اختياري)</label><input id="appReviewNotes"/></div>
@@ -551,6 +553,34 @@
           <button class="btn-save" id="appApproveBtn">✓ قبول الطلب</button>
           <button class="action-btn" id="appRejectBtn" style="flex:1; background:#F5DCD8; color:var(--red);">✗ رفض الطلب</button>
           <button class="btn-cancel" id="appCancelBtn">إغلاق</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>قوائم المنتجات بانتظار المراجعة <span class="muted">(بوابة ٢ — السعر والتفاصيل التي أرسلتها البائعة من لوحتها)</span></h3>
+        <div class="table-scroll">
+          <table id="listingsTable">
+            <thead><tr><th>التاريخ</th><th>البائعة</th><th>اسم المنتج</th><th>السعر بالجملة</th><th>الحالة</th><th></th></tr></thead>
+            <tbody id="listingsTbody"><tr><td colspan="6" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="listingReviewCard" style="display:none;">
+        <h3>مراجعة قائمة المنتج</h3>
+        <div class="app-detail-grid" id="listingDetailGrid"></div>
+        <div class="modal-row">
+          <div class="modal-field"><label>نسبة العمولة</label><div class="modal-readonly" id="listingCommission" style="margin-bottom:0;">-</div></div>
+          <div class="modal-field"><label>السعر المقترح للبيع / صافي مستحقاتها (محسوبة تلقائيًا)</label><div class="modal-readonly" id="listingCalcPreview" style="margin-bottom:0;">-</div></div>
+        </div>
+        <div class="modal-row single">
+          <div class="modal-field"><label>ملاحظات المراجعة (اختياري، تظهر للبائعة عند الرفض)</label><input id="listingReviewNotes"/></div>
+        </div>
+        <div class="modal-msg" id="listingReviewMsg"></div>
+        <div class="modal-actions">
+          <button class="btn-save" id="listingApproveBtn">✓ قبول القائمة ونشرها</button>
+          <button class="action-btn" id="listingRejectBtn" style="flex:1; background:#F5DCD8; color:var(--red);">✗ رفض القائمة</button>
+          <button class="btn-cancel" id="listingCancelBtn">إغلاق</button>
         </div>
       </div>
     </div>
@@ -673,6 +703,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if(btn.dataset.tab === 'sellers' && !sellersLoaded) loadSellersTab();
     if(btn.dataset.tab === 'couriers' && !couriersLoaded) loadCouriersTab();
     if(btn.dataset.tab === 'applications' && !applicationsLoaded) loadApplicationsTab();
+    if(btn.dataset.tab === 'applications' && !listingsLoaded) loadListingsTab();
   });
 });
 
@@ -1679,6 +1710,10 @@ let applicationsLoaded = false;
 let applicationsCache = [];
 let currentReviewAppId = null;
 
+let listingsLoaded = false;
+let listingsCache = [];
+let currentReviewListingId = null;
+
 const APP_STATUS_LABELS = { pending: 'قيد المراجعة', approved: 'مقبول', rejected: 'مرفوض' };
 
 async function loadApplicationsTab(){
@@ -1729,17 +1764,7 @@ function skuPrefixPreview(name){
   return (letters || 'SELLER').slice(0, 8);
 }
 
-function updateAppCalcPreview(){
-  const wholesale = parseFloat(document.getElementById('appWholesale').value || '0') || 0;
-  const commission = parseFloat(document.getElementById('appCommission').value || '0') / 100;
-  const preview = document.getElementById('appCalcPreview');
-  if(!wholesale || !commission){ preview.textContent = '-'; return; }
-  const retail = wholesale / (1 - commission);
-  const payout = retail * (1 - commission);
-  preview.innerHTML = `السعر المقترح: <b>AED ${retail.toFixed(2)}</b> &nbsp;—&nbsp; صافي مستحقاتها: <b>AED ${payout.toFixed(2)}</b>`;
-}
-document.getElementById('appWholesale').addEventListener('input', updateAppCalcPreview);
-document.getElementById('appCommission').addEventListener('change', updateAppCalcPreview);
+
 
 function openApplicationReview(id){
   const a = applicationsCache.find(x => String(x.id) === String(id));
@@ -1782,14 +1807,13 @@ function openApplicationReview(id){
     document.getElementById('appProductName').value = a.product_name || '';
     document.getElementById('appSlug').value = skuPrefixPreview(a.full_name).toLowerCase();
     document.getElementById('appCommission').value = '25';
-    document.getElementById('appWholesale').value = a.wholesale_price_offered || '';
-    updateAppCalcPreview();
   } else {
     approveFields.style.display = 'none';
     approveBtn.style.display = 'none';
     rejectBtn.style.display = 'none';
   }
 
+  document.getElementById('appApprovedLinkBox').style.display = 'none';
   document.getElementById('appReviewNotes').value = a.reviewer_notes || '';
   document.getElementById('appReviewMsg').textContent = '';
   document.getElementById('appReviewMsg').className = 'modal-msg';
@@ -1801,6 +1825,11 @@ document.getElementById('appCancelBtn').addEventListener('click', () => {
   document.getElementById('applicationReviewCard').style.display = 'none';
   currentReviewAppId = null;
 });
+
+function waLink(phone, text){
+  const digits = (phone || '').replace(/[^\d]/g, '');
+  return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(text);
+}
 
 async function submitApplicationReview(action){
   if(!currentReviewAppId) return;
@@ -1817,8 +1846,7 @@ async function submitApplicationReview(action){
     payload.product_name = document.getElementById('appProductName').value.trim();
     payload.dashboard_slug = document.getElementById('appSlug').value.trim();
     payload.commission_percent = document.getElementById('appCommission').value;
-    payload.wholesale_price = document.getElementById('appWholesale').value;
-    if(!payload.seller_name || !payload.product_name || !payload.dashboard_slug || !payload.wholesale_price){
+    if(!payload.seller_name || !payload.dashboard_slug){
       msgEl.textContent = 'الرجاء تعبئة كل الحقول قبل القبول'; msgEl.className = 'modal-msg err';
       return;
     }
@@ -1830,13 +1858,22 @@ async function submitApplicationReview(action){
     });
     const d = await r.json();
     if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
-    msgEl.textContent = action === 'approve' ? 'تم القبول — البائع مضاف الآن في تبويب البائعين' : 'تم رفض الطلب'; msgEl.className = 'modal-msg ok';
-    setTimeout(() => {
-      document.getElementById('applicationReviewCard').style.display = 'none';
-      currentReviewAppId = null;
-      sellersLoaded = false;
-      loadApplicationsTab();
-    }, 900);
+
+    if(action === 'approve'){
+      const app = applicationsCache.find(x => String(x.id) === String(currentReviewAppId));
+      const link = 'https://249souq.com/dashboard/' + payload.dashboard_slug;
+      const waText = 'أهلًا ' + payload.seller_name + '! تم قبول طلب انضمامك لـ 249Souq 🎉\n' +
+        'لوحتك الخاصة: ' + link + '\n' +
+        'سجّلي دخولك برقم هاتفك المسجل، وأرسلي تفاصيل منتجك (الاسم، الوصف، الصور، السعر بالجملة) من هناك — سنراجعها ونعتمدها قبل نشرها.\n' +
+        'العمولة المتفق عليها: ' + payload.commission_percent + '%، والتحويل خلال ٥-٧ أيام عمل بعد استلامنا للدفعة.';
+      const box = document.getElementById('appApprovedLinkBox');
+      box.innerHTML = 'تم القبول — رابط لوحتها: <b>' + link + '</b><br>' +
+        (app && app.phone ? '<a class="wa-notify-btn" target="_blank" href="' + waLink(app.phone, waText) + '">📲 إرسال رسالة الترحيب عبر واتساب</a>' : '');
+      box.style.display = 'block';
+    }
+    msgEl.textContent = action === 'approve' ? 'تم القبول — البائعة مضافة الآن، بانتظار إرسالها لتفاصيل المنتج' : 'تم رفض الطلب'; msgEl.className = 'modal-msg ok';
+    sellersLoaded = false;
+    loadApplicationsTab();
   }catch(e){
     msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
   }
@@ -1844,6 +1881,135 @@ async function submitApplicationReview(action){
 document.getElementById('appApproveBtn').addEventListener('click', () => submitApplicationReview('approve'));
 document.getElementById('appRejectBtn').addEventListener('click', () => {
   if(confirm('هل أنتِ متأكدة من رفض هذا الطلب؟')) submitApplicationReview('reject');
+});
+
+/* ===================== GATE 2: PRODUCT LISTING REVIEW ===================== */
+
+async function loadListingsTab(){
+  listingsLoaded = true;
+  const tbody = document.getElementById('listingsTbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="empty-note">جاري التحميل...</td></tr>';
+  try{
+    const r = await fetch('/api/seller-applications?type=listings');
+    if(!r.ok) throw new Error('failed');
+    const d = await r.json();
+    listingsCache = d.listings || [];
+    renderListingsTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-note">تعذر تحميل قوائم المنتجات.</td></tr>';
+  }
+}
+
+function renderListingsTable(){
+  const tbody = document.getElementById('listingsTbody');
+  tbody.innerHTML = '';
+  if(!listingsCache.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-note">لا توجد قوائم منتجات بعد</td></tr>';
+    return;
+  }
+  listingsCache.forEach(p => {
+    const tr = document.createElement('tr');
+    const dateStr = new Date(p.submitted_at || p.created_at).toLocaleDateString('ar-EG', {day:'numeric', month:'short', year:'numeric'});
+    tr.innerHTML = `
+      <td>${dateStr}</td>
+      <td>${(p.sellers && p.sellers.name) || '-'}</td>
+      <td>${p.name_en || '-'}</td>
+      <td>${p.wholesale_price != null ? fmt(p.wholesale_price) : '-'}</td>
+      <td><span class="pill ${p.status}">${APP_STATUS_LABELS[p.status] || p.status}</span></td>
+      <td><button class="edit-btn" data-listing-review="${p.id}">${p.status === 'pending' ? 'مراجعة' : 'عرض'}</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('[data-listing-review]').forEach(btn => {
+    btn.addEventListener('click', () => openListingReview(btn.dataset.listingReview));
+  });
+}
+
+function updateListingCalcPreview(p){
+  const commission = Number(p.sellers && p.sellers.commission_percent) || 0;
+  document.getElementById('listingCommission').textContent = commission ? (commission * 100) + '%' : '-';
+  const wholesale = Number(p.wholesale_price) || 0;
+  const preview = document.getElementById('listingCalcPreview');
+  if(!wholesale || !commission){ preview.textContent = '-'; return; }
+  const retail = wholesale / (1 - commission);
+  const payout = retail * (1 - commission);
+  preview.innerHTML = `السعر للبيع: <b>AED ${retail.toFixed(2)}</b> &nbsp;—&nbsp; صافي مستحقاتها: <b>AED ${payout.toFixed(2)}</b>`;
+}
+
+function openListingReview(id){
+  const p = listingsCache.find(x => String(x.id) === String(id));
+  if(!p) return;
+  currentReviewListingId = id;
+
+  const grid = document.getElementById('listingDetailGrid');
+  grid.innerHTML = `
+    <div><b>البائعة:</b> ${(p.sellers && p.sellers.name) || '-'}</div>
+    <div><b>اسم المنتج (EN):</b> ${p.name_en || '-'}</div>
+    <div><b>اسم المنتج (AR):</b> ${p.name_ar || '-'}</div>
+    <div><b>نوع المنتج:</b> ${p.category || '-'}</div>
+    <div><b>التغليف:</b> ${p.packaging || '-'}</div>
+    <div><b>جاهز للشحن؟:</b> ${p.stock_status || '-'}</div>
+    <div><b>وقت التجهيز:</b> ${p.prep_time || '-'}</div>
+    <div><b>السعر بالجملة:</b> ${p.wholesale_price != null ? fmt(p.wholesale_price) : '-'}</div>
+    <div style="grid-column:1/-1"><b>الوصف:</b> ${p.description || '-'}</div>
+    <div style="grid-column:1/-1"><b>رابط الصور:</b> ${p.photos || '-'}</div>
+  `;
+  updateListingCalcPreview(p);
+
+  const approveBtn = document.getElementById('listingApproveBtn');
+  const rejectBtn = document.getElementById('listingRejectBtn');
+  if(p.status === 'pending'){
+    approveBtn.style.display = 'inline-block';
+    rejectBtn.style.display = 'inline-block';
+  } else {
+    approveBtn.style.display = 'none';
+    rejectBtn.style.display = 'none';
+  }
+
+  document.getElementById('listingReviewNotes').value = p.reviewer_notes || '';
+  document.getElementById('listingReviewMsg').textContent = '';
+  document.getElementById('listingReviewMsg').className = 'modal-msg';
+  document.getElementById('listingReviewCard').style.display = 'block';
+  document.getElementById('listingReviewCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('listingCancelBtn').addEventListener('click', () => {
+  document.getElementById('listingReviewCard').style.display = 'none';
+  currentReviewListingId = null;
+});
+
+async function submitListingReview(action){
+  if(!currentReviewListingId) return;
+  const msgEl = document.getElementById('listingReviewMsg');
+  msgEl.textContent = ''; msgEl.className = 'modal-msg';
+
+  const payload = {
+    type: 'listing',
+    id: currentReviewListingId,
+    action,
+    reviewer_notes: document.getElementById('listingReviewNotes').value.trim()
+  };
+
+  try{
+    const r = await fetch('/api/seller-applications', {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if(!r.ok){ msgEl.textContent = 'حدث خطأ: ' + (d.error || 'غير معروف'); msgEl.className = 'modal-msg err'; return; }
+    msgEl.textContent = action === 'approve' ? ('تم القبول — SKU: ' + (d.sku || '')) : 'تم رفض القائمة'; msgEl.className = 'modal-msg ok';
+    sellersLoaded = false;
+    setTimeout(() => {
+      document.getElementById('listingReviewCard').style.display = 'none';
+      currentReviewListingId = null;
+      loadListingsTab();
+    }, 900);
+  }catch(e){
+    msgEl.textContent = 'تعذر الاتصال بالخادم'; msgEl.className = 'modal-msg err';
+  }
+}
+document.getElementById('listingApproveBtn').addEventListener('click', () => submitListingReview('approve'));
+document.getElementById('listingRejectBtn').addEventListener('click', () => {
+  if(confirm('هل أنتِ متأكدة من رفض هذه القائمة؟')) submitListingReview('reject');
 });
 
 checkSession();
