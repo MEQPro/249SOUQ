@@ -185,11 +185,9 @@
 
   <div class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="overview">📊 نظرة عامة</button>
-    <button class="tab-btn" data-tab="newOrder">🧾 تسجيل طلب جديد</button>
     <button class="tab-btn" data-tab="clients">👥 العملاء</button>
     <button class="tab-btn" data-tab="sellers">🏷️ البائعين</button>
     <button class="tab-btn" data-tab="couriers">🚚 شركات التوصيل</button>
-    <button class="tab-btn" data-tab="applications">🆕 طلبات الانضمام</button>
   </div>
 
   <div class="wrap" id="mainWrap">
@@ -250,6 +248,7 @@
 
     <!-- ===================== NEW ORDER TAB ===================== -->
     <div class="tab-panel" id="panelNewOrder">
+      <button class="edit-btn" style="margin-bottom:14px;" onclick="document.querySelector('.tab-btn[data-tab=&quot;clients&quot;]').click()">← رجوع للعملاء</button>
       <div class="card">
         <h3>تسجيل طلب جديد</h3>
         <div class="modal-row">
@@ -337,6 +336,7 @@
 
     <!-- ===================== CLIENTS TAB ===================== -->
     <div class="tab-panel" id="panelClients">
+      <button class="btn-save" style="margin-bottom:16px;" onclick="showSubPanel('newOrder')">🧾 تسجيل طلب جديد</button>
       <div class="card">
         <h3>العملاء <span class="muted">(كل من طلب من قبل — يمكن تعديل بياناتهم مباشرة هنا)</span></h3>
         <input type="text" id="clientSearchInput" placeholder="بحث بالاسم أو رقم الهاتف..."
@@ -369,6 +369,7 @@
 
     <!-- ===================== SELLERS TAB ===================== -->
     <div class="tab-panel" id="panelSellers">
+      <button class="btn-save" style="margin-bottom:16px;" onclick="showSubPanel('applications')">🆕 طلبات الانضمام وقوائم المنتجات</button>
       <div class="card">
         <h3>البائعين <span class="muted">(الأسعار، الهاتف، وزن الوحدة، ورابط لوحة البائع)</span></h3>
         <div class="table-scroll">
@@ -516,6 +517,7 @@
 
     <!-- ===================== APPLICATIONS TAB ===================== -->
     <div class="tab-panel" id="panelApplications">
+      <button class="edit-btn" style="margin-bottom:14px;" onclick="document.querySelector('.tab-btn[data-tab=&quot;sellers&quot;]').click()">← رجوع للبائعين</button>
       <div class="card">
         <h3>طلبات الانضمام <span class="muted">(مراجعة وقبول/رفض طلبات البائعين الجدد)</span></h3>
         <div class="table-scroll">
@@ -692,18 +694,28 @@ window.addEventListener('afterprint', () => {
 });
 
 /* ===================== TABS ===================== */
+// newOrder and applications are no longer top-level tabs — they open as a
+// sub-view from inside Clients / Sellers (see showSubPanel below), but stay
+// their own panel divs so nothing about how they work internally changed.
+function showSubPanel(tab){
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  if(tab === 'newOrder') loadNewOrderTab();
+  if(tab === 'applications'){
+    if(!applicationsLoaded) loadApplicationsTab();
+    if(!listingsLoaded) loadListingsTab();
+  }
+}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('panel' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).classList.add('active');
-    if(btn.dataset.tab === 'newOrder') loadNewOrderTab();
     if(btn.dataset.tab === 'clients' && !clientsLoaded) loadClients();
     if(btn.dataset.tab === 'sellers' && !sellersLoaded) loadSellersTab();
     if(btn.dataset.tab === 'couriers' && !couriersLoaded) loadCouriersTab();
-    if(btn.dataset.tab === 'applications' && !applicationsLoaded) loadApplicationsTab();
-    if(btn.dataset.tab === 'applications' && !listingsLoaded) loadListingsTab();
   });
 });
 
@@ -1780,18 +1792,8 @@ function openApplicationReview(id){
     <div><b>حساب التواصل:</b> ${a.social_handle || '-'}</div>
     <div><b>نوع المنتج:</b> ${a.category || '-'}</div>
     <div><b>اسم المنتج:</b> ${a.product_name || '-'}</div>
-    <div><b>رابط الصور:</b> ${a.product_photos || '-'}</div>
-    <div><b>مصنوع يدويًا؟:</b> ${a.is_handmade || '-'}</div>
-    <div><b>طريقة التصنيع/المصدر:</b> ${a.sourcing_method || '-'}</div>
-    <div><b>مبيعات شهرية حالية:</b> ${a.current_monthly_sales || '-'}</div>
-    <div><b>السعر الحالي:</b> ${a.current_price || '-'}</div>
-    <div><b>السعر بالجملة المعروض:</b> ${a.wholesale_price_offered != null ? fmt(a.wholesale_price_offered) : '-'}</div>
-    <div><b>جاهز للشحن؟:</b> ${a.ready_to_ship || '-'}</div>
-    <div><b>وقت التجهيز:</b> ${a.prep_time || '-'}</div>
-    <div><b>الطاقة الشهرية:</b> ${a.monthly_capacity || '-'}</div>
     <div><b>موافقة على العمولة:</b> ${a.agrees_to_commission ? 'نعم ✓' : 'لا ✗'}</div>
     <div><b>موافقة على مدة الدفع:</b> ${a.agrees_to_payout_terms ? 'نعم ✓' : 'لا ✗'}</div>
-    <div style="grid-column:1/-1"><b>أكبر تحدٍ:</b> ${a.biggest_challenge || '-'}</div>
     <div style="grid-column:1/-1"><b>لماذا تريد الانضمام:</b> ${a.why_join || '-'}</div>
   `;
 

@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
       biggest_challenge, why_join, agrees_to_payout_terms
     } = body || {};
 
-    if (!full_name || !phone || !product_name || !wholesale_price_offered) {
+    if (!full_name || !phone || !product_name) {
       res.status(400).json({ error: 'missing_required_fields' });
       return;
     }

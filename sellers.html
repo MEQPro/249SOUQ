@@ -190,33 +190,7 @@
         </div>
         <div class="form-group"><label>اسم/نوع المنتج *</label><input type="text" id="f-product" placeholder="مثال: بخور صندل يدوي"/></div>
       </div>
-      <div class="form-group"><label>رابط لصور المنتج (2-3 صور — انستغرام/واتساب/درايف)</label><input type="text" id="f-photos" placeholder="الصق رابط الصور هنا"/></div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>هل المنتج مصنوع يدويًا؟</label>
-          <select id="f-handmade"><option value="">اختر...</option><option value="نعم">نعم</option><option value="لا">لا</option><option value="جزئيًا">جزئيًا</option></select>
-        </div>
-        <div class="form-group"><label>كيف تحصلين على المنتج أو تصنعينه؟</label><input type="text" id="f-sourcing" placeholder="مثال: أصنعه بنفسي في المنزل"/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>متوسط مبيعاتك الشهرية حاليًا (اكتبي صفر إذا منتج جديد)</label><input type="text" id="f-sales" placeholder="مثال: صفر، أو 10 قطع"/></div>
-        <div class="form-group"><label>سعر البيع الحالي (إن وجد)</label><input type="text" id="f-price" placeholder="مثال: 60 درهم"/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>السعر بالجملة الذي تعرضينه لـ 249Souq (بالدرهم) *</label><input type="number" id="f-wholesale" placeholder="مثال: 40" min="0" step="0.01"/></div>
-        <div class="form-group">
-          <label>هل المنتج جاهز للشحن أم يُصنع عند الطلب؟</label>
-          <select id="f-ready"><option value="">اختر...</option><option value="جاهز">جاهز للشحن</option><option value="عند الطلب">يُصنع عند الطلب</option></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>كم تحتاجين من وقت لتجهيز الطلب؟</label><input type="text" id="f-preptime" placeholder="مثال: يوم واحد"/></div>
-        <div class="form-group"><label>كم عدد الطلبات شهريًا يمكنك تلبيتها؟</label><input type="text" id="f-capacity" placeholder="مثال: 30 طلب"/></div>
-      </div>
-
-      <div class="form-section-title">عن انضمامك لـ 249Souq</div>
-      <div class="form-group"><label>ما هو أكبر تحدٍ يواجهك حاليًا في بيع منتجك؟</label><textarea id="f-challenge"></textarea></div>
-      <div class="form-group"><label>لماذا تريدين الانضمام لـ 249Souq تحديدًا؟</label><textarea id="f-why"></textarea></div>
+      <div class="form-group"><label>لماذا تريدين الانضمام لـ 249Souq؟ (اختياري)</label><textarea id="f-why" placeholder="سطر أو سطرين تكفي"></textarea></div>
 
       <div class="form-terms">
         <label class="term-check"><input type="checkbox" id="f-commission"/> أوافق على منح 249Souq عمولة 20%-25% من قيمة كل عملية بيع *</label>
@@ -224,7 +198,7 @@
       </div>
 
       <button class="btn-submit" onclick="submitForm()">أرسل طلب الانضمام</button>
-      <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث ✦ سنراجع طلبك ونعود إليك على واتساب</p>
+      <p style="font-size:12px;color:#aaa;margin-top:1rem;text-align:center">بياناتك آمنة معنا ✦ لن تُشارك مع أي طرف ثالث ✦ بعد القبول، سترسلين تفاصيل منتجك وسعره من لوحتك الخاصة</p>
     </div>
 
     <div class="success-box" id="success-box">
@@ -291,11 +265,10 @@ async function submitForm(){
   var city=document.getElementById('f-city').value.trim();
   var cat=document.getElementById('f-cat').value;
   var product=document.getElementById('f-product').value.trim();
-  var wholesale=document.getElementById('f-wholesale').value;
   var agreesCommission=document.getElementById('f-commission').checked;
   var agreesPayout=document.getElementById('f-payout').checked;
   var err=document.getElementById('err-msg');
-  if(!n||!p||!city||!cat||!product||!wholesale||!agreesCommission||!agreesPayout){err.style.display='block';err.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!n||!p||!city||!cat||!product||!agreesCommission||!agreesPayout){err.style.display='block';err.scrollIntoView({behavior:'smooth',block:'center'});return}
   err.style.display='none';
 
   var btn=document.querySelector('.btn-submit');
@@ -305,16 +278,6 @@ async function submitForm(){
     full_name:n, phone:p, country_city:city, category:cat, product_name:product,
     business_name:document.getElementById('f-business').value.trim(),
     social_handle:document.getElementById('f-social').value.trim(),
-    product_photos:document.getElementById('f-photos').value.trim(),
-    is_handmade:document.getElementById('f-handmade').value,
-    sourcing_method:document.getElementById('f-sourcing').value.trim(),
-    current_monthly_sales:document.getElementById('f-sales').value.trim(),
-    current_price:document.getElementById('f-price').value.trim(),
-    wholesale_price_offered:wholesale,
-    ready_to_ship:document.getElementById('f-ready').value,
-    prep_time:document.getElementById('f-preptime').value.trim(),
-    monthly_capacity:document.getElementById('f-capacity').value.trim(),
-    biggest_challenge:document.getElementById('f-challenge').value.trim(),
     why_join:document.getElementById('f-why').value.trim(),
     agrees_to_commission:agreesCommission,
     agrees_to_payout_terms:agreesPayout
