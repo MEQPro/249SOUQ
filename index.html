@@ -3,8 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="249Souq — أول سوق للمنتجات السودانية الأصيلة. نربط الجالية السودانية بمنتجات من بخور، عطور، ملابس تقليدية وأكل سوداني."/>
-<title>249Souq — أول سوق للمنتجات السودانية</title>
+<meta name="description" content="249Souq أول سوق للمنتجات السودانية في الإمارات: بخور سوداني أصيل وعطور وصناعات يدوية من صانعين سودانيين، مع توصيل داخل الإمارات. Authentic Sudanese bukhoor and handmade products, delivered across the UAE."/>
+<title>249Souq — سوق المنتجات السودانية في الإمارات | بخور وعطور سودانية أصيلة</title>
+<link rel="canonical" href="https://249souq.com/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="249Souq"/>
+<meta property="og:locale" content="ar_AE"/>
+<meta property="og:title" content="249Souq — أول سوق للمنتجات السودانية"/>
+<meta property="og:description" content="بخور وعطور وصناعات يدوية سودانية أصيلة، توصيل داخل الإمارات."/>
+<meta property="og:url" content="https://249souq.com/"/>
+<meta property="og:image" content="https://249souq.com/img/hero-banner.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"249Souq","url":"https://249souq.com/","logo":"https://249souq.com/img/logo-249souq-white-bg.png","sameAs":["https://instagram.com/249souq"],"contactPoint":{"@type":"ContactPoint","telephone":"+971508810475","contactType":"customer service","availableLanguage":["Arabic","English"],"areaServed":"AE"}},{"@type":"WebSite","name":"249Souq","url":"https://249souq.com/","inLanguage":"ar"}]}
+</script>
 <link rel="icon" href="favicon.ico" sizes="any"/>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
@@ -218,6 +230,22 @@
   </div>
 </section>
 
+<!-- LEAD CAPTURE -->
+<section class="lead-section" id="join">
+  <div class="lead-inner">
+    <div class="lead-title">انضموا لعائلة 249Souq</div>
+    <p class="lead-sub">اشترك في قائمة واتساب واحصل على <b style="color:var(--gold-light)">خصم 10%</b> على طلبك القادم، وكن أول من يعرف بالمنتجات الجديدة والعروض.</p>
+    <form class="lead-form" data-source="homepage" novalidate>
+      <input type="text" name="name" placeholder="الاسم" autocomplete="name" maxlength="80" required/>
+      <input type="tel" name="phone" placeholder="رقم الواتساب  05X XXX XXXX" autocomplete="tel" inputmode="tel" maxlength="20" required/>
+      <div class="lead-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"/></div>
+      <label class="lead-consent"><input type="checkbox" name="consent" required/><span>أوافق على استلام رسائل من 249Souq عبر واتساب، ويمكنني إلغاء الاشتراك في أي وقت. <a href="privacy-policy.html">سياسة الخصوصية</a></span></label>
+      <button type="submit" class="lead-btn">اشترك واحصل على الخصم</button>
+      <div class="lead-msg" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
 <div class="divider"></div>
 
 <!-- FOOTER -->
@@ -270,5 +298,6 @@ function toggleDropdown(e,el){e.preventDefault();e.stopPropagation();var li=el.c
 function toggleFaq(el){el.closest(".faq-item").classList.toggle("open")}
 document.addEventListener("click",function(e){if(!e.target.closest(".nav-dropdown")){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open")})}});</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<script src="lead.js" defer></script>
 </body>
 </html>

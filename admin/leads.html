@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>WhatsApp sign-ups — 249Souq admin</title>
+<style>
+body{font-family:Tajawal,Arial,sans-serif;background:#FAF6EE;color:#1A1208;margin:0;padding:24px}
+h1{margin:0 0 6px;font-size:22px}
+.note{color:#5A4020;font-size:14px;margin-bottom:16px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+button,a.btn{background:#046A38;color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+th,td{border:1px solid #e6dcc6;padding:8px 10px;text-align:right}
+th{background:#F2EBD9}
+td.ltr{direction:ltr;text-align:left}
+#msg{margin:12px 0;color:#7A1F2B}
+</style>
+</head>
+<body>
+<h1>WhatsApp sign-ups</h1>
+<div class="note">People who joined from the website form (they agreed to receive WhatsApp messages). Send each one the 10% code.</div>
+<div class="bar">
+  <button id="refresh">Refresh</button>
+  <button id="copy">Copy all numbers</button>
+  <button id="csv">Download CSV</button>
+  <a class="btn" href="dashboard">Back to dashboard</a>
+</div>
+<div id="msg"></div>
+<table id="t" style="display:none"><thead><tr><th>Date</th><th>Name</th><th>Phone</th><th>Source</th><th>Campaign</th></tr></thead><tbody></tbody></table>
+<script>
+var rows = [];
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function load(){
+  var msg = document.getElementById('msg'); msg.textContent = '';
+  fetch('/api/seller-applications?type=leads&_=' + Date.now(), {credentials:'same-origin'}).then(function(r){
+    if(r.status === 401){ msg.innerHTML = 'Please log in first at <a href="dashboard">the dashboard</a>, then come back to this page.'; return null; }
+    return r.json();
+  }).then(function(d){
+    if(!d) return;
+    if(d.error){ msg.textContent = 'Error: ' + d.error; return; }
+    rows = d.leads || [];
+    var tb = document.querySelector('#t tbody'); tb.innerHTML = '';
+    rows.forEach(function(l){
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + esc((l.created_at||'').slice(0,16).replace('T',' ')) + '</td><td>' + esc(l.name) + '</td><td class="ltr">' + esc(l.phone) + '</td><td>' + esc(l.source) + '</td><td>' + esc(l.utm_campaign||'') + '</td>';
+      tb.appendChild(tr);
+    });
+    document.getElementById('t').style.display = rows.length ? '' : 'none';
+    if(!rows.length) msg.textContent = 'No sign-ups yet.';
+  }).catch(function(){ msg.textContent = 'Could not load. Try again.'; });
+}
+document.getElementById('refresh').onclick = load;
+document.getElementById('copy').onclick = function(){
+  var t = rows.map(function(l){return l.phone}).join('\n');
+  if(navigator.clipboard){ navigator.clipboard.writeText(t); document.getElementById('msg').textContent = 'Copied ' + rows.length + ' numbers.'; }
+};
+document.getElementById('csv').onclick = function(){
+  var out = 'created_at,name,phone,source,utm_campaign\n' + rows.map(function(l){
+    return [l.created_at,l.name,l.phone,l.source,l.utm_campaign].map(function(v){return '"' + String(v==null?'':v).replace(/"/g,'""') + '"'}).join(',');
+  }).join('\n');
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([out],{type:'text/csv'})); a.download = '249souq-leads.csv'; a.click();
+};
+load();
+</script>
+</body>
+</html>

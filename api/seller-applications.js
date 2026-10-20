@@ -31,6 +31,41 @@ module.exports = async (req, res) => {
       try { body = JSON.parse(body || '{}'); } catch (e) { body = {}; }
     }
 
+    // ----- WhatsApp sign-up (lead capture from the public site) -----
+    // Shares this function on purpose: the Vercel Hobby plan caps deployments
+    // at 12 serverless functions, and we are already at the cap.
+    if (body && body.type === 'lead') {
+      // Honeypot: real visitors never fill the hidden "website" field.
+      if (body.website) { res.status(200).json({ ok: true }); return; }
+      const leadName = String(body.name || '').trim().slice(0, 80);
+      const leadPhone = normalizePhone(body.phone);
+      const phoneDigits = leadPhone ? leadPhone.replace(/\D/g, '') : '';
+      if (leadName.length < 2 || phoneDigits.length < 9 || phoneDigits.length > 15) {
+        res.status(400).json({ error: 'invalid_name_or_phone' });
+        return;
+      }
+      if (body.consent !== true) {
+        res.status(400).json({ error: 'consent_required' });
+        return;
+      }
+      const clip = (v, n) => (v ? String(v).slice(0, n) : null);
+      const { error: leadErr } = await supabase
+        .from('leads')
+        .upsert({
+          name: leadName,
+          phone: leadPhone,
+          consent: true,
+          source: clip(body.source, 40),
+          page: clip(body.page, 120),
+          utm_source: clip(body.utm_source, 80),
+          utm_medium: clip(body.utm_medium, 80),
+          utm_campaign: clip(body.utm_campaign, 120)
+        }, { onConflict: 'phone', ignoreDuplicates: true });
+      if (leadErr) { res.status(500).json({ error: 'lead_save_failed' }); return; }
+      res.status(200).json({ ok: true });
+      return;
+    }
+
     const {
       full_name, business_name, phone, country_city, social_handle,
       category, product_name, why_join
@@ -69,6 +104,18 @@ module.exports = async (req, res) => {
   if (!requireAuth(req, res)) return;
 
   if (req.method === 'GET') {
+    // WhatsApp sign-ups (leads), newest first.
+    if (req.query && req.query.type === 'leads') {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1000);
+      if (error) { res.status(500).json({ error: error.message }); return; }
+      res.status(200).json({ leads: data || [] });
+      return;
+    }
+
     // Gate 2 queue: pending product listings awaiting review, most recent first.
     if (req.query && req.query.type === 'listings') {
       const { data, error } = await supabase
