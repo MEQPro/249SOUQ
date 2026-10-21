@@ -193,7 +193,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .lead-title{font-family:'Lalezar','Tajawal',sans-serif;font-size:1.7rem;color:var(--gold-light);margin-bottom:.5rem}
 .lead-sub{font-size:14.5px;color:#d8cdb4;line-height:1.9;margin-bottom:1.5rem}
 .lead-form{display:flex;flex-direction:column;gap:10px;text-align:right;position:relative}
-.lead-form input[type=text],.lead-form input[type=tel]{width:100%;padding:13px 14px;border-radius:8px;border:1px solid rgba(184,150,80,.4);background:#fff;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--brown-deep)}
+.lead-form input[type=text],.lead-form input[type=tel],.lead-form input[type=email]{width:100%;padding:13px 14px;border-radius:8px;border:1px solid rgba(184,150,80,.4);background:#fff;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--brown-deep)}
 .lead-form input[type=tel]{direction:ltr;text-align:right}
 .lead-consent{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:#d8cdb4;line-height:1.7}
 .lead-consent input{margin-top:5px;flex-shrink:0}
@@ -205,3 +205,5 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .lead-msg.ok{color:#8ee6a8}
 .lead-msg.err{color:#ff9b9b}
 .lead-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
+
+.lead-form input[type=email]{direction:ltr;text-align:right}

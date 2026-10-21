@@ -189,6 +189,7 @@
     <button class="tab-btn" data-tab="clients">👥 العملاء</button>
     <button class="tab-btn" data-tab="sellers">🏷️ البائعين</button>
     <button class="tab-btn" data-tab="couriers">🚚 شركات التوصيل</button>
+    <button class="tab-btn" data-tab="leads">📲 المشتركين</button>
   </div>
 
   <div class="wrap" id="mainWrap">
@@ -443,6 +444,25 @@
     </div>
 
     <!-- ===================== COURIERS TAB ===================== -->
+    <div class="tab-panel" id="panelLeads">
+      <div class="card">
+        <h3>المشتركين <span class="muted">(من نموذج الموقع — واتساب والبريد)</span></h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="btn-save" onclick="loadLeadsTab()">🔄 تحديث</button>
+          <button class="btn-save" onclick="copyLeads('phone')">نسخ الأرقام</button>
+          <button class="btn-save" onclick="copyLeads('email')">نسخ البريد</button>
+          <button class="btn-save" onclick="downloadLeadsCsv()">تحميل CSV</button>
+        </div>
+        <div id="leadsMsg" class="muted" style="margin-bottom:8px;"></div>
+        <div class="table-scroll">
+          <table id="leadsTable">
+            <thead><tr><th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>البريد</th><th>المصدر</th></tr></thead>
+            <tbody id="leadsTbody"><tr><td colspan="5" class="empty-note">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-panel" id="panelCouriers">
       <div class="card">
         <h3>شركات التوصيل</h3>
@@ -708,6 +728,36 @@ function showSubPanel(tab){
   }
 }
 
+// ---------- Leads tab ----------
+let leadsRows = [];
+function leadEsc(v){ return String(v==null?'':v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+async function loadLeadsTab(){
+  const msg = document.getElementById('leadsMsg');
+  msg.textContent = '';
+  try{
+    const r = await fetch('/api/seller-applications?type=leads&_=' + Date.now(), {credentials:'same-origin'});
+    const d = await r.json();
+    if(d.error){ msg.textContent = 'خطأ: ' + d.error; return; }
+    leadsRows = d.leads || [];
+    const tb = document.getElementById('leadsTbody');
+    tb.innerHTML = leadsRows.length ? leadsRows.map(l =>
+      '<tr><td>' + leadEsc((l.created_at||'').slice(0,16).replace('T',' ')) + '</td><td>' + leadEsc(l.name) + '</td><td dir="ltr">' + leadEsc(l.phone) + '</td><td dir="ltr">' + leadEsc(l.email||'') + '</td><td>' + leadEsc(l.source) + '</td></tr>'
+    ).join('') : '<tr><td colspan="5" class="empty-note">لا يوجد مشتركين بعد</td></tr>';
+    msg.textContent = 'العدد: ' + leadsRows.length + ' | بريد إلكتروني: ' + leadsRows.filter(l=>l.email).length;
+  }catch(e){ msg.textContent = 'تعذر التحميل، حاول مرة أخرى'; }
+}
+function copyLeads(field){
+  const t = leadsRows.map(l => l[field]).filter(Boolean).join('\n');
+  if(navigator.clipboard){ navigator.clipboard.writeText(t); document.getElementById('leadsMsg').textContent = 'تم النسخ'; }
+}
+function downloadLeadsCsv(){
+  const q = v => '"' + String(v==null?'':v).replace(/"/g,'""') + '"';
+  const out = 'created_at,name,phone,email,source,utm_campaign\n' + leadsRows.map(l => [l.created_at,l.name,l.phone,l.email,l.source,l.utm_campaign].map(q).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff'+out],{type:'text/csv;charset=utf-8'}));
+  a.download = '249souq-leads.csv'; a.click();
+}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -717,6 +767,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if(btn.dataset.tab === 'clients' && !clientsLoaded) loadClients();
     if(btn.dataset.tab === 'sellers' && !sellersLoaded) loadSellersTab();
     if(btn.dataset.tab === 'couriers' && !couriersLoaded) loadCouriersTab();
+    if(btn.dataset.tab === 'leads') loadLeadsTab();
   });
 });
 

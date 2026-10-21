@@ -14,12 +14,16 @@
       if(name.length < 2){ msg.className='lead-msg err'; msg.textContent='من فضلك اكتب اسمك'; return; }
       if(digits.length < 9){ msg.className='lead-msg err'; msg.textContent='من فضلك اكتب رقم واتساب صحيح'; return; }
       if(!form.elements['consent'].checked){ msg.className='lead-msg err'; msg.textContent='لازم توافق على استلام الرسائل عشان نكمل'; return; }
+      var email = (form.elements['email'] ? form.elements['email'].value.trim() : '');
+      var emailOk = form.elements['email_consent'] && form.elements['email_consent'].checked;
+      if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ msg.className='lead-msg err'; msg.textContent='البريد الإلكتروني غير صحيح'; return; }
+      if(email && !emailOk){ msg.className='lead-msg err'; msg.textContent='للاشتراك بالبريد، علّم على خانة الموافقة على العروض عبر البريد'; return; }
       btn.disabled = true;
       fetch('/api/seller-applications', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
-          type:'lead', name:name, phone:phone, consent:true,
+          type:'lead', name:name, phone:phone, consent:true, email:email, email_consent:!!(email && emailOk),
           website: form.elements['website'].value,
           source: form.getAttribute('data-source') || 'site',
           page: location.pathname,
@@ -31,7 +35,7 @@
         .then(function(res){
           if(res.ok){
             msg.className='lead-msg ok';
-            msg.textContent='شكرًا ليك! كود الخصم 10% بتاعك: WELCOME10 — اكتبه عند الدفع، أو أرسله لينا في رسالة واتساب مع طلبك ✓';
+            msg.textContent='شكرًا ليك! حنرسل ليك كود الخصم على واتساب قريبًا ✓';
             form.reset();
             if(window.gtag){ gtag('event','lead_signup',{source: form.getAttribute('data-source')||'site'}); }
           } else {

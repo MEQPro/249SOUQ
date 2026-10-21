@@ -59,7 +59,8 @@ module.exports = async (req, res) => {
           page: clip(body.page, 120),
           utm_source: clip(body.utm_source, 80),
           utm_medium: clip(body.utm_medium, 80),
-          utm_campaign: clip(body.utm_campaign, 120)
+          utm_campaign: clip(body.utm_campaign, 120),
+          email: (body.email_consent === true && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(body.email || '').trim())) ? String(body.email).trim().toLowerCase().slice(0, 120) : null
         }, { onConflict: 'phone', ignoreDuplicates: true });
       if (leadErr) { res.status(500).json({ error: 'lead_save_failed' }); return; }
       res.status(200).json({ ok: true });
