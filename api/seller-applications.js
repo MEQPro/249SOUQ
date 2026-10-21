@@ -101,6 +101,13 @@ module.exports = async (req, res) => {
     return;
   }
 
+  // Daily keep-alive (Vercel cron) so the free Supabase project never pauses.
+  if (req.method === 'GET' && req.query && req.query.type === 'ping') {
+    const { error: pingErr } = await supabase.from('leads').select('id', { head: true, count: 'exact' }).limit(1);
+    res.status(pingErr ? 500 : 200).json({ ok: !pingErr });
+    return;
+  }
+
   // ---------- ADMIN: everything below requires auth ----------
   if (!requireAuth(req, res)) return;
 
