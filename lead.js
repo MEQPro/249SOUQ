@@ -31,7 +31,7 @@
         .then(function(res){
           if(res.ok){
             msg.className='lead-msg ok';
-            msg.textContent='شكرًا ليك! حنرسل ليك كود الخصم على واتساب قريبًا ✓';
+            msg.textContent='شكرًا ليك! كود الخصم 10% بتاعك: WELCOME10 — اكتبه عند الدفع، أو أرسله لينا في رسالة واتساب مع طلبك ✓';
             form.reset();
             if(window.gtag){ gtag('event','lead_signup',{source: form.getAttribute('data-source')||'site'}); }
           } else {
