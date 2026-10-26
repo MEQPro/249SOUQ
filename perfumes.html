@@ -202,10 +202,6 @@
 
 <div class="divider"></div>
 
-<section style="background:var(--cream);padding:2.25rem 1.5rem 0;text-align:center">
-  <span class="section-tag" style="display:block">العطور</span>
-  <div class="reviews-title" style="margin-bottom:.25rem">عطور زيتية رول أون</div>
-</section>
 <!-- ROLL-ON -->
 <section id="rollon" style="background:#fff;padding:3rem 0;border-bottom:1px solid rgba(26,18,8,0.06)">
   <div class="product-wrap">
@@ -225,6 +221,13 @@
         <div class="tabby-pill">أو <strong style="color:var(--brown-deep);margin:0 4px">2 بـ 15 AED</strong></div>
       </div>
 
+      <div class="trust-badges">
+        <div class="trust-badge"><i class="ti ti-shield-check"></i>دفع آمن ومشفّر</div>
+        <div class="trust-badge"><i class="ti ti-certificate"></i>أصلي من علامة النعيم</div>
+        <div class="trust-badge"><i class="ti ti-truck-delivery"></i>توصيل داخل الإمارات</div>
+        <div class="trust-badge"><i class="ti ti-brand-whatsapp"></i>دعم مباشر عبر واتساب</div>
+      </div>
+
       <ul class="features">
         <li><i class="ti ti-droplet feat-icon"></i>عطر زيتي برائحة صندل دافئة</li>
         <li><i class="ti ti-ban feat-icon"></i>بدون كحول (0%)</li>
@@ -235,10 +238,71 @@
 
       <button class="btn-order" onclick="gtag('event','order_click',{method:'whatsapp',product:'rollon'});window.open('https://wa.me/971508810475?text=أريد إضافة عطر صندلية نعيم رول أون 6 مل إلى طلبي — 249Souq','_blank')"><i class="ti ti-brand-whatsapp"></i> اطلب الآن عبر واتساب</button>
 
+      <button class="btn-bank" onclick="gtag('event','order_click',{method:'bank_transfer',product:'rollon'});window.open('https://wa.me/971508810475?text=أريد الدفع عن طريق التحويل البنكي — عطر صندلية نعيم رول أون','_blank')">
+        <span class="btn-bank-left">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 8h20L12 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 10v9M9 10v9M15 10v9M20 10v9" stroke="currentColor" stroke-width="1.6"/><path d="M2 21h20" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>التحويل البنكي</span>
+        </span>
+        <span style="font-size:12px;color:#8A7550">عبر واتساب</span>
+      </button>
+
+      <button class="btn-wa" onclick="gtag('event','whatsapp_contact_click');window.open('https://wa.me/971508810475','_blank')">
+        <i class="ti ti-brand-whatsapp"></i> عندك اي استفسار، اتواصل معانا في الواتس اب
+      </button>
+
       <p style="font-size:12.5px;color:var(--brown-mid);line-height:1.8;margin-top:1rem">للاستعمال الخارجي فقط. يُحفظ بعيدًا عن متناول الأطفال. العلامة: النعيم (Al-Nuaim) — صنع في الهند، تعبئة النعيم الإمارات.</p>
     </div>
   </div>
   <div style="max-width:1100px;margin:1.75rem auto 0;padding:0 1.5rem;text-align:center"><a href="products.html" style="color:var(--gold-dark);font-weight:700;text-decoration:none;font-size:15px">يكمل بخورك — شوف بخور عبق الصندل ←</a></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BRAND -->
+<section class="maker-section" id="brand-section">
+  <div class="maker-inner">
+    <div class="maker-big-avatar">🌿</div>
+    <div>
+      <div class="section-tag">عن العلامة</div>
+      <div style="font-size:1.4rem;font-weight:500;color:var(--cream);margin-bottom:.4rem">النعيم — عطور زيتية بدون كحول</div>
+      <p style="font-size:14px;color:var(--gold-light);line-height:1.9;max-width:480px">
+        النعيم علامة عطور وزيوت عطرية مسجلة لدى ARC Perfumes &amp; Cosmetics L.L.C في دبي.
+        اخترنا لك صندلية نعيم لأنها رفيق عملي لبخورك: خفيفة، بدون كحول، وتناسب الجيب والشنطة.
+      </p>
+      <div class="maker-stats">
+        <div class="maker-stat"><div class="maker-stat-num">0%</div><div class="maker-stat-label">كحول</div></div>
+        <div class="maker-stat"><div class="maker-stat-num">6 مل</div><div class="maker-stat-label">رول أون</div></div>
+        <div class="maker-stat"><div class="maker-stat-num">الإمارات</div><div class="maker-stat-label">العلامة المسجلة</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="faq-section" style="background:var(--cream)">
+  <div class="faq-inner">
+    <span class="section-tag" style="text-align:center;display:block">الأسئلة الشائعة</span>
+    <div class="reviews-title" style="margin-bottom:1.5rem">عندك سؤال؟ يمكن تلقى إجابته هنا</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">هل العطر فيه كحول؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">لا، عطر زيتي بدون كحول (0%) حسب المكتوب على العلبة.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كيف أستعمله؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">للاستعمال الخارجي فقط. مرّر الرول أون على نقاط النبض مثل الرسغ وخلف الأذن. وعلى الملابس استعمله بكمية قليلة.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">كيف أطلبه مع البخور؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">اضغط "اطلب عبر واتساب" واكتب أنك تريده مع البخور، فيصلك في نفس الشحنة.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)" style="color:var(--brown-deep)">وين يتم التوصيل؟ <i class="ti ti-chevron-down" style="color:var(--gold-dark)"></i></div>
+      <div class="faq-a"><p style="color:var(--brown-mid)">نوصّل داخل الإمارات. التفاصيل في <a href="shipping-policy.html" style="color:var(--gold-dark)">سياسة الشحن</a>.</p></div>
+    </div>
+  </div>
 </section>
 
 <div class="divider"></div>
