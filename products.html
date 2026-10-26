@@ -297,7 +297,11 @@
 <section id="rollon" style="background:#fff;padding:3rem 0;border-bottom:1px solid rgba(26,18,8,0.06)">
   <div class="product-wrap">
     <div class="gallery">
-      <div class="main-img"><span class="weight-badge">6 مل</span><img src="img/sandaliyah-rollon.webp" alt="عطر زيت صندلية نعيم رول أون 6 مل - النعيم" loading="lazy"/></div>
+      <div class="main-img"><span class="weight-badge">6 مل</span><img id="rollonImg" src="img/sandaliyah-rollon.webp" alt="عطر زيت صندلية نعيم رول أون 6 مل - النعيم" loading="lazy"/></div>
+      <div class="thumb-row">
+        <div class="thumb active" onclick="setRollonImg('img/sandaliyah-rollon.webp',this)"><img src="img/sandaliyah-rollon.webp" alt="صندلية نعيم - العلبة والزجاجة" loading="lazy"/></div>
+        <div class="thumb" onclick="setRollonImg('img/sandaliyah-rollon-back.webp',this)"><img src="img/sandaliyah-rollon-back.webp" alt="صندلية نعيم - الجهة الخلفية للعلبة والمكونات" loading="lazy"/></div>
+      </div>
     </div>
     <div>
       <h2 style="font-family:'Tajawal',sans-serif;font-size:clamp(1.4rem,3.2vw,2rem);font-weight:500;color:var(--brown-deep);margin-bottom:.4rem;line-height:1.3">صندلية نعيم — عطر زيتي رول أون <span style="font-size:13px;font-weight:600;color:var(--green-dark);background:rgba(4,106,56,0.08);border:1px solid rgba(4,106,56,0.25);padding:3px 10px;border-radius:20px;vertical-align:middle">6 مل</span></h2>
@@ -504,5 +508,11 @@ function setImg(src,el){document.getElementById('mainImg').src=src;document.quer
 })();
 </script>
 <script src="lead.js" defer></script>
+<script>
+function setRollonImg(src,el){
+  var i=document.getElementById('rollonImg'); if(i) i.src=src;
+  if(el&&el.parentNode){ el.parentNode.querySelectorAll('.thumb').forEach(function(t){t.classList.remove('active')}); el.classList.add('active'); }
+}
+</script>
 </body>
 </html>
