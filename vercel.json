@@ -6,6 +6,16 @@
       "source": "/q",
       "destination": "/products.html?utm_source=qr&utm_medium=print&utm_campaign=bukhoor_launch",
       "permanent": false
+    },
+    {
+      "source": "/b",
+      "destination": "/products?utm_source=qr&utm_medium=sticker&utm_campaign=bukhoor_label",
+      "permanent": false
+    },
+    {
+      "source": "/d",
+      "destination": "/perfumes?utm_source=qr&utm_medium=sticker&utm_campaign=delka_label",
+      "permanent": false
     }
   ],
   "crons": [
