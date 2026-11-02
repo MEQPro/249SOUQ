@@ -507,6 +507,22 @@ function setImg(src,el){document.getElementById('mainImg').src=src;document.quer
   }, 900);
 })();
 </script>
+<script>
+(function(){
+  var box=document.querySelector('.main-img'); if(!box) return;
+  var thumbs=[].slice.call(document.querySelectorAll('.thumb-row .thumb'));
+  function cur(){for(var i=0;i<thumbs.length;i++){if(thumbs[i].classList.contains('active'))return i}return 0}
+  function go(n){ if(n<0||n>=thumbs.length) return; thumbs[n].click(); thumbs[n].scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'}); }
+  var x0=null,y0=null;
+  box.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  box.addEventListener('touchend',function(e){
+    if(x0===null) return;
+    var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)) return;
+    go(cur()+(dx<0?1:-1));
+  });
+})();
+</script>
 <script src="lead.js" defer></script>
 </body>
 </html>

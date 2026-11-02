@@ -12,10 +12,10 @@
 <meta property="og:title" content="دلكة الهنا — دلكة سودانية 200 غرام | 249Souq"/>
 <meta property="og:description" content="دلكة سودانية تقليدية 200 غرام. اطلبها مع بخورك. توصيل داخل الإمارات."/>
 <meta property="og:url" content="https://249souq.com/delka"/>
-<meta property="og:image" content="https://249souq.com/img/dilka-jar.webp"/>
+<meta property="og:image" content="https://249souq.com/img/dilka-jar.webp?v=2"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Product","name":"دلكة الهنا","alternateName":"Dilka Al Hana — Sudanese Delka 200 g","description":"دلكة سودانية تقليدية للعناية بالجسم، 200 غرام. Traditional Sudanese delka body scrub, 200 g. For external use only.","image":["https://249souq.com/img/dilka-jar.webp"],"brand":{"@type":"Brand","name":"دلكة الهنا"},"weight":{"@type":"QuantitativeValue","value":200,"unitCode":"GRM"},"offers":{"@type":"Offer","url":"https://249souq.com/delka","priceCurrency":"AED","price":"35","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","areaServed":"AE"}}
+{"@context":"https://schema.org","@type":"Product","name":"دلكة الهنا","alternateName":"Dilka Al Hana — Sudanese Delka 200 g","description":"دلكة سودانية تقليدية للعناية بالجسم، 200 غرام. Traditional Sudanese delka body scrub, 200 g. For external use only.","image":["https://249souq.com/img/dilka-jar.webp?v=2"],"brand":{"@type":"Brand","name":"دلكة الهنا"},"weight":{"@type":"QuantitativeValue","value":200,"unitCode":"GRM"},"offers":{"@type":"Offer","url":"https://249souq.com/delka","priceCurrency":"AED","price":"35","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","areaServed":"AE"}}
 </script>
 <link rel="icon" href="favicon.ico" sizes="any"/>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
@@ -208,11 +208,11 @@
 <section id="delka" style="background:#fff;padding:3rem 0;border-bottom:1px solid rgba(26,18,8,0.06)">
   <div class="product-wrap">
     <div class="gallery">
-      <div class="main-img"><span class="weight-badge">200 غرام</span><img id="mainImg" src="img/dilka-jar.webp" alt="دلكة الهنا — دلكة سودانية 200 غرام" width="900" height="1350"/></div>
+      <div class="main-img"><span class="weight-badge">200 غرام</span><img id="mainImg" src="img/dilka-jar.webp?v=2" alt="دلكة الهنا — دلكة سودانية 200 غرام" width="900" height="1350"/></div>
       <div class="thumb-row">
-        <div class="thumb active" onclick="setImg('img/dilka-jar.webp',this)"><img src="img/dilka-jar.webp" alt="دلكة الهنا — دلكة سودانية 200 غرام"/></div>
-        <div class="thumb" onclick="setImg('img/dilka-poster.jpg',this)"><img src="img/dilka-poster.jpg" alt="دلكة الهنا — بوستر"/></div>
-        <div class="thumb" onclick="setImg('img/dilka-howto.jpg',this)"><img src="img/dilka-howto.jpg" alt="دلكة الهنا — طريقة الاستعمال"/></div>
+        <div class="thumb active" onclick="setImg('img/dilka-jar.webp?v=2',this)"><img src="img/dilka-jar.webp?v=2" alt="دلكة الهنا — دلكة سودانية 200 غرام"/></div>
+        <div class="thumb" onclick="setImg('img/dilka-poster.jpg?v=2',this)"><img src="img/dilka-poster.jpg?v=2" alt="دلكة الهنا — بوستر"/></div>
+        <div class="thumb" onclick="setImg('img/dilka-howto.jpg?v=2',this)"><img src="img/dilka-howto.jpg?v=2" alt="دلكة الهنا — طريقة الاستعمال"/></div>
       </div>
     </div>
     <div>
@@ -404,6 +404,22 @@ function setImg(src,el){document.getElementById('mainImg').src=src;document.quer
     row.scrollTo({left: 60, behavior: 'smooth'});
     setTimeout(function(){ row.scrollTo({left: 0, behavior: 'smooth'}); }, 500);
   }, 900);
+})();
+</script>
+<script>
+(function(){
+  var box=document.querySelector('.main-img'); if(!box) return;
+  var thumbs=[].slice.call(document.querySelectorAll('.thumb-row .thumb'));
+  function cur(){for(var i=0;i<thumbs.length;i++){if(thumbs[i].classList.contains('active'))return i}return 0}
+  function go(n){ if(n<0||n>=thumbs.length) return; thumbs[n].click(); thumbs[n].scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'}); }
+  var x0=null,y0=null;
+  box.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  box.addEventListener('touchend',function(e){
+    if(x0===null) return;
+    var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)) return;
+    go(cur()+(dx<0?1:-1));
+  });
 })();
 </script>
 <script src="lead.js" defer></script>
