@@ -14,7 +14,7 @@
     },
     {
       "source": "/d",
-      "destination": "/perfumes?utm_source=qr&utm_medium=sticker&utm_campaign=delka_label",
+      "destination": "/delka?utm_source=qr&utm_medium=sticker&utm_campaign=delka_label",
       "permanent": false
     }
   ],
