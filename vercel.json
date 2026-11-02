@@ -18,6 +18,11 @@
       "permanent": false
     },
     {
+      "source": "/e",
+      "destination": "/event?utm_source=share&utm_medium=social&utm_campaign=event_7nov",
+      "permanent": false
+    },
+    {
       "source": "/map",
       "destination": "https://maps.app.goo.gl/A6ufRW2RK8kYZudN7?g_st=iw",
       "permanent": false
