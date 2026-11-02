@@ -16,6 +16,11 @@
       "source": "/d",
       "destination": "/delka?utm_source=qr&utm_medium=sticker&utm_campaign=delka_label",
       "permanent": false
+    },
+    {
+      "source": "/map",
+      "destination": "https://maps.app.goo.gl/A6ufRW2RK8kYZudN7?g_st=iw",
+      "permanent": false
     }
   ],
   "crons": [
